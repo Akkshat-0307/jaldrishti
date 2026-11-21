@@ -399,6 +399,7 @@ def generate_scenarios(
             unet_ref = json.load(f)
 
     scenario_summaries = []
+    cum_isolated_zone_ids: set[str] = set()
 
     for delta in deltas:
         h_eff = round(h_star + delta, 2)
@@ -428,6 +429,13 @@ def generate_scenarios(
         # 5. Clone zones & run Cut-off Analysis
         scenario_zones = deepcopy(base_zones)
         perform_cutoff_analysis(scenario_zones, shelters, G_dry, G_flooded)
+
+        # Enforce physical monotonicity: rising water cannot reconnect a previously severed zone
+        for z in scenario_zones:
+            if z["zone_id"] in cum_isolated_zone_ids:
+                z["isolated"] = True
+            elif z["isolated"]:
+                cum_isolated_zone_ids.add(z["zone_id"])
 
         # 6. Compute Zonal Raster Statistics
         compute_zonal_raster_statistics(
@@ -502,7 +510,7 @@ def generate_scenarios(
             "delta_tag": tag,
             "effective_water_level_m": h_eff,
             "h_star_baseline_m": h_star,
-            "planning_aid_note": "Water-level scenarios are a planning aid, not a forecast.",
+            "planning_aid_note": "Relative comparison only, not a forecast and not calibrated for roads or population.",
             "layer_provenance": "DERIVED (HAND Water-Level Scenario)",
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "utm_crs": UTM_CRS,
@@ -567,7 +575,7 @@ def generate_scenarios(
         "event_id": "assam-2022",
         "h_star_baseline_m": h_star,
         "baseline_mode": "area_matched",
-        "planning_aid_note": "Water-level scenarios are a planning aid, not a forecast.",
+        "planning_aid_note": "Relative comparison only, not a forecast and not calibrated for roads or population.",
         "alternative_baseline": {
             "type": "iou_optimal",
             "h_star_m": 3.25,
@@ -644,7 +652,7 @@ def run_phase5_whatif_pipeline(
         "h_star_iou_optimal_m": calib["h_star_iou_optimal_m"],
         "area_matched_metrics": calib["full_domain_metrics"],
         "iou_optimal_metrics": calib["iou_optimal_metrics"],
-        "planning_aid_note": "Water-level scenarios are a planning aid, not a forecast.",
+        "planning_aid_note": "Relative comparison only, not a forecast and not calibrated for roads or population.",
         "spatial_cross_validation": calib["spatial_cross_validation"],
         "calibration_sweep_sample": [
             res for res in calib["sweep_curve"]

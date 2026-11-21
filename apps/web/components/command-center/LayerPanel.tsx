@@ -65,16 +65,20 @@ export function LayerPanel({ layers, onChangeLayers }: LayerPanelProps) {
               </div>
               {layers.showUnetFlood && (
                 <div className="flex items-center gap-2 pl-6">
-                  <span className="text-[10px] text-white/40">Opacity:</span>
+                  <label htmlFor="unet-opacity-slider" className="text-[10px] text-slate-300">
+                    Opacity:
+                  </label>
                   <input
+                    id="unet-opacity-slider"
                     type="range"
                     min="0"
                     max="100"
                     value={layers.opacityUnet}
                     onChange={(e) => onChangeLayers({ opacityUnet: Number(e.target.value) })}
                     className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+                    aria-label="U-Net SAR flood mask opacity"
                   />
-                  <span className="text-[10px] text-white/50 font-mono w-6 text-right">
+                  <span className="text-[10px] text-slate-300 font-mono w-6 text-right">
                     {layers.opacityUnet}%
                   </span>
                 </div>

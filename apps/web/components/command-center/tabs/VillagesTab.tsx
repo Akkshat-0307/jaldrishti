@@ -26,8 +26,16 @@ export function VillagesTab({
 }: VillagesTabProps) {
   const [search, setSearch] = useState("");
 
+  const sortedAll = useMemo(() => {
+    return [...villages].sort((a, b) => b.properties.priority_score - a.properties.priority_score);
+  }, [villages]);
+
+  const robustSorted = useMemo(() => {
+    return sortedAll.filter((v) => !v.properties.touches_window_edge);
+  }, [sortedAll]);
+
   const filteredVillages = useMemo(() => {
-    return villages
+    return sortedAll
       .filter((v) => {
         const p = v.properties;
         if (
@@ -41,9 +49,8 @@ export function VillagesTab({
           return false;
         }
         return true;
-      })
-      .sort((a, b) => b.properties.priority_score - a.properties.priority_score);
-  }, [villages, search, robustCutoffsOnly]);
+      });
+  }, [sortedAll, search, robustCutoffsOnly]);
 
   const cutoffCount = villages.filter((v) => v.properties.isolated).length;
   const robustCount = villages.filter((v) => v.properties.isolated && !v.properties.touches_window_edge).length;
@@ -97,6 +104,9 @@ export function VillagesTab({
           const p = feat.properties;
           const isSelected = p.zone_id === selectedZoneId;
           const isCutoff = p.isolated;
+          const isEdge = Boolean(p.touches_window_edge);
+          const overallRank = sortedAll.findIndex((v) => v.properties.zone_id === p.zone_id) + 1;
+          const robustRank = !isEdge ? robustSorted.findIndex((v) => v.properties.zone_id === p.zone_id) + 1 : null;
 
           return (
             <button
@@ -109,17 +119,24 @@ export function VillagesTab({
               }`}
             >
               <div className="space-y-1">
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 flex-wrap">
                   <span className="font-bold text-white text-xs">{p.name}</span>
-                  <span className="text-[10px] text-white/40 font-mono">#{p.zone_id}</span>
-                  {p.touches_window_edge && (
-                    <span className="text-[9px] px-1 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
-                      Edge
+                  <span className="text-[10px] text-slate-400 font-mono">#{p.zone_id}</span>
+                  <span className="text-[9px] px-1.5 py-0.2 rounded bg-purple-500/20 text-purple-300 font-mono">
+                    #{overallRank}
+                  </span>
+                  {!isEdge ? (
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-mono">
+                      Robust #{robustRank}
+                    </span>
+                  ) : (
+                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30" title="Touches study window edge: boundary road truncation may overstate cut-off">
+                      Touches Window Edge
                     </span>
                   )}
                 </div>
 
-                <div className="flex items-center gap-2 text-[10px] text-white/60 font-mono">
+                <div className="flex items-center gap-2 text-[10px] text-slate-300 font-mono">
                   <span>Pop: {p.population.toLocaleString()}</span>
                   <span>•</span>
                   <span className="text-amber-300">{p.population_exposed.toLocaleString()} exp</span>

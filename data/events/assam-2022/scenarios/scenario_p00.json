@@ -3,9 +3,9 @@
   "delta_tag": "p00",
   "effective_water_level_m": 1.5,
   "h_star_baseline_m": 1.5,
-  "planning_aid_note": "Water-level scenarios are a planning aid, not a forecast.",
+  "planning_aid_note": "Relative comparison only, not a forecast and not calibrated for roads or population.",
   "layer_provenance": "DERIVED (HAND Water-Level Scenario)",
-  "timestamp": "2026-11-21T18:49:43.864818+00:00",
+  "timestamp": "2026-11-21T19:52:48.519710+00:00",
   "utm_crs": "EPSG:32646",
   "geojson_file": "/data/events/assam-2022/scenarios/scenario_p00.geojson",
   "metrics": {

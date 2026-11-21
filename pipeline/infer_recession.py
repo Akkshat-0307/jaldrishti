@@ -135,14 +135,15 @@ def run_recession_pipeline(
         "dates": [
             {
                 "date": "2022-05-01",
-                "label": "Baseline Dry",
+                "label": "Reference (Normal)",
                 "stage": "pre_flood",
                 "satellite_scene_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220501T234737",
                 "flooded_area_ha": 0.0,
                 "flooded_area_km2": 0.0,
                 "population_exposed": 0,
                 "polygon_geojson": None,
-                "status_badge": "REAL (S1 Baseline Dry)",
+                "status_badge": "REAL (reference, no flood by definition)",
+                "methodological_note": "Reference scene (no flood by definition), used for dual-polarization baseline comparison.",
             },
             {
                 "date": "2022-06-18",

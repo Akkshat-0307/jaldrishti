@@ -68,12 +68,12 @@ export function TopBar({
         {/* Command Palette Trigger */}
         <button
           onClick={onOpenCommandPalette}
-          className="hidden md:flex items-center gap-2 px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-xs text-white/60 hover:text-white hover:bg-white/10 transition-colors"
-          aria-label="Open command palette (Ctrl+K)"
+          className="hidden md:flex items-center gap-2 px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-xs text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+          title="Quick search (Ctrl+K)"
         >
           <Search className="h-3.5 w-3.5" />
           <span>Quick search...</span>
-          <kbd className="px-1.5 py-0.5 rounded bg-black/40 border border-white/20 text-[10px] font-mono text-white/70">
+          <kbd className="px-1.5 py-0.5 rounded bg-black/40 border border-white/20 text-[10px] font-mono text-slate-300">
             ⌘K
           </kbd>
         </button>
@@ -85,7 +85,6 @@ export function TopBar({
           variant="secondary"
           onClick={onStartTour}
           className="h-8 gap-1.5 text-xs text-cyan-300 border-cyan-500/30 bg-cyan-950/30 hover:bg-cyan-900/50"
-          aria-label="Run automated 8-step guided demo tour"
         >
           <Play className="h-3.5 w-3.5 fill-cyan-400 text-cyan-400" />
           <span>Run demo tour</span>

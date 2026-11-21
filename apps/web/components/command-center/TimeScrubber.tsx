@@ -20,14 +20,14 @@ export function TimeScrubber({ timeline, activeDate, onSelectDate }: TimeScrubbe
   const dates: TimelineDateItem[] = useMemo(() => timeline?.dates ?? [
     {
       date: "2022-05-01",
-      label: "Baseline Dry",
+      label: "Reference (Normal)",
       stage: "pre_flood",
       satellite_scene_id: "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220501T234737",
       flooded_area_ha: 0.0,
       flooded_area_km2: 0.0,
       population_exposed: 0,
       polygon_geojson: null,
-      status_badge: "REAL (S1 Baseline Dry)",
+      status_badge: "REAL (reference, no flood by definition)",
     },
     {
       date: "2022-06-18",
@@ -160,7 +160,7 @@ export function TimeScrubber({ timeline, activeDate, onSelectDate }: TimeScrubbe
                   />
                   <span
                     className={`text-[10px] mt-1 font-mono transition-colors ${
-                      isSelected ? "text-cyan-300 font-semibold" : "text-white/40 group-hover:text-white/70"
+                      isSelected ? "text-cyan-300 font-semibold" : "text-slate-400 group-hover:text-slate-200"
                     }`}
                   >
                     {d.date.slice(5)}

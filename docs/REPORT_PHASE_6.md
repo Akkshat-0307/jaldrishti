@@ -166,7 +166,6 @@ apps/web/components/command-center/
 | **Evacuation Routes & Cut-Offs** | `DERIVED` | Dual-graph Dijkstra routing on passable road network (8 cut off, 12 connected). |
 | **HAND What-If Scenarios** | `SIMULATED` | Inundation footprint under stage anomalies ($\Delta h \in [-1.0, +2.0]\text{ m}$) relative to Area-Matched baseline ($h^* = 1.50\text{ m}$). |
 | **CAP v1.2 Emergency Alerts** | `SIMULATED` | Standard OASIS CAP XML and multi-lingual SMS broadcasts (EN, HI, AS, BN). |
-| **Offline Emergency Beacons** | `SIMULATED` | Compact binary packet-radio SOS transmissions. |
 
 ---
 

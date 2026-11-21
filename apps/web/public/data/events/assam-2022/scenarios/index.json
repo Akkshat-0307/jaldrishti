@@ -2,7 +2,7 @@
   "event_id": "assam-2022",
   "h_star_baseline_m": 1.5,
   "baseline_mode": "area_matched",
-  "planning_aid_note": "Water-level scenarios are a planning aid, not a forecast.",
+  "planning_aid_note": "Relative comparison only, not a forecast and not calibrated for roads or population.",
   "alternative_baseline": {
     "type": "iou_optimal",
     "h_star_m": 3.25,
@@ -118,9 +118,9 @@
       "exposed_population": 248990,
       "cropland_waterlogged_ha": 12352.14,
       "roads_potentially_cut_km": 992.41,
-      "cutoff_zones_count": 18,
+      "cutoff_zones_count": 19,
       "cutoff_zones_robust_count": 10,
-      "isolated_population": 340824
+      "isolated_population": 395728
     }
   ]
 }

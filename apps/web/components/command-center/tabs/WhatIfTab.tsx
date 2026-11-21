@@ -64,7 +64,7 @@ export function WhatIfTab({ scenariosIndex, activeDelta, onSelectDelta }: WhatIf
       <div className="bg-amber-950/30 border border-amber-500/40 p-2.5 rounded-xl flex items-start gap-2">
         <AlertTriangle className="h-4 w-4 text-amber-400 shrink-0 mt-0.5" />
         <div className="text-[11px] text-amber-200/90 leading-relaxed">
-          <strong>Planning Aid Disclaimer:</strong> Water-level scenarios are a planning aid, not a forecast. They model terrain ponding along drainage channels under hypothetical river stage anomalies.
+          <strong>Planning Aid Disclaimer:</strong> Relative comparison only, not a forecast and not calibrated for roads or population. Water-level scenarios model static terrain ponding along MERIT-Hydro drainage channels under hypothetical river stage anomalies.
         </div>
       </div>
 

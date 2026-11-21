@@ -3,9 +3,9 @@
   "delta_tag": "p20",
   "effective_water_level_m": 3.5,
   "h_star_baseline_m": 1.5,
-  "planning_aid_note": "Water-level scenarios are a planning aid, not a forecast.",
+  "planning_aid_note": "Relative comparison only, not a forecast and not calibrated for roads or population.",
   "layer_provenance": "DERIVED (HAND Water-Level Scenario)",
-  "timestamp": "2026-11-21T18:50:49.695750+00:00",
+  "timestamp": "2026-11-21T19:53:33.404056+00:00",
   "utm_crs": "EPSG:32646",
   "geojson_file": "/data/events/assam-2022/scenarios/scenario_p20.geojson",
   "metrics": {
@@ -16,9 +16,9 @@
     "cropland_waterlogged_ha": 12352.14,
     "built_up_flooded_ha": 1220.58,
     "roads_potentially_cut_km": 992.41,
-    "cutoff_zones_count": 18,
+    "cutoff_zones_count": 19,
     "cutoff_zones_robust_count": 10,
-    "cutoff_zones_touching_edge_count": 8,
+    "cutoff_zones_touching_edge_count": 9,
     "cutoff_zones_robust": [
       "zone_11",
       "zone_20",
@@ -33,6 +33,7 @@
     ],
     "cutoff_zones_touching_edge": [
       "zone_05",
+      "zone_17",
       "zone_06",
       "zone_02",
       "zone_03",
@@ -41,8 +42,8 @@
       "zone_09",
       "zone_04"
     ],
-    "isolated_population": 340824,
-    "isolated_exposed_population": 193075
+    "isolated_population": 395728,
+    "isolated_exposed_population": 229230
   },
   "comparison_with_observed_unet": {
     "observed_flood_area_ha": 9975.59,
@@ -50,7 +51,7 @@
     "observed_exposed_population": 101986,
     "delta_exposed_population": 147004,
     "observed_cutoff_zones_count": 8,
-    "delta_cutoff_zones_count": 10
+    "delta_cutoff_zones_count": 11
   },
   "zones": [
     {
@@ -100,8 +101,31 @@
       }
     },
     {
-      "zone_id": "zone_20",
+      "zone_id": "zone_17",
       "rank": 3,
+      "name": "Sonb\u0101ragh\u0101t",
+      "place_type": "hamlet",
+      "population": 54904,
+      "population_exposed": 36155,
+      "flooded_fraction": 0.658,
+      "flooded_area_ha": 3271.71,
+      "cropland_flooded_or_waterlogged_ha": 2700.09,
+      "built_up_flooded_ha": 23.67,
+      "roads_potentially_cut_km": 96.04,
+      "isolated": true,
+      "touches_window_edge": true,
+      "is_on_boundary_edge": true,
+      "priority_score": 78.4,
+      "priority_breakdown": {
+        "population_exposed_term": 31.0,
+        "flooded_fraction_term": 16.5,
+        "isolation_term": 30.0,
+        "critical_facilities_term": 1.0
+      }
+    },
+    {
+      "zone_id": "zone_20",
+      "rank": 4,
       "name": "Debp\u0101ra",
       "place_type": "hamlet",
       "population": 44734,
@@ -124,7 +148,7 @@
     },
     {
       "zone_id": "zone_07",
-      "rank": 4,
+      "rank": 5,
       "name": "Khelma (South)",
       "place_type": "hamlet",
       "population": 13614,
@@ -147,7 +171,7 @@
     },
     {
       "zone_id": "zone_06",
-      "rank": 5,
+      "rank": 6,
       "name": "R\u0101mnagar (West)",
       "place_type": "hamlet",
       "population": 36424,
@@ -170,7 +194,7 @@
     },
     {
       "zone_id": "zone_12",
-      "rank": 6,
+      "rank": 7,
       "name": "Digh\u0101li",
       "place_type": "hamlet",
       "population": 33949,
@@ -193,7 +217,7 @@
     },
     {
       "zone_id": "zone_15",
-      "rank": 7,
+      "rank": 8,
       "name": "Kharilp\u0101r",
       "place_type": "hamlet",
       "population": 20091,
@@ -216,7 +240,7 @@
     },
     {
       "zone_id": "zone_02",
-      "rank": 8,
+      "rank": 9,
       "name": "Ratpur",
       "place_type": "hamlet",
       "population": 14578,
@@ -239,7 +263,7 @@
     },
     {
       "zone_id": "zone_13",
-      "rank": 9,
+      "rank": 10,
       "name": "M\u0101simpur (North)",
       "place_type": "hamlet",
       "population": 5162,
@@ -258,29 +282,6 @@
         "flooded_fraction_term": 17.0,
         "isolation_term": 30.0,
         "critical_facilities_term": 0.0
-      }
-    },
-    {
-      "zone_id": "zone_17",
-      "rank": 10,
-      "name": "Sonb\u0101ragh\u0101t",
-      "place_type": "hamlet",
-      "population": 54904,
-      "population_exposed": 36155,
-      "flooded_fraction": 0.658,
-      "flooded_area_ha": 3271.71,
-      "cropland_flooded_or_waterlogged_ha": 2700.09,
-      "built_up_flooded_ha": 23.67,
-      "roads_potentially_cut_km": 96.04,
-      "isolated": false,
-      "touches_window_edge": true,
-      "is_on_boundary_edge": true,
-      "priority_score": 48.4,
-      "priority_breakdown": {
-        "population_exposed_term": 31.0,
-        "flooded_fraction_term": 16.5,
-        "isolation_term": 0.0,
-        "critical_facilities_term": 1.0
       }
     },
     {
