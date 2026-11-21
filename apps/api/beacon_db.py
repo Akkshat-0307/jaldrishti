@@ -455,3 +455,18 @@ def update_beacon_status(
         return dict(updated) if updated else None, None
     finally:
         conn.close()
+
+
+def clear_all_beacons() -> int:
+    """Clear demo beacons and re-seed clean baseline demo beacons."""
+    init_db()
+    conn = get_db_connection()
+    try:
+        cursor = conn.execute("DELETE FROM beacons")
+        deleted_count = cursor.rowcount
+        conn.commit()
+        seed_synthetic_beacons(conn)
+        return deleted_count
+    finally:
+        conn.close()
+

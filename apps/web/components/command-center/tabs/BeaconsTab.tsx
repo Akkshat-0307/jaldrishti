@@ -13,6 +13,7 @@ import {
   MapPin,
   PlusCircle,
   Radio,
+  RotateCcw,
   Search,
   Shield,
   Table as TableIcon,
@@ -145,6 +146,22 @@ export function BeaconsTab({ onSelectZone, onSelectBeacon }: BeaconsTabProps) {
   const [isTableView, setIsTableView] = useState<boolean>(false);
   const [undoState, setUndoState] = useState<{ id: string; prevStatus: string; prevTeam: string | null } | null>(null);
   const [sseConnected, setSseConnected] = useState<boolean>(false);
+  const [isClearing, setIsClearing] = useState<boolean>(false);
+
+  const handleClearDemoBeacons = async () => {
+    if (!confirm("Reset demo beacons back to clean baseline state?")) return;
+    setIsClearing(true);
+    try {
+      const res = await fetch(getApiUrl("/beacons/clear"), { method: "POST" });
+      if (res.ok) {
+        await fetchBeacons();
+      }
+    } catch (e) {
+      console.warn("Failed to clear demo beacons:", e);
+    } finally {
+      setIsClearing(false);
+    }
+  };
 
   // Initial Fetch & SSE Setup
   const fetchBeacons = useCallback(async () => {
@@ -407,6 +424,17 @@ export function BeaconsTab({ onSelectZone, onSelectBeacon }: BeaconsTabProps) {
             </h3>
           </div>
           <div className="flex items-center gap-2">
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={handleClearDemoBeacons}
+              disabled={isClearing}
+              className="h-6 text-[10px] font-mono px-2 py-0 border-white/20 text-slate-300 hover:text-white hover:bg-rose-950/40 hover:border-rose-500/50 cursor-pointer"
+              title="Reset demo beacons to initial state"
+            >
+              <RotateCcw className="w-3 h-3 mr-1 text-rose-400" />
+              {isClearing ? "Clearing..." : "Clear Demo Beacons"}
+            </Button>
             <span
               className={`w-2 h-2 rounded-full ${
                 sseConnected ? "bg-emerald-400 animate-pulse" : "bg-amber-400"

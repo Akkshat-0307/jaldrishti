@@ -12,6 +12,7 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from sse_starlette.sse import EventSourceResponse
 
 from beacon_db import (
+    clear_all_beacons,
     get_beacon_by_id,
     init_db,
     list_beacons,
@@ -322,3 +323,17 @@ async def update_beacon(beacon_id: str, body: BeaconUpdate, request: Request) ->
 
     await broadcast_beacon_event("beacon_updated", response.model_dump(mode="json"))
     return response
+
+
+@router.delete("", status_code=200)
+@router.post("/clear", status_code=200)
+async def clear_demo_beacons() -> dict[str, Any]:
+    """Reset and clear demo beacons back to clean baseline state."""
+    deleted_count = clear_all_beacons()
+    await broadcast_beacon_event("beacons_cleared", {"deleted_count": deleted_count})
+    return {
+        "ok": True,
+        "message": "Demo beacons cleared and reset to initial state",
+        "deleted_count": deleted_count,
+    }
+

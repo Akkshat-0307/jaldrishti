@@ -572,7 +572,7 @@ export default function BeaconPwaPage() {
           {/* Battery */}
           <div className="flex items-center justify-center gap-1.5">
             <Battery className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="text-slate-200">{batteryLevel !== null ? `${batteryLevel}%` : "AC/Battery"}</span>
+            <span className="text-slate-200">{batteryLevel !== null ? `${batteryLevel}%` : "n/a"}</span>
           </div>
 
           {/* GPS Status */}
@@ -582,6 +582,12 @@ export default function BeaconPwaPage() {
               {gpsStatus === "locked" ? `±${accuracy}m` : "Cachar Default"}
             </span>
           </div>
+        </div>
+
+        {/* Demo Position Notice */}
+        <div className="px-3 py-1.5 rounded-lg bg-cyan-950/40 border border-cyan-500/20 text-[11px] font-mono text-cyan-300 flex items-center gap-2">
+          <MapPin className="w-3.5 h-3.5 shrink-0 text-cyan-400" />
+          <span>Demo: your position is only sent to this local server.</span>
         </div>
 
         {/* Emergency Input Form */}

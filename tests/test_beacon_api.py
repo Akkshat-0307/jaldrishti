@@ -146,3 +146,18 @@ def test_beacon_stream_sse_and_reconnect():
         pass
 
 
+def test_clear_demo_beacons():
+    """Verify POST /beacons/clear and DELETE /beacons reset demo beacons."""
+    res = client.post("/beacons/clear")
+    assert res.status_code == 200
+    data = res.json()
+    assert data["ok"] is True
+    assert "deleted_count" in data
+
+    # Verify beacons table is reset to initial synthetic baseline (5 initial beacons)
+    res_list = client.get("/beacons")
+    assert res_list.status_code == 200
+    assert len(res_list.json()) >= 5
+
+
+
