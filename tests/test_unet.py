@@ -2,7 +2,8 @@
 
 import numpy as np
 import pytest
-import torch
+
+torch = pytest.importorskip("torch")
 
 from pipeline.dataset import TRAIN_STATS
 from pipeline.infer_unet import compute_mask_agreement
