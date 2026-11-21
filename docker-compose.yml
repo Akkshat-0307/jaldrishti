@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - DEMO_MODE=1
+      - NODE_ENV=production
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DEMO_MODE=1
+      - DATA_DIR=/app/data
+    volumes:
+      - ./data:/app/data:ro
