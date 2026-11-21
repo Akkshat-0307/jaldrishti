@@ -49,7 +49,7 @@ export function ProblemScene() {
   return (
     <section
       id="problem-scene"
-      className="py-24 px-6 md:px-16 max-w-7xl mx-auto space-y-16 border-t border-white/10"
+      className="py-24 px-6 md:px-16 max-w-7xl mx-auto space-y-16 relative"
     >
       <div className="max-w-3xl space-y-4">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-alert-500/10 border border-alert-500/20 text-alert-500 text-xs font-mono font-semibold">

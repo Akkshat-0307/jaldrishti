@@ -77,6 +77,16 @@ const ATTRIBUTIONS: Attribution[] = [
       "Used to gate steep terrain radar shadow (< 15m HAND) and drive hydrodynamic stage anomaly scenarios (-1.0m to +2.0m).",
   },
   {
+    dataset: "NASA Visible Earth — Blue Marble Next Generation",
+    provider: "NASA Earth Observatory / GSFC",
+    license: "Public Domain (US Government Work)",
+    licenseUrl: "https://visibleearth.nasa.gov/",
+    usage: "Global equirectangular Earth texture for 3D space globe visualization on Landing page.",
+    badge: "real",
+    details:
+      "Public-domain Blue Marble composite downsampled and optimized to 123 KB JPEG for offline, zero-network WebGL rendering.",
+  },
+  {
     dataset: "Open-Meteo & NASA GPM IMERG Precipitation",
     provider: "Open-Meteo API / NASA Earth Science Data Systems",
     license: "Open-Meteo Non-Commercial / NASA Open Data",

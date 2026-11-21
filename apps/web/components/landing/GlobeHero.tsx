@@ -51,85 +51,25 @@ export function GlobeHero() {
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    // Procedural Earth Texture (Monochrome landmass with night city lights - 100% offline)
-    const texCanvas = document.createElement("canvas");
-    texCanvas.width = 1024;
-    texCanvas.height = 512;
-    const ctx = texCanvas.getContext("2d");
-    if (ctx) {
-      // Deep space ocean
-      ctx.fillStyle = "#070E22";
-      ctx.fillRect(0, 0, 1024, 512);
-
-      // Generalized landmasses (India, Asia, Europe, Africa, Americas)
-      ctx.fillStyle = "#0D1E40";
-      // Asia & India
-      ctx.beginPath();
-      ctx.ellipse(650, 220, 180, 100, 0, 0, Math.PI * 2);
-      ctx.fill();
-      // Indian Subcontinent triangle protrusion
-      ctx.beginPath();
-      ctx.moveTo(630, 230);
-      ctx.lineTo(660, 310);
-      ctx.lineTo(690, 240);
-      ctx.closePath();
-      ctx.fill();
-      // Africa
-      ctx.beginPath();
-      ctx.ellipse(500, 260, 90, 130, 0.2, 0, Math.PI * 2);
-      ctx.fill();
-      // Europe
-      ctx.beginPath();
-      ctx.ellipse(510, 150, 80, 50, -0.1, 0, Math.PI * 2);
-      ctx.fill();
-      // Americas
-      ctx.beginPath();
-      ctx.ellipse(250, 170, 70, 90, -0.2, 0, Math.PI * 2);
-      ctx.ellipse(320, 320, 60, 110, 0.3, 0, Math.PI * 2);
-      ctx.fill();
-      // Australia
-      ctx.beginPath();
-      ctx.ellipse(780, 360, 60, 45, 0, 0, Math.PI * 2);
-      ctx.fill();
-
-      // Golden night lights on populated clusters
-      ctx.fillStyle = "#FDE68A"; // amber night lights
-      const cities = [
-        [660, 275, 4], // Northeast India / Silchar / Guwahati (emphasized)
-        [640, 280, 3], // Delhi / North India
-        [645, 305, 3], // Mumbai
-        [675, 290, 3], // Kolkata
-        [720, 260, 2.5], // Bangkok
-        [740, 295, 2.5], // Singapore
-        [770, 220, 3], // Tokyo
-        [520, 140, 2.5], // London / Paris
-        [280, 170, 3], // New York
-      ];
-      cities.forEach(([cx, cy, r]) => {
-        ctx.beginPath();
-        ctx.arc(cx, cy, r, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      // Silchar / Barak Valley focal beacon pulse
-      ctx.fillStyle = "#22D3EE";
-      ctx.beginPath();
-      ctx.arc(662, 274, 5, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    const earthTexture = new THREE.CanvasTexture(texCanvas);
-    const earthGeo = new THREE.SphereGeometry(1.8, 48, 48);
+    // NASA Blue Marble Earth Texture (123 KB, self-hosted, 100% offline)
+    const textureLoader = new THREE.TextureLoader();
+    const earthTexture = textureLoader.load(
+      "/textures/earth_blue_marble.jpg",
+      () => {
+        earthMat.needsUpdate = true;
+      }
+    );
+    const earthGeo = new THREE.SphereGeometry(1.8, 64, 64);
     const earthMat = new THREE.MeshPhongMaterial({
       map: earthTexture,
-      shininess: 12,
-      specular: new THREE.Color(0x1e3a8a),
-      bumpScale: 0.05,
+      shininess: 16,
+      specular: new THREE.Color(0x2563eb),
+      color: new THREE.Color(0xffffff),
     });
     const earth = new THREE.Mesh(earthGeo, earthMat);
-    // Orient globe so India and Barak basin face forward-right
-    earth.rotation.y = 3.6;
-    earth.rotation.x = 0.25;
+    // Orient globe so Indian subcontinent and Barak basin face forward-right
+    earth.rotation.y = 4.15;
+    earth.rotation.x = 0.28;
     scene.add(earth);
 
     // Atmospheric outer glow
@@ -267,9 +207,10 @@ export function GlobeHero() {
         earth.rotation.y += 0.0008;
 
         orbitAngle += 0.006;
-        const x = orbitRadius * Math.cos(orbitAngle);
-        const y = orbitRadius * Math.sin(orbitAngle) * Math.cos(THREE.MathUtils.degToRad(35));
-        const z = orbitRadius * Math.sin(orbitAngle) * Math.sin(THREE.MathUtils.degToRad(35));
+        // Keep satellite orbiting gracefully around the right-hand globe, clear of text on left
+        const x = orbitRadius * Math.sin(orbitAngle) * Math.cos(THREE.MathUtils.degToRad(35)) + 0.35;
+        const y = orbitRadius * Math.cos(orbitAngle) * Math.cos(THREE.MathUtils.degToRad(25));
+        const z = orbitRadius * Math.sin(orbitAngle) * Math.sin(THREE.MathUtils.degToRad(35)) + 0.3;
         satGroup.position.set(x, y, z);
         satGroup.rotation.y = orbitAngle;
       }

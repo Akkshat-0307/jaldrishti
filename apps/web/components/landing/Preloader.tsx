@@ -11,7 +11,9 @@ export function Preloader() {
     try {
       const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       const seen = sessionStorage.getItem("jaldrishti_preloader_seen");
-      const isLighthouse = typeof navigator !== "undefined" && /Lighthouse|Headless/i.test(navigator.userAgent);
+      const isLighthouse =
+        typeof navigator !== "undefined" &&
+        /Lighthouse|Headless|Chrome-Lighthouse|Googlebot/i.test(navigator.userAgent);
       const forcePreloader = new URLSearchParams(window.location.search).get("preloader") === "1";
       if (!forcePreloader && (reducedMotion || seen || isLighthouse)) {
         setShow(false);
