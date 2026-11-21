@@ -19,9 +19,11 @@ In strict compliance with `AGENTS.md`, every layer and subsystem is categorized 
 | **HAND Elevation Model** | **REAL** | MERIT Hydro hydrologically-conditioned elevation (`MERIT/Hydro`) | 30m resolution raster conditioned on drainage network |
 | **SRTM Slope** | **REAL** | USGS SRTM GL1 30m (`USGS/SRTMGL1_003`) | Slope in degrees, filtered to discard false water on terrain >5° |
 | **JRC Permanent Water** | **REAL** | EC JRC Global Surface Water v1.4 (`JRC/GSW1_4/GlobalSurfaceWater`) | Permanent water seasonality >10 months masked out |
-| **Population Grid** | **REAL** | WorldPop Global Project 100m unconstrained (`WorldPop/GP/100m/pop`) | Modelled 2020 raster count within Cachar study window (427,338 total) |
+| **Population Grid** | **MODELLED** | WorldPop Global Project 100m unconstrained (`WorldPop/GP/100m/pop`) | Modelled 2020 raster estimate within Cachar study window (427,338 total) |
+| **Barak River Discharge** | **MODELLED** | Copernicus Emergency Management Service (GloFAS v4.0) | Ensemble median river discharge & 5-day flood wave forecast |
 | **Land Cover (Cropland/Urban)** | **REAL** | ESA WorldCover 10m v200 2021 (`ESA/WorldCover/v200`) | Class 40 (Cropland) and Class 50 (Built-up) |
 | **OSM Road & Facility Graph** | **REAL** | OpenStreetMap via OSMnx & Overpass API | 32 emergency shelters, drivable road network in UTM Zone 46N |
+| **Self-Hosted Vector Basemap** | **REAL** | OpenStreetMap via Protomaps extract (`cachar.pmtiles`, 2.5 MB) | Local MapLibre vector style with offline glyphs and sprites |
 | **U-Net Flood Segmentation** | **DERIVED** | ResNet34 U-Net inference on Sentinel-1 composite | 0.6804 test IoU, 0.6879 Bolivia IoU; 9,976 ha flooded extent |
 | **Zonal Impact Metrics** | **DERIVED** | Vector intersection of flood mask with Voronoi settlement zones | 101,986 exposed; 100,310 cut-off zone residents; 8,170 ha cropland |
 | **Evacuation Routes & ETAs** | **DERIVED** | NetworkX Dijkstra on non-flooded OSM edges with 50m flood buffer | Physics-based road-class speeds; secondary alternate paths |
@@ -30,15 +32,20 @@ In strict compliance with `AGENTS.md`, every layer and subsystem is categorized 
 | **Rescue Beacon PWA Storage** | **DERIVED** | Client-side IndexedDB queue and Service Worker Cache API | Versioned `jaldrishti-v2` shell, offline auto-sync |
 | **Rescue Beacon SMS Fallback** | **SIMULATED** | Pre-formatted GSM SMS template to demo placeholder number | Configured via `NEXT_PUBLIC_DEMO_SMS_NUMBER` (`+91 00000 00000`) |
 | **1077 Government Integration** | **SIMULATED** | Not integrated with live Assam SDMA / 1077 dispatch | Prominently disclaimed in Beacon UI and privacy documentation |
+| **Distress Beacons Layer** | **SIMULATED** | Seeded and user-submitted emergency beacons | Badged as SIMULATED demo data in Command Center map & drawer |
 
 
 ## 2. Phase 9 Hardening & Deployment Verification
 
 ### 2.1 Automated Test Suite Coverage
-- **Unit & Integration Tests:** 72/72 tests passing (`pytest tests/ -v`).
+- **Unit & Integration Tests:** 74/74 tests passing (`pytest tests/ -v`). Includes `test_offline_pmtiles_basemap_and_layers`, river forecast API tests, and mathematical geometry invariants.
 - **CDP Headless Chrome Offline Test:** Passes e2e offline queuing, background auto-sync flush upon reconnection, and idempotent deduplication (`node scripts/test_offline_cdp.mjs`).
 - **Production Next.js Build:** Zero TypeScript compiler errors, zero ESLint errors, clean static generation across all 10 routes.
-- **Smoke Test:** 14/14 endpoints verified HTTP 200/201 in under 20ms average response time (`scripts/smoke_test.py`).
+- **Smoke Test:** 15/15 endpoints verified HTTP 200/201 in under 20ms average response time (`python3 scripts/smoke_test.py`).
+- **Lighthouse Production Audits:**
+  - Landing Page (`/`): Performance **100/100**, Accessibility **96/100**.
+  - Command Center (`/command-center`): Performance **100/100**, Accessibility **96/100** (FCP 0.9s, LCP 0.9s, TBT 40ms, CLS 0).
+- **Road Network Slimming:** `roads.geojson` compressed from 27.29 MB to 1.91 MB (-93.0%) via Shapely `linemerge` and 5-decimal coordinate truncation without loss of topological continuity.
 
 ### 2.2 Security, Reliability & Error Handling
 - **Security Headers:** Enforced `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: strict-origin-when-cross-origin`, and `Permissions-Policy` across Next.js and Vercel.
