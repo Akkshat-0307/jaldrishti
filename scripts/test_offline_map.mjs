@@ -101,7 +101,7 @@ async function main() {
 
   console.log("[Map CDP Test] Waiting for MapLibre map instance and layer rendering...");
   let mapReady = false;
-  let counts = { unet: 0, zones: 0, basemapWater: 0 };
+  let counts = { unet: 0, zones: 0, roads: 0, shelters: 0, basemapWater: 0 };
 
   for (let i = 0; i < 30; i++) {
     await sleep(500);
@@ -112,15 +112,17 @@ async function main() {
           if (!map || !map.isStyleLoaded()) return { ready: false };
           const unet = map.queryRenderedFeatures({ layers: ["unet-fill"] }).length;
           const zones = map.queryRenderedFeatures({ layers: ["zones-fill"] }).length;
+          const roads = map.getLayer("roads-lines") ? map.queryRenderedFeatures({ layers: ["roads-lines"] }).length : 0;
+          const shelters = map.getLayer("shelters-points") ? map.queryRenderedFeatures({ layers: ["shelters-points"] }).length : 0;
           const water = map.getLayer("water") ? map.queryRenderedFeatures({ layers: ["water"] }).length : 0;
-          return { ready: true, unet, zones, water };
+          return { ready: true, unet, zones, roads, shelters, water };
         })()
       `,
       returnByValue: true,
     });
 
     const res = evalRes?.result?.value;
-    if (res?.ready && res.unet > 0 && res.zones > 0) {
+    if (res?.ready && res.unet > 0 && res.zones > 0 && res.roads > 0) {
       mapReady = true;
       counts = res;
       break;
@@ -138,11 +140,11 @@ async function main() {
     throw new Error("FAIL: Third-party runtime requests detected: " + externalRequests.join(", "));
   }
 
-  if (!mapReady || counts.unet === 0 || counts.zones === 0) {
+  if (!mapReady || counts.unet === 0 || counts.zones === 0 || counts.roads === 0) {
     throw new Error(`FAIL: Expected rendered features > 0. Got: ${JSON.stringify(counts)}`);
   }
 
-  console.log(`PASS: Map rendered offline! unet-fill=${counts.unet}, zones-fill=${counts.zones}, water=${counts.water}, external_requests=0`);
+  console.log(`PASS: Map rendered offline! unet-fill=${counts.unet}, zones-fill=${counts.zones}, roads-lines=${counts.roads}, shelters-points=${counts.shelters}, water=${counts.water}, external_requests=0`);
 }
 
 main().catch((err) => {
