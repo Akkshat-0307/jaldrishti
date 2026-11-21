@@ -14,7 +14,7 @@ JalDrishti is an end-to-end space-enabled flood intelligence and evacuation deci
    ┌───────────────────────┐ ┌─────────────────────┐ ┌──────────────────────┐
    │ U-Net ResNet34        │ │ IMERG Accumulation  │ │ Open-Meteo Flood     │
    │ Flood Segmentation    │ │ 1d, 3d, 7d Context  │ │ 7-day River Forecast │
-   │ (Sen1Floods11 Train)  │ │ (REAL Satellite)    │ │ (REAL Modelled)      │
+   │ (Sen1Floods11 Train)  │ │ (REAL Satellite)    │ │ (MODELLED GloFAS)    │
    └──────────┬────────────┘ └──────────┬──────────┘ └──────────┬───────────┘
               │                         │                       │
               ▼                         │                       │
@@ -128,7 +128,7 @@ During Phase 5 development, this architecture was updated to a **physically-grou
 | Multi-temporal Satellite Timeline | `DERIVED` | Sentinel-1 (2022-05-01 Dry, 2022-06-18 Peak, 2022-06-30 Recession) |
 | HAND Water-Level Scenarios | `SIMULATED` | MERIT-Hydro HAND ($h^*_{\text{area}} = 1.50\text{ m}$, $\Delta h \in [-1.0, +2.0]\text{ m}$) |
 | Satellite Rainfall Context | `REAL` | NASA GPM IMERG V07 Half-Hourly Precipitation (0.1°) |
-| GloFAS River Outlook | `REAL (modelled)` | ECMWF GloFAS v4.0 River Discharge via Open-Meteo API |
+| GloFAS River Outlook | `MODELLED` | ECMWF GloFAS v4.0 River Discharge Model Output via Open-Meteo API |
 | Safe Facilities & Road Graph | `REAL` | OpenStreetMap (Hospitals, Schools, Drivable Highway Network) |
 | Population Exposure | `DERIVED` | WorldPop 2020 100m Constrained UN-Adjusted Population |
 | Cropland Waterlogging | `DERIVED` | ESA WorldCover 2021 v200 (Class 40 Cropland, Class 50 Built-up) |

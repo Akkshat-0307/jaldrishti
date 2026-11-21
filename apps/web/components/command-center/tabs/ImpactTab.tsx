@@ -45,7 +45,7 @@ export function ImpactTab({ summary, riverOutlook }: ImpactTabProps) {
             <Waves className="h-4 w-4 text-cyan-400" />
             <span>Barak River Outlook</span>
           </div>
-          <Badge variant="real" size="sm">REAL (GloFAS)</Badge>
+          <Badge variant="modelled" size="sm">MODELLED (GloFAS)</Badge>
         </div>
 
         <div className="grid grid-cols-2 gap-2 bg-white/5 p-2 rounded-lg font-mono">
@@ -123,7 +123,7 @@ export function ImpactTab({ summary, riverOutlook }: ImpactTabProps) {
 
         <div className="grid grid-cols-2 gap-2">
           <div className="bg-white/5 p-2 rounded-lg">
-            <div className="text-[10px] text-white/50">Cropland Flooded</div>
+            <div className="text-[10px] text-white/50">Cropland flooded or waterlogged</div>
             <div className="text-sm font-bold text-amber-300 font-mono mt-0.5">
               {croplandHa.toLocaleString()} ha
             </div>

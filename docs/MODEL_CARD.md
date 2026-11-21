@@ -156,8 +156,8 @@ The relative water-level $h$ was calibrated against the observed U-Net flood mas
   - 1-day (24h) accumulation (2022-06-17 to 2022-06-18): **67.18 mm** (min: 58.94 mm, max: 85.02 mm).
   - 3-day (72h) accumulation (2022-06-15 to 2022-06-18): **205.28 mm** (min: 159.09 mm, max: 264.29 mm).
   - 7-day (168h) accumulation (2022-06-11 to 2022-06-18): **276.76 mm** (min: 219.01 mm, max: 358.33 mm).
-- **River Discharge Outlook (`REAL (modelled)`):**
-  - Source: ECMWF GloFAS v4.0 via Open-Meteo Flood API for nearest Barak River cell (`lat=24.825, lon=92.800`).
+- **River Discharge Outlook (`MODELLED`):**
+  - Source: ECMWF GloFAS v4.0 model output via Open-Meteo Flood API for nearest Barak River cell (`lat=24.825, lon=92.800`).
   - Scope: Tagged explicitly as `current outlook (not the 2022 event)`.
   - Current Discharge: **499.0 m³/s**, Peak Forecast Discharge: **503.7 m³/s**.
   - Trend: **Stable**. Uncalibrated severity tags removed in Phase 6; raw discharge numbers displayed directly. Cached snapshot provided for offline `DEMO_MODE=1` execution.

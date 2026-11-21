@@ -1,7 +1,7 @@
 import React from "react";
 import { cn } from "@/lib/utils";
 
-export type BadgeVariant = "real" | "derived" | "simulated" | "neutral";
+export type BadgeVariant = "real" | "derived" | "simulated" | "modelled" | "neutral";
 
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
@@ -24,6 +24,11 @@ const variantStyles: Record<BadgeVariant, { container: string; dot: string; labe
     container: "bg-alert-500/10 text-alert-500 border-alert-500/30",
     dot: "bg-alert-500",
     label: "SIMULATED",
+  },
+  modelled: {
+    container: "bg-cyan-400/10 text-cyan-400 border-cyan-400/30",
+    dot: "bg-cyan-400",
+    label: "MODELLED",
   },
   neutral: {
     container: "bg-white/5 text-slate-300 border-white/10",

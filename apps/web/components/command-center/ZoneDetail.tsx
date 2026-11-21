@@ -112,7 +112,7 @@ export function ZoneDetail({ zone, route, onClose, onSelectRoute }: ZoneDetailPr
 
         {/* Cropland Waterlogged */}
         <div className="bg-white/5 rounded-lg p-2">
-          <div className="text-white/50 text-[10px]">Cropland Flooded</div>
+          <div className="text-white/50 text-[10px]">Cropland flooded or waterlogged</div>
           <div className="text-sm font-bold text-amber-300 font-mono mt-0.5">
             {zone.cropland_flooded_or_waterlogged_ha.toFixed(1)} ha
           </div>
