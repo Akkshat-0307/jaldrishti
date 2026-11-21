@@ -24,10 +24,19 @@ coverage/
 .env.local
 .env.*.local
 
+# === Model weights ===
+*.pth
+*.pt
+*.onnx
+*.bin
+weights/
+pipeline/weights/
+
 # === Geospatial data (large binaries) ===
 *.tif
 *.tiff
 *.pmtiles
+data/cache/
 
 # === OS ===
 .DS_Store

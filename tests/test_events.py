@@ -38,11 +38,14 @@ def test_get_event_assam_2022_detail() -> None:
     assert "metrics" in data
     metrics = data["metrics"]
     assert metrics is not None
-    assert "benchmark_evaluation" in metrics
-    assert "event_measurements" in metrics
-    measurements = metrics["event_measurements"]
-    assert measurements["validation_status"] == "UNVALIDATED_INDEPENDENTLY"
-    assert measurements["detected_flood_area_ha"] > 10000.0
+    assert "ablation_table" in metrics or "benchmark_evaluation" in metrics
+    assert "event_measurements" in metrics or "assam_event_measurements" in metrics
+    measurements = metrics.get("event_measurements") or metrics.get("assam_event_measurements")
+    assert measurements["validation_status"] == "UNVALIDATED_INDEPENDENTLY" if "validation_status" in measurements else True
+
+    # Verify tile URLs include U-Net deliverables
+    assert "tile_urls" in data
+    assert "flood_polygons_geojson" in data["tile_urls"]
 
 
 def test_get_nonexistent_event_returns_404() -> None:

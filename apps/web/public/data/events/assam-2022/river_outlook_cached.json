@@ -1,0 +1,72 @@
+{
+  "river_name": "Barak River",
+  "station_location": "Silchar / Cachar, Assam",
+  "coordinates": [
+    92.8,
+    24.825
+  ],
+  "elevation_m": 27.0,
+  "model_source": "ECMWF GloFAS v4.0 via Open-Meteo Flood API",
+  "layer_provenance": "REAL (modelled, GloFAS-derived)",
+  "fetch_timestamp": "2026-11-21T17:46:37.190347+00:00",
+  "source_mode": "live",
+  "units": {
+    "river_discharge": "m\u00b3/s"
+  },
+  "current_discharge_m3s": 499.0,
+  "peak_forecast_discharge_m3s": 503.7,
+  "trend": "stable",
+  "flood_severity": "moderate",
+  "daily_forecast": [
+    {
+      "date": "2026-11-21",
+      "discharge_m3s": 499.0,
+      "mean_m3s": 499.9,
+      "max_m3s": 502.5,
+      "min_m3s": 499.0
+    },
+    {
+      "date": "2026-11-22",
+      "discharge_m3s": 493.3,
+      "mean_m3s": 493.7,
+      "max_m3s": 495.6,
+      "min_m3s": 492.2
+    },
+    {
+      "date": "2026-11-23",
+      "discharge_m3s": 492.2,
+      "mean_m3s": 492.1,
+      "max_m3s": 496.7,
+      "min_m3s": 488.8
+    },
+    {
+      "date": "2026-11-24",
+      "discharge_m3s": 489.9,
+      "mean_m3s": 491.6,
+      "max_m3s": 502.5,
+      "min_m3s": 484.3
+    },
+    {
+      "date": "2026-11-25",
+      "discharge_m3s": 486.5,
+      "mean_m3s": 488.0,
+      "max_m3s": 503.7,
+      "min_m3s": 478.7
+    },
+    {
+      "date": "2026-11-26",
+      "discharge_m3s": 480.9,
+      "mean_m3s": 482.5,
+      "max_m3s": 501.3,
+      "min_m3s": 471.1
+    },
+    {
+      "date": "2026-11-27",
+      "discharge_m3s": 474.3,
+      "mean_m3s": 475.6,
+      "max_m3s": 493.3,
+      "min_m3s": 464.6
+    }
+  ],
+  "disclaimer": "GloFAS river discharge values are global hydrological model outputs forced by numerical weather predictions. Useful for regional trend and timing outlook, but not equivalent to in-situ gauge measurements."
+}

@@ -1,0 +1,652 @@
+{
+  "type": "FeatureCollection",
+  "name": "cachar_shelters_and_facilities",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "fac_node_3921072129",
+      "properties": {
+        "shelter_id": "fac_node_3921072129",
+        "name": "Valley Hospital",
+        "facility_type": "Hospital",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.795832,
+          24.783285
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_3921072130",
+      "properties": {
+        "shelter_id": "fac_node_3921072130",
+        "name": "South City Hospital, Cachar",
+        "facility_type": "Hospital",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.7955799,
+          24.7856047
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_3921072158",
+      "properties": {
+        "shelter_id": "fac_node_3921072158",
+        "name": "Nightingale Hospital",
+        "facility_type": "Hospital",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.7928722,
+          24.793674
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_3921072159",
+      "properties": {
+        "shelter_id": "fac_node_3921072159",
+        "name": "Medinova",
+        "facility_type": "Hospital",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.7912446,
+          24.7921663
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_3921099864",
+      "properties": {
+        "shelter_id": "fac_node_3921099864",
+        "name": "Collegiate School",
+        "facility_type": "School",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.7914293,
+          24.8232838
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_6913293253",
+      "properties": {
+        "shelter_id": "fac_node_6913293253",
+        "name": "R . E. Nursing Home and Diagnostic",
+        "facility_type": "Clinic",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.7932404,
+          24.7785852
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_6913293268",
+      "properties": {
+        "shelter_id": "fac_node_6913293268",
+        "name": "Life Line Hospital, Cachar",
+        "facility_type": "Hospital",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.7950697,
+          24.8078658
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_7540578842",
+      "properties": {
+        "shelter_id": "fac_node_7540578842",
+        "name": "Skin Care Clinic, Silchar",
+        "facility_type": "Clinic",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.795703,
+          24.819358
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_7540578848",
+      "properties": {
+        "shelter_id": "fac_node_7540578848",
+        "name": "Clinicare Diagnostic Centre",
+        "facility_type": "Clinic",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.7974973,
+          24.8109641
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_7540578851",
+      "properties": {
+        "shelter_id": "fac_node_7540578851",
+        "name": "Cure Up Physiotherapy Clinic",
+        "facility_type": "Clinic",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.7999839,
+          24.8064948
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_7540578942",
+      "properties": {
+        "shelter_id": "fac_node_7540578942",
+        "name": "Choudhury Eye Clinic",
+        "facility_type": "Clinic",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.7975197,
+          24.8235287
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_7540578953",
+      "properties": {
+        "shelter_id": "fac_node_7540578953",
+        "name": "Binode Doctor's Clinic",
+        "facility_type": "Clinic",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.787211,
+          24.819011
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_7540578957",
+      "properties": {
+        "shelter_id": "fac_node_7540578957",
+        "name": "Heart Care",
+        "facility_type": "Clinic",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.7924278,
+          24.7972471
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_7150731730",
+      "properties": {
+        "shelter_id": "fac_node_7150731730",
+        "name": "SHC, Sonabarighat",
+        "facility_type": "Clinic",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.83407,
+          24.75605
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_7540578864",
+      "properties": {
+        "shelter_id": "fac_node_7540578864",
+        "name": "Dr. Nandi Clinic",
+        "facility_type": "Clinic",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.8006222,
+          24.8159935
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_7540578898",
+      "properties": {
+        "shelter_id": "fac_node_7540578898",
+        "name": "Dr.Rajdeep Roy",
+        "facility_type": "Health Centre",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.8017457,
+          24.8163279
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_7540578919",
+      "properties": {
+        "shelter_id": "fac_node_7540578919",
+        "name": "Chiranjib Clinic",
+        "facility_type": "Clinic",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.8358436,
+          24.7530205
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_3921097957",
+      "properties": {
+        "shelter_id": "fac_node_3921097957",
+        "name": "Cachar College",
+        "facility_type": "College / Shelter",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.7993703,
+          24.8315775
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_6913293263",
+      "properties": {
+        "shelter_id": "fac_node_6913293263",
+        "name": "Lions Eye Hospital, Cachar",
+        "facility_type": "Hospital",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.793007,
+          24.82903
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_3914776958",
+      "properties": {
+        "shelter_id": "fac_node_3914776958",
+        "name": "Cachar Club",
+        "facility_type": "Community Centre",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.8000016,
+          24.8291941
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_3914776960",
+      "properties": {
+        "shelter_id": "fac_node_3914776960",
+        "name": "Mawsumi Hospital",
+        "facility_type": "Hospital",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.800264,
+          24.83185
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_6913293258",
+      "properties": {
+        "shelter_id": "fac_node_6913293258",
+        "name": "Kay Cee Clinic and Nursing Home",
+        "facility_type": "Clinic",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.8016491,
+          24.8259318
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_node_7150731704",
+      "properties": {
+        "shelter_id": "fac_node_7150731704",
+        "name": "BPHC, Udharbond",
+        "facility_type": "Clinic",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.8855927,
+          24.8874935
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_way_361827963",
+      "properties": {
+        "shelter_id": "fac_way_361827963",
+        "name": "Campus #361827963",
+        "facility_type": "School",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.78693984678543,
+          24.754989361814726
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_way_388101403",
+      "properties": {
+        "shelter_id": "fac_way_388101403",
+        "name": "Silchar Civil Hospital",
+        "facility_type": "Hospital",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.79800389194058,
+          24.81819759168044
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_way_388929567",
+      "properties": {
+        "shelter_id": "fac_way_388929567",
+        "name": "Silchar Medical College and Hospital",
+        "facility_type": "Hospital",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.79722748344888,
+          24.7751095357947
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_way_388929568",
+      "properties": {
+        "shelter_id": "fac_way_388929568",
+        "name": "Silchar Polytechnique",
+        "facility_type": "College / Shelter",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.79447097736323,
+          24.786454292691595
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_way_388929569",
+      "properties": {
+        "shelter_id": "fac_way_388929569",
+        "name": "Silchar Cancer Hopspital",
+        "facility_type": "Hospital",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.79735868410695,
+          24.78878399935052
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_way_388930258",
+      "properties": {
+        "shelter_id": "fac_way_388930258",
+        "name": "Holy Cross School",
+        "facility_type": "School",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.79877940029982,
+          24.80735010204309
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_way_388930395",
+      "properties": {
+        "shelter_id": "fac_way_388930395",
+        "name": "Oriental School",
+        "facility_type": "School",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.79545223674718,
+          24.822152971499687
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_way_388264990",
+      "properties": {
+        "shelter_id": "fac_way_388264990",
+        "name": "Govt Boys HS School",
+        "facility_type": "School",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.80294449941718,
+          24.827252553901786
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "fac_way_388932225",
+      "properties": {
+        "shelter_id": "fac_way_388932225",
+        "name": "Mediland Hospital and Research Centre",
+        "facility_type": "Hospital",
+        "is_safe": true,
+        "is_flooded": false,
+        "status": "SAFE",
+        "layer": "REAL (OpenStreetMap Facilities)"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          92.80213390935751,
+          24.836735558417132
+        ]
+      }
+    }
+  ]
+}

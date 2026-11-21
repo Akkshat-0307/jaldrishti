@@ -5,13 +5,28 @@ import * as maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Badge } from "@/components/ui/Badge";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Eye, EyeOff } from "lucide-react";
+import {
+  Eye,
+  EyeOff,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 
 interface FloodMapProps {
-  geojsonUrl?: string;
+  initialModel?: "tier_a" | "unet" | "whatif";
+  selectedZoneId?: string | null;
+  onSelectZone?: (zoneId: string | null) => void;
+  routeGeojson?: GeoJSON.FeatureCollection | null;
+  whatifGeojsonUrl?: string | null;
+  whatifAreaHa?: number | null;
+  robustCutoffsOnly?: boolean;
 }
 
-// Free dark basemap style with fallback
+const EMPTY_GEOJSON: GeoJSON.FeatureCollection = {
+  type: "FeatureCollection",
+  features: [],
+};
+
 const DARK_STYLE: maplibregl.StyleSpecification = {
   version: 8,
   sources: {
@@ -37,26 +52,79 @@ const DARK_STYLE: maplibregl.StyleSpecification = {
   ],
 };
 
+interface FeatureProperties {
+  zone_id?: string;
+  name?: string;
+  isolated?: boolean;
+  priority_score?: number;
+  population?: number;
+  population_exposed?: number;
+  flooded_area_ha?: number;
+  flooded_fraction?: number | string;
+  roads_cut_km?: number;
+  safe_shelter_distance_km?: number;
+  facility_type?: string;
+  status?: string;
+  is_safe?: boolean;
+  highway?: string;
+  is_cut?: boolean;
+  [key: string]: unknown;
+}
+
 export default function FloodMap({
-  geojsonUrl = "/data/events/assam-2022/flood_polygons.geojson",
+  initialModel = "unet",
+  selectedZoneId = null,
+  onSelectZone,
+  routeGeojson = null,
+  whatifGeojsonUrl = null,
+  whatifAreaHa = null,
+  robustCutoffsOnly = false,
 }: FloodMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
 
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [selectedModel, setSelectedModel] = useState<"tier_a" | "unet" | "whatif">(initialModel);
+  const [showConfidence, setShowConfidence] = useState<boolean>(false);
   const [layerVisible, setLayerVisible] = useState(true);
+  const [showZones, setShowZones] = useState(true);
+  const [showRoads, setShowRoads] = useState(true);
+  const [showShelters, setShowShelters] = useState(true);
   const [opacity, setOpacity] = useState(0.7);
-  const [selectedPolygon, setSelectedPolygon] = useState<{
-    id: string | number;
-    area_ha: number;
-    area_km2: number;
-    layer: string;
+
+  const [selectedFeature, setSelectedFeature] = useState<{
+    type: "zone" | "shelter" | "road";
+    title: string;
+    properties: FeatureProperties;
   } | null>(null);
+
+  // Sync routeGeojson when passed externally
+  useEffect(() => {
+    if (!mapRef.current || !mapLoaded) return;
+    const map = mapRef.current;
+    const source = map.getSource("active-route") as maplibregl.GeoJSONSource | undefined;
+    if (source) {
+      source.setData(routeGeojson || EMPTY_GEOJSON);
+    }
+  }, [routeGeojson, mapLoaded]);
+
+  // Sync selectedZoneId with map highlight when changed externally
+  useEffect(() => {
+    if (!mapRef.current || !mapLoaded || !selectedZoneId) return;
+    const map = mapRef.current;
+    if (map.getLayer("zones-fill")) {
+      map.setPaintProperty("zones-outline", "line-width", [
+        "case",
+        ["==", ["get", "zone_id"], selectedZoneId],
+        2.5,
+        1.2,
+      ]);
+    }
+  }, [selectedZoneId, mapLoaded]);
 
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    // Center on Silchar, Cachar district, Assam (Lon: 92.80, Lat: 24.83)
     const map = new maplibregl.Map({
       container: mapContainerRef.current,
       style: DARK_STYLE,
@@ -71,180 +139,644 @@ export default function FloodMap({
     map.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-left");
 
     map.on("load", () => {
-      // Add flood polygons GeoJSON source
-      map.addSource("assam-flood-polygons", {
+      // 1. Flood polygons sources
+      map.addSource("tier-a-polygons", {
         type: "geojson",
-        data: geojsonUrl,
+        data: "/data/events/assam-2022/flood_polygons.geojson",
       });
 
-      // Fill layer
+      map.addSource("unet-polygons", {
+        type: "geojson",
+        data: "/data/events/assam-2022/flood_polygons_unet.geojson",
+      });
+
+      map.addSource("whatif-polygons", {
+        type: "geojson",
+        data: "/data/events/assam-2022/scenarios/scenario_p00.geojson",
+      });
+
+      // 2. Phase 3 Sources (Settlement Zones, Roads, Shelters)
+      map.addSource("settlement-zones", {
+        type: "geojson",
+        data: "/data/events/assam-2022/villages.geojson",
+      });
+
+      map.addSource("roads-network", {
+        type: "geojson",
+        data: "/data/events/assam-2022/roads.geojson",
+      });
+
+      map.addSource("shelters-facilities", {
+        type: "geojson",
+        data: "/data/events/assam-2022/shelters.geojson",
+      });
+
+      // Layer: Settlement Zones Fill (Priority choropleth)
       map.addLayer({
-        id: "flood-fill",
+        id: "zones-fill",
         type: "fill",
-        source: "assam-flood-polygons",
+        source: "settlement-zones",
         paint: {
-          "fill-color": "#3B82F6",
-          "fill-opacity": 0.7,
+          "fill-color": [
+            "interpolate",
+            ["linear"],
+            ["get", "priority_score"],
+            10, "#10B981",
+            30, "#FBBF24",
+            50, "#F97316",
+            70, "#EF4444",
+          ],
+          "fill-opacity": 0.25,
         },
       });
 
-      // Outline stroke layer
+      // Layer: Settlement Zones Boundaries
       map.addLayer({
-        id: "flood-outline",
+        id: "zones-outline",
         type: "line",
-        source: "assam-flood-polygons",
+        source: "settlement-zones",
         paint: {
-          "line-color": "#22D3EE",
+          "line-color": "#38BDF8",
+          "line-width": 1.2,
+          "line-opacity": 0.6,
+        },
+      });
+
+      // Layer: Cut-off zones highlighted boundary
+      map.addLayer({
+        id: "zones-cutoff-ring",
+        type: "line",
+        source: "settlement-zones",
+        filter: ["==", ["get", "isolated"], true],
+        paint: {
+          "line-color": "#EF4444",
+          "line-width": 2.5,
+          "line-dasharray": [2, 2],
+          "line-opacity": 0.9,
+        },
+      });
+
+      // Layer: Tier A Fill
+      map.addLayer({
+        id: "tier-a-fill",
+        type: "fill",
+        source: "tier-a-polygons",
+        paint: {
+          "fill-color": "#3B82F6",
+          "fill-opacity": 0.65,
+        },
+      });
+
+      // Layer: Tier A Line
+      map.addLayer({
+        id: "tier-a-outline",
+        type: "line",
+        source: "tier-a-polygons",
+        paint: {
+          "line-color": "#60A5FA",
+          "line-width": 1.0,
+          "line-opacity": 0.8,
+        },
+      });
+
+      // Layer: U-Net Fill
+      map.addLayer({
+        id: "unet-fill",
+        type: "fill",
+        source: "unet-polygons",
+        paint: {
+          "fill-color": "#10B981",
+          "fill-opacity": 0.65,
+        },
+      });
+
+      // Layer: U-Net Line
+      map.addLayer({
+        id: "unet-outline",
+        type: "line",
+        source: "unet-polygons",
+        paint: {
+          "line-color": "#34D399",
           "line-width": 1.2,
           "line-opacity": 0.85,
         },
       });
 
-      // Click interaction
-      map.on("click", "flood-fill", (e) => {
-        if (!e.features || e.features.length === 0) return;
-        const feature = e.features[0];
-        const props = feature.properties || {};
+      // Layer: What-If Scenario Fill (Purple)
+      map.addLayer({
+        id: "whatif-fill",
+        type: "fill",
+        source: "whatif-polygons",
+        paint: {
+          "fill-color": "#8B5CF6",
+          "fill-opacity": 0.65,
+        },
+      });
 
-        setSelectedPolygon({
-          id: props.polygon_id || feature.id || "Unknown",
-          area_ha: parseFloat(props.area_ha || "0"),
-          area_km2: parseFloat(props.area_km2 || "0"),
-          layer: props.layer || "DERIVED",
+      // Layer: What-If Scenario Line
+      map.addLayer({
+        id: "whatif-outline",
+        type: "line",
+        source: "whatif-polygons",
+        paint: {
+          "line-color": "#A78BFA",
+          "line-width": 1.2,
+          "line-opacity": 0.85,
+        },
+      });
+
+      // Layer: Roads Network (Drivable Roads)
+      map.addLayer({
+        id: "roads-lines",
+        type: "line",
+        source: "roads-network",
+        paint: {
+          "line-color": [
+            "case",
+            ["==", ["get", "is_cut"], true],
+            "#EF4444", // Cut road segments in bright red
+            "#64748B", // Intact dry roads in slate
+          ],
+          "line-width": [
+            "case",
+            ["==", ["get", "is_cut"], true],
+            2.0,
+            1.0,
+          ],
+          "line-opacity": 0.8,
+        },
+      });
+
+      // Layer: Shelters & Facilities (Point circles)
+      map.addLayer({
+        id: "shelters-points",
+        type: "circle",
+        source: "shelters-facilities",
+        paint: {
+          "circle-color": [
+            "case",
+            ["==", ["get", "is_safe"], true],
+            "#10B981", // Safe shelter in green
+            "#EF4444", // Flooded facility in red
+          ],
+          "circle-radius": 5.5,
+          "circle-stroke-color": "#FFFFFF",
+          "circle-stroke-width": 1.5,
+          "circle-opacity": 0.95,
+        },
+      });
+
+      // 3. Active Evacuation Route & Staging Vector Source
+      map.addSource("active-route", {
+        type: "geojson",
+        data: EMPTY_GEOJSON,
+      });
+
+      // Primary Route Glow
+      map.addLayer({
+        id: "route-primary-glow",
+        type: "line",
+        source: "active-route",
+        filter: ["==", ["get", "route_type"], "primary"],
+        paint: {
+          "line-color": "#06B6D4",
+          "line-width": 6,
+          "line-opacity": 0.45,
+        },
+      });
+
+      // Primary Route Line
+      map.addLayer({
+        id: "route-primary-line",
+        type: "line",
+        source: "active-route",
+        filter: ["==", ["get", "route_type"], "primary"],
+        paint: {
+          "line-color": "#22D3EE",
+          "line-width": 3.5,
+          "line-opacity": 0.95,
+        },
+      });
+
+      // Alternate Route Line
+      map.addLayer({
+        id: "route-alternate-line",
+        type: "line",
+        source: "active-route",
+        filter: ["==", ["get", "route_type"], "alternate"],
+        paint: {
+          "line-color": "#F59E0B",
+          "line-width": 2.5,
+          "line-dasharray": [3, 2],
+          "line-opacity": 0.9,
+        },
+      });
+
+      // Boat / Air Staging Transfer Vector
+      map.addLayer({
+        id: "route-staging-vector",
+        type: "line",
+        source: "active-route",
+        filter: ["==", ["get", "id"], "staging_transfer_vector"],
+        paint: {
+          "line-color": "#EC4899",
+          "line-width": 3,
+          "line-dasharray": [2, 2],
+          "line-opacity": 0.95,
+        },
+      });
+
+      // Staging and Safe Highway Landing Points
+      map.addLayer({
+        id: "route-staging-points",
+        type: "circle",
+        source: "active-route",
+        filter: ["==", ["geometry-type"], "Point"],
+        paint: {
+          "circle-color": "#EC4899",
+          "circle-radius": 6.5,
+          "circle-stroke-color": "#FFFFFF",
+          "circle-stroke-width": 2,
+          "circle-opacity": 0.95,
+        },
+      });
+
+      // Interactions: Click on Zone
+      map.on("click", "zones-fill", (e) => {
+        if (!e.features || e.features.length === 0) return;
+        const f = e.features[0];
+        const props = f.properties || {};
+        setSelectedFeature({
+          type: "zone",
+          title: `Zone: ${props.name || props.zone_id}`,
+          properties: props,
+        });
+        if (onSelectZone && props.zone_id) {
+          onSelectZone(props.zone_id);
+        }
+      });
+
+      // Click on Shelter
+      map.on("click", "shelters-points", (e) => {
+        if (!e.features || e.features.length === 0) return;
+        const f = e.features[0];
+        const props = f.properties || {};
+        setSelectedFeature({
+          type: "shelter",
+          title: props.name || "Shelter Facility",
+          properties: props,
         });
       });
 
-      // Cursor change
-      map.on("mouseenter", "flood-fill", () => {
-        map.getCanvas().style.cursor = "pointer";
+      // Click on Road
+      map.on("click", "roads-lines", (e) => {
+        if (!e.features || e.features.length === 0) return;
+        const f = e.features[0];
+        const props = f.properties || {};
+        setSelectedFeature({
+          type: "road",
+          title: props.name || "Road Segment",
+          properties: props,
+        });
       });
-      map.on("mouseleave", "flood-fill", () => {
-        map.getCanvas().style.cursor = "";
-      });
+
+      // Cursor states
+      const setPointer = () => { map.getCanvas().style.cursor = "pointer"; };
+      const resetPointer = () => { map.getCanvas().style.cursor = ""; };
+      map.on("mouseenter", "zones-fill", setPointer);
+      map.on("mouseleave", "zones-fill", resetPointer);
+      map.on("mouseenter", "shelters-points", setPointer);
+      map.on("mouseleave", "shelters-points", resetPointer);
+      map.on("mouseenter", "roads-lines", setPointer);
+      map.on("mouseleave", "roads-lines", resetPointer);
 
       setMapLoaded(true);
     });
 
     mapRef.current = map;
-
     return () => {
       map.remove();
       mapRef.current = null;
     };
-  }, [geojsonUrl]);
+  }, [onSelectZone]);
 
-  // Update visibility
+  // Sync initialModel if changed externally
+  useEffect(() => {
+    if (initialModel) {
+      setSelectedModel(initialModel);
+    }
+  }, [initialModel]);
+
+  // Sync whatifGeojsonUrl when changed externally
+  useEffect(() => {
+    if (!mapRef.current || !mapLoaded || !whatifGeojsonUrl) return;
+    const map = mapRef.current;
+    const source = map.getSource("whatif-polygons") as maplibregl.GeoJSONSource | undefined;
+    if (source) {
+      source.setData(whatifGeojsonUrl);
+    }
+  }, [whatifGeojsonUrl, mapLoaded]);
+
+  // Filter cut-off rings when robustCutoffsOnly toggles
   useEffect(() => {
     if (!mapRef.current || !mapLoaded) return;
-    const visibility = layerVisible ? "visible" : "none";
-    if (mapRef.current.getLayer("flood-fill")) {
-      mapRef.current.setLayoutProperty("flood-fill", "visibility", visibility);
+    const map = mapRef.current;
+    if (map.getLayer("zones-cutoff-ring")) {
+      if (robustCutoffsOnly) {
+        map.setFilter("zones-cutoff-ring", [
+          "all",
+          ["==", ["get", "isolated"], true],
+          ["!=", ["get", "touches_window_edge"], true],
+          ["!=", ["get", "is_on_boundary_edge"], true],
+        ]);
+      } else {
+        map.setFilter("zones-cutoff-ring", ["==", ["get", "isolated"], true]);
+      }
     }
-    if (mapRef.current.getLayer("flood-outline")) {
-      mapRef.current.setLayoutProperty("flood-outline", "visibility", visibility);
-    }
-  }, [layerVisible, mapLoaded]);
+  }, [robustCutoffsOnly, mapLoaded]);
 
-  // Update opacity
+  // Update layer visibility
   useEffect(() => {
     if (!mapRef.current || !mapLoaded) return;
-    if (mapRef.current.getLayer("flood-fill")) {
-      mapRef.current.setPaintProperty("flood-fill", "fill-opacity", opacity);
+    const map = mapRef.current;
+
+    const tierAVis = layerVisible && selectedModel === "tier_a" ? "visible" : "none";
+    const unetVis = layerVisible && selectedModel === "unet" ? "visible" : "none";
+    const whatifVis = layerVisible && selectedModel === "whatif" ? "visible" : "none";
+
+    if (map.getLayer("tier-a-fill")) {
+      map.setLayoutProperty("tier-a-fill", "visibility", tierAVis);
+      map.setLayoutProperty("tier-a-outline", "visibility", tierAVis);
+      map.setPaintProperty("tier-a-fill", "fill-opacity", opacity);
     }
-  }, [opacity, mapLoaded]);
+
+    if (map.getLayer("unet-fill")) {
+      map.setLayoutProperty("unet-fill", "visibility", unetVis);
+      map.setLayoutProperty("unet-outline", "visibility", unetVis);
+      const fillColor = showConfidence ? "#06B6D4" : "#10B981";
+      map.setPaintProperty("unet-fill", "fill-color", fillColor);
+      map.setPaintProperty("unet-fill", "fill-opacity", showConfidence ? opacity * 0.9 : opacity);
+    }
+
+    if (map.getLayer("whatif-fill")) {
+      map.setLayoutProperty("whatif-fill", "visibility", whatifVis);
+      map.setLayoutProperty("whatif-outline", "visibility", whatifVis);
+      map.setPaintProperty("whatif-fill", "fill-opacity", opacity);
+    }
+
+    const zonesVis = showZones ? "visible" : "none";
+    if (map.getLayer("zones-fill")) {
+      map.setLayoutProperty("zones-fill", "visibility", zonesVis);
+      map.setLayoutProperty("zones-outline", "visibility", zonesVis);
+      map.setLayoutProperty("zones-cutoff-ring", "visibility", zonesVis);
+    }
+
+    const roadsVis = showRoads ? "visible" : "none";
+    if (map.getLayer("roads-lines")) {
+      map.setLayoutProperty("roads-lines", "visibility", roadsVis);
+    }
+
+    const sheltersVis = showShelters ? "visible" : "none";
+    if (map.getLayer("shelters-points")) {
+      map.setLayoutProperty("shelters-points", "visibility", sheltersVis);
+    }
+  }, [selectedModel, showConfidence, layerVisible, showZones, showRoads, showShelters, opacity, mapLoaded]);
 
   return (
     <div className="relative w-full h-[650px] rounded-2xl overflow-hidden border border-white/10 bg-space-950 shadow-2xl">
-      {/* MapLibre DOM element */}
       <div ref={mapContainerRef} className="w-full h-full" />
 
-      {/* Floating Header Card */}
+      {/* Floating Header Card (Top Left) */}
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-2 max-w-md">
-        <GlassCard className="p-4 space-y-2 backdrop-blur-md">
+        <GlassCard className="p-4 space-y-3 backdrop-blur-md">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <span className="w-2.5 h-2.5 rounded-full bg-aurora-400 animate-pulse" />
               <h3 className="font-heading font-semibold text-white text-sm">
-                Cachar / Silchar Flood Extent
+                Cachar Flood Extent & Impact
               </h3>
             </div>
             <div className="flex gap-1">
-              <Badge variant="real">S1 SAR</Badge>
-              <Badge variant="derived">Tier A Baseline</Badge>
+              <Badge variant="real">Sentinel-1</Badge>
+              <Badge variant="derived">
+                {selectedModel === "unet"
+                  ? "U-Net ResNet34"
+                  : selectedModel === "tier_a"
+                  ? "Tier A"
+                  : "HAND What-If"}
+              </Badge>
             </div>
           </div>
 
-          <p className="text-xs text-slate-300">
-            Acquisition: Sentinel-1 IW GRD (2022-06-18) vs Baseline (2022-05-01).
-            Processed with median speckle filter, change thresholding, Otsu, and HAND terrain gating.
-          </p>
+          {/* Model Toggle Buttons */}
+          <div className="grid grid-cols-3 gap-1 p-1 bg-space-950/80 rounded-lg border border-white/10 text-xs font-mono">
+            <button
+              onClick={() => setSelectedModel("unet")}
+              className={`flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-md transition-all cursor-pointer text-[11px] ${
+                selectedModel === "unet"
+                  ? "bg-aurora-500/20 text-aurora-300 font-bold border border-aurora-500/30"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <Sparkles className="w-3 h-3 shrink-0" />
+              <span>U-Net</span>
+            </button>
+            <button
+              onClick={() => setSelectedModel("tier_a")}
+              className={`flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-md transition-all cursor-pointer text-[11px] ${
+                selectedModel === "tier_a"
+                  ? "bg-blue-500/20 text-blue-300 font-bold border border-blue-500/30"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <ShieldCheck className="w-3 h-3 shrink-0" />
+              <span>Tier A</span>
+            </button>
+            <button
+              onClick={() => setSelectedModel("whatif")}
+              className={`flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-md transition-all cursor-pointer text-[11px] ${
+                selectedModel === "whatif"
+                  ? "bg-purple-500/20 text-purple-300 font-bold border border-purple-500/30"
+                  : "text-slate-400 hover:text-white"
+              }`}
+            >
+              <span className="w-2 h-2 rounded-full bg-purple-400 shrink-0" />
+              <span>What-If</span>
+            </button>
+          </div>
 
           <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/10 text-xs font-mono">
             <div>
               <span className="text-slate-400 block">Flooded Area</span>
-              <span className="text-aurora-400 font-bold text-sm">126.17 km²</span>
-              <span className="text-[10px] text-slate-500 block">(12,617 ha in UTM-46N)</span>
+              <span
+                className={`font-bold text-sm ${
+                  selectedModel === "unet"
+                    ? "text-aurora-400"
+                    : selectedModel === "tier_a"
+                    ? "text-blue-400"
+                    : "text-purple-400"
+                }`}
+              >
+                {selectedModel === "unet"
+                  ? "99.76 km²"
+                  : selectedModel === "tier_a"
+                  ? "126.17 km²"
+                  : whatifAreaHa
+                  ? `${(whatifAreaHa / 100.0).toFixed(2)} km²`
+                  : "193.27 km²"}
+              </span>
+              <span className="text-[10px] text-slate-500 block">
+                {selectedModel === "unet"
+                  ? "(9,976 ha in UTM-46N)"
+                  : selectedModel === "tier_a"
+                  ? "(12,617 ha in UTM-46N)"
+                  : whatifAreaHa
+                  ? `(${whatifAreaHa.toLocaleString()} ha in UTM-46N)`
+                  : "(19,327 ha in UTM-46N)"}
+              </span>
             </div>
             <div>
-              <span className="text-slate-400 block">Detected Blobs</span>
-              <span className="text-white font-bold text-sm">680 Polygons</span>
-              <span className="text-[10px] text-slate-500 block">(&gt; 0.5 ha filter)</span>
+              <span className="text-slate-400 block">Layer Mode</span>
+              <span className="text-white font-bold text-sm">
+                {selectedModel === "unet"
+                  ? "Observed SAR"
+                  : selectedModel === "tier_a"
+                  ? "Otsu Baseline"
+                  : "HAND Scenario"}
+              </span>
+              <span className="text-[10px] text-slate-500 block">
+                {selectedModel === "whatif" ? "Hydrological Stage" : "(> 0.5 ha filter)"}
+              </span>
             </div>
           </div>
         </GlassCard>
 
-        {/* Selected Polygon Inspector */}
-        {selectedPolygon && (
-          <GlassCard className="p-3 bg-space-900/90 border-aurora-400/40 text-xs space-y-1">
+        {/* Selected Feature Inspector */}
+        {selectedFeature && (
+          <GlassCard className="p-3 bg-space-900/95 border-aurora-400/40 text-xs space-y-1.5 backdrop-blur-md max-w-sm">
             <div className="flex justify-between items-center">
-              <span className="font-mono text-aurora-400 font-semibold">
-                Polygon #{selectedPolygon.id}
+              <span className="font-mono text-aurora-400 font-semibold truncate">
+                {selectedFeature.title}
               </span>
-              <Badge variant="derived">{selectedPolygon.layer}</Badge>
+              {selectedFeature.type === "zone" && (
+                <Badge variant={selectedFeature.properties.isolated ? "simulated" : "real"}>
+                  {selectedFeature.properties.isolated ? "CUT OFF" : "CONNECTED"}
+                </Badge>
+              )}
             </div>
-            <div className="grid grid-cols-2 gap-2 pt-1 font-mono">
-              <div>
-                <span className="text-slate-400">Area: </span>
-                <span className="text-white font-bold">{selectedPolygon.area_ha.toFixed(2)} ha</span>
+
+            {selectedFeature.type === "zone" && (
+              <div className="space-y-1 font-mono text-[11px] pt-1">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Priority Score:</span>
+                  <span className="text-amber-400 font-bold">{selectedFeature.properties.priority_score} / 100</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Population (Exposed):</span>
+                  <span className="text-white font-bold">
+                    {selectedFeature.properties.population_exposed} / {selectedFeature.properties.population}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Flooded Area:</span>
+                  <span className="text-white font-bold">
+                    {selectedFeature.properties.flooded_area_ha} ha ({(parseFloat(String(selectedFeature.properties.flooded_fraction || 0)) * 100).toFixed(1)}%)
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Roads Cut:</span>
+                  <span className="text-red-400 font-bold">{selectedFeature.properties.roads_cut_km} km</span>
+                </div>
+                {selectedFeature.properties.safe_shelter_distance_km && (
+                  <div className="flex justify-between pt-0.5 border-t border-white/10 text-[10px]">
+                    <span className="text-slate-400">Nearest Safe Shelter:</span>
+                    <span className="text-safe-400">{selectedFeature.properties.safe_shelter_distance_km} km</span>
+                  </div>
+                )}
               </div>
-              <div>
-                <span className="text-slate-400">Extent: </span>
-                <span className="text-white font-bold">{selectedPolygon.area_km2.toFixed(3)} km²</span>
+            )}
+
+            {selectedFeature.type === "shelter" && (
+              <div className="space-y-1 font-mono text-[11px] pt-1">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Type:</span>
+                  <span className="text-white">{selectedFeature.properties.facility_type}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Status:</span>
+                  <span className={selectedFeature.properties.is_safe ? "text-safe-400 font-bold" : "text-red-400 font-bold"}>
+                    {selectedFeature.properties.status}
+                  </span>
+                </div>
               </div>
-            </div>
-            <p className="text-[10px] text-slate-400 pt-1">
-              Area calculated in projected UTM Zone 46N (EPSG:32646).
-            </p>
+            )}
+
+            {selectedFeature.type === "road" && (
+              <div className="space-y-1 font-mono text-[11px] pt-1">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Highway Class:</span>
+                  <span className="text-white capitalize">{selectedFeature.properties.highway}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Segment Status:</span>
+                  <span className={selectedFeature.properties.is_cut ? "text-red-400 font-bold" : "text-safe-400"}>
+                    {selectedFeature.properties.is_cut ? "FLOOD CUT (Inundated)" : "DRY (Passable)"}
+                  </span>
+                </div>
+              </div>
+            )}
           </GlassCard>
         )}
       </div>
 
       {/* Floating Layer Controls (Bottom Right) */}
-      <div className="absolute bottom-4 right-4 z-10">
-        <GlassCard className="p-3 flex items-center gap-3 backdrop-blur-md">
+      <div className="absolute bottom-4 right-4 z-10 flex flex-col items-end gap-2">
+        <GlassCard className="p-3 flex items-center gap-2 backdrop-blur-md text-xs font-mono">
+          <button
+            onClick={() => setShowZones(!showZones)}
+            className={`px-2 py-1 rounded border transition-all cursor-pointer ${
+              showZones ? "bg-amber-500/20 text-amber-300 border-amber-500/30" : "bg-white/5 text-slate-400 border-white/10"
+            }`}
+          >
+            Zones
+          </button>
+          <button
+            onClick={() => setShowRoads(!showRoads)}
+            className={`px-2 py-1 rounded border transition-all cursor-pointer ${
+              showRoads ? "bg-red-500/20 text-red-300 border-red-500/30" : "bg-white/5 text-slate-400 border-white/10"
+            }`}
+          >
+            Roads
+          </button>
+          <button
+            onClick={() => setShowShelters(!showShelters)}
+            className={`px-2 py-1 rounded border transition-all cursor-pointer ${
+              showShelters ? "bg-safe-500/20 text-safe-300 border-safe-500/30" : "bg-white/5 text-slate-400 border-white/10"
+            }`}
+          >
+            Shelters
+          </button>
+          <button
+            onClick={() => setShowConfidence(!showConfidence)}
+            className={`px-2 py-1 rounded border transition-all cursor-pointer ${
+              showConfidence ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/30" : "bg-white/5 text-slate-400 border-white/10"
+            }`}
+          >
+            Confidence
+          </button>
+          <button
+            onClick={() => setOpacity((prev) => (prev >= 0.85 ? 0.35 : prev + 0.25))}
+            className="px-2 py-1 rounded bg-white/5 border border-white/10 text-slate-400 hover:text-white cursor-pointer"
+          >
+            Opacity {Math.round(opacity * 100)}%
+          </button>
           <button
             onClick={() => setLayerVisible(!layerVisible)}
-            className="flex items-center gap-1.5 text-xs font-mono text-slate-200 hover:text-white cursor-pointer px-2 py-1 rounded bg-white/5 border border-white/10"
+            className="flex items-center gap-1.5 px-2 py-1 rounded bg-white/5 border border-white/10 text-slate-300 hover:text-white cursor-pointer"
           >
             {layerVisible ? <Eye className="w-3.5 h-3.5 text-aurora-400" /> : <EyeOff className="w-3.5 h-3.5 text-slate-500" />}
             <span>Flood Mask</span>
           </button>
-
-          <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
-            <span>Opacity:</span>
-            <input
-              type="range"
-              min="0.1"
-              max="1.0"
-              step="0.05"
-              value={opacity}
-              onChange={(e) => setOpacity(parseFloat(e.target.value))}
-              className="w-20 accent-aurora-400 cursor-pointer"
-            />
-            <span className="w-8 text-right text-slate-200 font-mono">
-              {Math.round(opacity * 100)}%
-            </span>
-          </div>
         </GlassCard>
       </div>
 
@@ -252,7 +784,7 @@ export default function FloodMap({
       <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
         <div className="px-3 py-1 rounded-full bg-space-950/80 border border-white/10 text-[11px] font-mono text-slate-400 flex items-center gap-2">
           <Badge variant="derived" className="text-[10px] py-0 px-2">DERIVED</Badge>
-          <span>Areas computed strictly in UTM Zone 46N (EPSG:32646)</span>
+          <span>Settlement zones: Voronoi of OSM villages clipped to Cachar window</span>
         </div>
       </div>
     </div>

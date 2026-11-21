@@ -1,22 +1,60 @@
 {
   "event_id": "assam-2022",
   "event_name": "Assam Flood \u2014 June 2022 (Silchar & Barak Basin Peak)",
-  "tier": "Tier A Baseline (Speckle + Otsu + JRC + HAND)",
-  "evaluation_timestamp": "2026-11-21T15:48:13.516003+00:00",
+  "architecture": "U-Net with ResNet34 Encoder (ImageNet-pretrained)",
+  "evaluation_timestamp": "2026-11-21T16:39:22.795104+00:00",
+  "ablation_table": {
+    "test_split": {
+      "chips_count": 88,
+      "tier_a_baseline": {
+        "iou": 0.2168,
+        "f1": 0.3563,
+        "precision": 0.2358,
+        "recall": 0.7289
+      },
+      "unet_raw": {
+        "iou": 0.6804,
+        "f1": 0.8098,
+        "precision": 0.8199,
+        "recall": 0.7999
+      },
+      "unet_postprocessed": {
+        "iou": 0.6691,
+        "f1": 0.8018,
+        "precision": 0.7917,
+        "recall": 0.8121
+      }
+    },
+    "bolivia_heldout_split": {
+      "chips_count": 15,
+      "tier_a_baseline": {
+        "iou": 0.3736,
+        "f1": 0.544,
+        "precision": 0.3978,
+        "recall": 0.8599
+      },
+      "unet_raw": {
+        "iou": 0.6879,
+        "f1": 0.8151,
+        "precision": 0.859,
+        "recall": 0.7755
+      },
+      "unet_postprocessed": {
+        "iou": 0.6917,
+        "f1": 0.8178,
+        "precision": 0.8449,
+        "recall": 0.7923
+      }
+    }
+  },
   "benchmark_evaluation": {
     "dataset": "Sen1Floods11 (HandLabeled Test + Bolivia Held-Out)",
-    "evaluated_chips_count": 10,
+    "evaluated_chips_count": 103,
     "metrics": {
-      "iou": 0.4609,
-      "f1": 0.631,
-      "precision": 0.4971,
-      "recall": 0.8634
-    },
-    "confusion_matrix": {
-      "true_positives": 307436,
-      "false_positives": 310977,
-      "false_negatives": 48631,
-      "true_negatives": 1106187
+      "iou": 0.2168,
+      "f1": 0.3563,
+      "precision": 0.2358,
+      "recall": 0.7289
     }
   },
   "event_measurements": {
@@ -31,18 +69,192 @@
     "detected_flood_area_ha": 12617.47,
     "detected_flood_area_km2": 126.17,
     "polygon_count": 680,
-    "acquisition_dates": {
-      "dry_baseline": "2022-05-01",
-      "flood_peak": "2022-06-18",
-      "flood_recession": "2022-06-30"
-    },
     "validation_status": "UNVALIDATED_INDEPENDENTLY",
-    "validation_notes": "No official Copernicus EMS rapid mapping or NRSC vector shapefile published for the exact localized Cachar/Silchar bounding box (92.70E to 92.90E, 24.75N to 24.90N) at 30m resolution. Reported IoU/F1 metrics are empirically measured on Sen1Floods11 ground-truth chips."
+    "validation_notes": "No official Copernicus EMS rapid mapping or NRSC vector shapefile published for the exact localized Cachar/Silchar bounding box."
+  },
+  "failure_case_analysis": [
+    {
+      "chip_id": "Bolivia_195474",
+      "split": "bolivia",
+      "unet_iou": 0.0,
+      "false_positives": 319,
+      "false_negatives": 1551,
+      "true_positives": 0,
+      "primary_failure_mechanism": "Radar shadow in rugged terrain mimicking specular water backscatter, combined with steep slope misclassification."
+    },
+    {
+      "chip_id": "Bolivia_233925",
+      "split": "bolivia",
+      "unet_iou": 0.0,
+      "false_positives": 1318,
+      "false_negatives": 1,
+      "true_positives": 0,
+      "primary_failure_mechanism": "Smooth surfaces (highway asphalt / compacted dry soil) generating low specular return, producing false positives."
+    },
+    {
+      "chip_id": "Ghana_141271",
+      "split": "test",
+      "unet_iou": 0.0,
+      "false_positives": 0,
+      "false_negatives": 1636,
+      "true_positives": 0,
+      "primary_failure_mechanism": "Emergent wetland vegetation and flooded forest canopy causing double-bounce dihedral backscatter, leading to false negatives."
+    }
+  ],
+  "assam_event_measurements": {
+    "region": "Cachar / Silchar, Assam",
+    "bbox": [
+      92.7,
+      24.75,
+      92.9,
+      24.9
+    ],
+    "utm_crs": "EPSG:32646",
+    "tier_a_baseline": {
+      "detected_flood_area_ha": 12617.47,
+      "detected_flood_area_km2": 126.17,
+      "polygon_count": 680
+    },
+    "unet_resnet34": {
+      "detected_flood_area_ha": 9975.59,
+      "detected_flood_area_km2": 99.76,
+      "polygon_count": 215
+    },
+    "mask_agreement": {
+      "jaccard_agreement": 0.6459,
+      "dice_agreement": 0.7849,
+      "tier_a_flood_pixels": 140481,
+      "unet_flood_pixels": 110017,
+      "overlapping_flood_pixels": 98304,
+      "reporting_note": "Reported strictly as spatial agreement between models on Assam. Not reported as accuracy because no ground-truth reference polygon exists for this event."
+    }
   },
   "provenance": {
     "satellite_pixels": "REAL",
     "benchmark_labels": "REAL",
-    "flood_mask": "DERIVED",
+    "tier_a_flood_mask": "DERIVED",
+    "unet_flood_mask": "DERIVED",
+    "confidence_raster": "DERIVED",
     "flood_polygons": "DERIVED"
+  },
+  "hand_calibration": {
+    "calibrated_h_star_m": 3.25,
+    "optimal_metrics": {
+      "iou": 0.4705,
+      "f1": 0.6399,
+      "precision": 0.5063,
+      "recall": 0.8695
+    },
+    "spatial_cross_validation": {
+      "description": "Spatial block cross-validation (West longitude half vs East longitude half)",
+      "fold_1": {
+        "train_split": "West (x < 338)",
+        "test_split": "East (x >= 338)",
+        "calibrated_h_m": 3.25,
+        "train_iou": 0.4882,
+        "test_iou": 0.455,
+        "test_f1": 0.6254
+      },
+      "fold_2": {
+        "train_split": "East (x >= 338)",
+        "test_split": "West (x < 338)",
+        "calibrated_h_m": 2.5,
+        "train_iou": 0.4571,
+        "test_iou": 0.4799,
+        "test_f1": 0.6486
+      },
+      "mean_spatial_test_iou": 0.4674,
+      "mean_spatial_test_f1": 0.637
+    },
+    "calibration_sweep_sample": [
+      {
+        "water_level_m": 1.0,
+        "iou": 0.3587,
+        "f1": 0.528,
+        "precision": 0.5945,
+        "recall": 0.4749,
+        "predicted_pixels": 87890
+      },
+      {
+        "water_level_m": 2.0,
+        "iou": 0.4525,
+        "f1": 0.623,
+        "precision": 0.554,
+        "recall": 0.7117,
+        "predicted_pixels": 141325
+      },
+      {
+        "water_level_m": 2.5,
+        "iou": 0.4678,
+        "f1": 0.6374,
+        "precision": 0.5328,
+        "recall": 0.7933,
+        "predicted_pixels": 163801
+      },
+      {
+        "water_level_m": 3.0,
+        "iou": 0.4695,
+        "f1": 0.639,
+        "precision": 0.5122,
+        "recall": 0.8491,
+        "predicted_pixels": 182366
+      },
+      {
+        "water_level_m": 3.25,
+        "iou": 0.4705,
+        "f1": 0.6399,
+        "precision": 0.5063,
+        "recall": 0.8695,
+        "predicted_pixels": 188948
+      },
+      {
+        "water_level_m": 3.5,
+        "iou": 0.4667,
+        "f1": 0.6364,
+        "precision": 0.4961,
+        "recall": 0.8874,
+        "predicted_pixels": 196783
+      },
+      {
+        "water_level_m": 4.0,
+        "iou": 0.4591,
+        "f1": 0.6293,
+        "precision": 0.4814,
+        "recall": 0.9084,
+        "predicted_pixels": 207602
+      },
+      {
+        "water_level_m": 5.0,
+        "iou": 0.4459,
+        "f1": 0.6167,
+        "precision": 0.4609,
+        "recall": 0.932,
+        "predicted_pixels": 222478
+      },
+      {
+        "water_level_m": 6.0,
+        "iou": 0.4364,
+        "f1": 0.6076,
+        "precision": 0.448,
+        "recall": 0.9438,
+        "predicted_pixels": 231758
+      },
+      {
+        "water_level_m": 8.0,
+        "iou": 0.4297,
+        "f1": 0.6011,
+        "precision": 0.4364,
+        "recall": 0.9655,
+        "predicted_pixels": 243374
+      },
+      {
+        "water_level_m": 10.0,
+        "iou": 0.4229,
+        "f1": 0.5944,
+        "precision": 0.4277,
+        "recall": 0.9742,
+        "predicted_pixels": 250587
+      }
+    ]
   }
 }

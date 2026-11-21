@@ -22,7 +22,7 @@ build:
 # ── Quality ──────────────────────────────────────────────────
 
 test:
-	apps/api/.venv/bin/pytest tests/ -v
+	python3 -m pytest tests/ -v
 	cd apps/web && npm run build
 
 lint:

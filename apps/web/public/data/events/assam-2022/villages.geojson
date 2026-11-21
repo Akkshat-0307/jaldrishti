@@ -1,0 +1,1464 @@
+{
+  "type": "FeatureCollection",
+  "name": "cachar_settlement_zones_impact",
+  "crs": {
+    "type": "name",
+    "properties": {
+      "name": "urn:ogc:def:crs:OGC:1.3:CRS84"
+    }
+  },
+  "features": [
+    {
+      "type": "Feature",
+      "id": "zone_20",
+      "properties": {
+        "zone_id": "zone_20",
+        "rank": 1,
+        "name": "Debp\u0101ra",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 44734,
+        "population_exposed": 13629,
+        "population_of_cutoff_zone": 44734,
+        "population_exposed_in_cutoff_zone": 13629,
+        "flooded_fraction": 0.3229,
+        "flooded_area_ha": 1376.0,
+        "total_area_ha": 4261.96,
+        "cropland_flooded_ha": 1262.7,
+        "cropland_flooded_or_waterlogged_ha": 1262.7,
+        "built_up_flooded_ha": 5.58,
+        "roads_cut_km": 38.28,
+        "roads_potentially_cut_km": 38.28,
+        "isolated": true,
+        "dry_disconnected": false,
+        "isolated_population": 44734,
+        "is_on_boundary_edge": false,
+        "touches_window_edge": false,
+        "facilities_flooded": 0,
+        "priority_score": 59.3,
+        "priority_breakdown": {
+          "population_exposed_term": 21.3,
+          "flooded_fraction_term": 8.1,
+          "isolation_term": 30.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_7150731704",
+        "safe_shelter_distance_km": 6.31,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.83608711218082,
+              24.876871280357673
+            ],
+            [
+              92.84941081363503,
+              24.896299160877323
+            ],
+            [
+              92.89622839982432,
+              24.804605950806458
+            ],
+            [
+              92.82584224991596,
+              24.80749548045021
+            ],
+            [
+              92.82305301592434,
+              24.84464135173296
+            ],
+            [
+              92.83608711218082,
+              24.876871280357673
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_02",
+      "properties": {
+        "zone_id": "zone_02",
+        "rank": 2,
+        "name": "Ratpur",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 14578,
+        "population_exposed": 7660,
+        "population_of_cutoff_zone": 14578,
+        "population_exposed_in_cutoff_zone": 7660,
+        "flooded_fraction": 0.5182,
+        "flooded_area_ha": 651.41,
+        "total_area_ha": 1256.96,
+        "cropland_flooded_ha": 538.92,
+        "cropland_flooded_or_waterlogged_ha": 538.92,
+        "built_up_flooded_ha": 0.27,
+        "roads_cut_km": 21.54,
+        "roads_potentially_cut_km": 21.54,
+        "isolated": true,
+        "dry_disconnected": false,
+        "isolated_population": 14578,
+        "is_on_boundary_edge": true,
+        "touches_window_edge": true,
+        "facilities_flooded": 0,
+        "priority_score": 54.9,
+        "priority_breakdown": {
+          "population_exposed_term": 11.9,
+          "flooded_fraction_term": 13.0,
+          "isolation_term": 30.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_6913293263",
+        "safe_shelter_distance_km": 9.48,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.73885245914397,
+              24.86582247235429
+            ],
+            [
+              92.74190033700299,
+              24.858194563985418
+            ],
+            [
+              92.73657031037769,
+              24.84186984515192
+            ],
+            [
+              92.7363313834038,
+              24.841553736634054
+            ],
+            [
+              92.7,
+              24.844314690451966
+            ],
+            [
+              92.7,
+              24.86896590997963
+            ],
+            [
+              92.72982991285004,
+              24.874414580653784
+            ],
+            [
+              92.73885245914397,
+              24.86582247235429
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_03",
+      "properties": {
+        "zone_id": "zone_03",
+        "rank": 3,
+        "name": "Badrip\u0101ra",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 9751,
+        "population_exposed": 5087,
+        "population_of_cutoff_zone": 9751,
+        "population_exposed_in_cutoff_zone": 5087,
+        "flooded_fraction": 0.5118,
+        "flooded_area_ha": 501.75,
+        "total_area_ha": 980.42,
+        "cropland_flooded_ha": 413.37,
+        "cropland_flooded_or_waterlogged_ha": 413.37,
+        "built_up_flooded_ha": 0.09,
+        "roads_cut_km": 12.07,
+        "roads_potentially_cut_km": 12.07,
+        "isolated": true,
+        "dry_disconnected": false,
+        "isolated_population": 9751,
+        "is_on_boundary_edge": true,
+        "touches_window_edge": true,
+        "facilities_flooded": 0,
+        "priority_score": 50.7,
+        "priority_breakdown": {
+          "population_exposed_term": 7.9,
+          "flooded_fraction_term": 12.8,
+          "isolation_term": 30.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_3921097957",
+        "safe_shelter_distance_km": 9.21,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.72982991285004,
+              24.874414580653784
+            ],
+            [
+              92.73433014508352,
+              24.9
+            ],
+            [
+              92.75680906608294,
+              24.9
+            ],
+            [
+              92.76646462469674,
+              24.889098623553515
+            ],
+            [
+              92.7583824471527,
+              24.875415004996732
+            ],
+            [
+              92.73885245914397,
+              24.86582247235429
+            ],
+            [
+              92.72982991285004,
+              24.874414580653784
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_01",
+      "properties": {
+        "zone_id": "zone_01",
+        "rank": 4,
+        "name": "Kirishanpur",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 10243,
+        "population_exposed": 5128,
+        "population_of_cutoff_zone": 10243,
+        "population_exposed_in_cutoff_zone": 5128,
+        "flooded_fraction": 0.4809,
+        "flooded_area_ha": 485.17,
+        "total_area_ha": 1008.85,
+        "cropland_flooded_ha": 445.86,
+        "cropland_flooded_or_waterlogged_ha": 445.86,
+        "built_up_flooded_ha": 0.09,
+        "roads_cut_km": 16.81,
+        "roads_potentially_cut_km": 16.81,
+        "isolated": true,
+        "dry_disconnected": false,
+        "isolated_population": 10243,
+        "is_on_boundary_edge": true,
+        "touches_window_edge": true,
+        "facilities_flooded": 0,
+        "priority_score": 50.0,
+        "priority_breakdown": {
+          "population_exposed_term": 8.0,
+          "flooded_fraction_term": 12.0,
+          "isolation_term": 30.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_6913293263",
+        "safe_shelter_distance_km": 13.47,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.72982991285004,
+              24.874414580653784
+            ],
+            [
+              92.7,
+              24.86896590997963
+            ],
+            [
+              92.7,
+              24.9
+            ],
+            [
+              92.73433014508352,
+              24.9
+            ],
+            [
+              92.72982991285004,
+              24.874414580653784
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_13",
+      "properties": {
+        "zone_id": "zone_13",
+        "rank": 5,
+        "name": "M\u0101simpur",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 5162,
+        "population_exposed": 2245,
+        "population_of_cutoff_zone": 5162,
+        "population_exposed_in_cutoff_zone": 2245,
+        "flooded_fraction": 0.4911,
+        "flooded_area_ha": 290.7,
+        "total_area_ha": 591.91,
+        "cropland_flooded_ha": 209.16,
+        "cropland_flooded_or_waterlogged_ha": 209.16,
+        "built_up_flooded_ha": 0.0,
+        "roads_cut_km": 2.47,
+        "roads_potentially_cut_km": 2.47,
+        "isolated": true,
+        "dry_disconnected": false,
+        "isolated_population": 5162,
+        "is_on_boundary_edge": false,
+        "touches_window_edge": false,
+        "facilities_flooded": 0,
+        "priority_score": 45.8,
+        "priority_breakdown": {
+          "population_exposed_term": 3.5,
+          "flooded_fraction_term": 12.3,
+          "isolation_term": 30.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_3921097957",
+        "safe_shelter_distance_km": 7.31,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.7583824471527,
+              24.875415004996732
+            ],
+            [
+              92.76646462469674,
+              24.889098623553515
+            ],
+            [
+              92.79542408517338,
+              24.88995833698291
+            ],
+            [
+              92.79506677976151,
+              24.883245575181878
+            ],
+            [
+              92.78958643426245,
+              24.87491119999144
+            ],
+            [
+              92.78237897701332,
+              24.8698086074256
+            ],
+            [
+              92.7583824471527,
+              24.875415004996732
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_17",
+      "properties": {
+        "zone_id": "zone_17",
+        "rank": 6,
+        "name": "Sonb\u0101ragh\u0101t",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 54904,
+        "population_exposed": 22436,
+        "population_of_cutoff_zone": 0,
+        "population_exposed_in_cutoff_zone": 0,
+        "flooded_fraction": 0.4268,
+        "flooded_area_ha": 2121.97,
+        "total_area_ha": 4971.96,
+        "cropland_flooded_ha": 1884.51,
+        "cropland_flooded_or_waterlogged_ha": 1884.51,
+        "built_up_flooded_ha": 0.0,
+        "roads_cut_km": 15.44,
+        "roads_potentially_cut_km": 15.44,
+        "isolated": false,
+        "dry_disconnected": false,
+        "isolated_population": 0,
+        "is_on_boundary_edge": true,
+        "touches_window_edge": true,
+        "facilities_flooded": 0,
+        "priority_score": 45.7,
+        "priority_breakdown": {
+          "population_exposed_term": 35.0,
+          "flooded_fraction_term": 10.7,
+          "isolation_term": 0.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_7540578919",
+        "safe_shelter_distance_km": 0.39,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.82499641855047,
+              24.80721090274211
+            ],
+            [
+              92.82584224991596,
+              24.80749548045021
+            ],
+            [
+              92.89622839982432,
+              24.804605950806458
+            ],
+            [
+              92.9,
+              24.80332083027543
+            ],
+            [
+              92.9,
+              24.75
+            ],
+            [
+              92.81644060730468,
+              24.75
+            ],
+            [
+              92.82499641855047,
+              24.80721090274211
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_14",
+      "properties": {
+        "zone_id": "zone_14",
+        "rank": 7,
+        "name": "Gossaipur",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 9664,
+        "population_exposed": 3187,
+        "population_of_cutoff_zone": 9664,
+        "population_exposed_in_cutoff_zone": 3187,
+        "flooded_fraction": 0.3582,
+        "flooded_area_ha": 474.71,
+        "total_area_ha": 1325.3,
+        "cropland_flooded_ha": 337.77,
+        "cropland_flooded_or_waterlogged_ha": 337.77,
+        "built_up_flooded_ha": 0.18,
+        "roads_cut_km": 9.94,
+        "roads_potentially_cut_km": 9.94,
+        "isolated": true,
+        "dry_disconnected": false,
+        "isolated_population": 9664,
+        "is_on_boundary_edge": true,
+        "touches_window_edge": true,
+        "facilities_flooded": 0,
+        "priority_score": 43.9,
+        "priority_breakdown": {
+          "population_exposed_term": 5.0,
+          "flooded_fraction_term": 9.0,
+          "isolation_term": 30.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_3921097957",
+        "safe_shelter_distance_km": 7.69,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.79542408517338,
+              24.88995833698291
+            ],
+            [
+              92.79976185750476,
+              24.9
+            ],
+            [
+              92.84911226742283,
+              24.9
+            ],
+            [
+              92.84941081363503,
+              24.896299160877323
+            ],
+            [
+              92.83608711218082,
+              24.876871280357673
+            ],
+            [
+              92.80772391975296,
+              24.870778259800286
+            ],
+            [
+              92.79506677976151,
+              24.883245575181878
+            ],
+            [
+              92.79542408517338,
+              24.88995833698291
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_18",
+      "properties": {
+        "zone_id": "zone_18",
+        "rank": 8,
+        "name": "Dudhpatli",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 4049,
+        "population_exposed": 1093,
+        "population_of_cutoff_zone": 4049,
+        "population_exposed_in_cutoff_zone": 1093,
+        "flooded_fraction": 0.2716,
+        "flooded_area_ha": 126.81,
+        "total_area_ha": 466.83,
+        "cropland_flooded_ha": 115.02,
+        "cropland_flooded_or_waterlogged_ha": 115.02,
+        "built_up_flooded_ha": 0.0,
+        "roads_cut_km": 7.84,
+        "roads_potentially_cut_km": 7.84,
+        "isolated": true,
+        "dry_disconnected": false,
+        "isolated_population": 4049,
+        "is_on_boundary_edge": false,
+        "touches_window_edge": false,
+        "facilities_flooded": 0,
+        "priority_score": 38.5,
+        "priority_breakdown": {
+          "population_exposed_term": 1.7,
+          "flooded_fraction_term": 6.8,
+          "isolation_term": 30.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_3921097957",
+        "safe_shelter_distance_km": 7.15,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.80772391975296,
+              24.870778259800286
+            ],
+            [
+              92.83608711218082,
+              24.876871280357673
+            ],
+            [
+              92.82305301592434,
+              24.84464135173296
+            ],
+            [
+              92.80772391975296,
+              24.870778259800286
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_09",
+      "properties": {
+        "zone_id": "zone_09",
+        "rank": 9,
+        "name": "Khoril",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 2129,
+        "population_exposed": 452,
+        "population_of_cutoff_zone": 2129,
+        "population_exposed_in_cutoff_zone": 452,
+        "flooded_fraction": 0.2005,
+        "flooded_area_ha": 84.7,
+        "total_area_ha": 422.37,
+        "cropland_flooded_ha": 33.21,
+        "cropland_flooded_or_waterlogged_ha": 33.21,
+        "built_up_flooded_ha": 0.0,
+        "roads_cut_km": 0.59,
+        "roads_potentially_cut_km": 0.59,
+        "isolated": true,
+        "dry_disconnected": false,
+        "isolated_population": 2129,
+        "is_on_boundary_edge": true,
+        "touches_window_edge": true,
+        "facilities_flooded": 0,
+        "priority_score": 35.7,
+        "priority_breakdown": {
+          "population_exposed_term": 0.7,
+          "flooded_fraction_term": 5.0,
+          "isolation_term": 30.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_3921097957",
+        "safe_shelter_distance_km": 10.28,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.79542408517338,
+              24.88995833698291
+            ],
+            [
+              92.76646462469674,
+              24.889098623553515
+            ],
+            [
+              92.75680906608294,
+              24.9
+            ],
+            [
+              92.79976185750476,
+              24.9
+            ],
+            [
+              92.79542408517338,
+              24.88995833698291
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_06",
+      "properties": {
+        "zone_id": "zone_06",
+        "rank": 10,
+        "name": "R\u0101mnagar",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 36424,
+        "population_exposed": 12307,
+        "population_of_cutoff_zone": 0,
+        "population_exposed_in_cutoff_zone": 0,
+        "flooded_fraction": 0.3561,
+        "flooded_area_ha": 1256.45,
+        "total_area_ha": 3528.38,
+        "cropland_flooded_ha": 1065.87,
+        "cropland_flooded_or_waterlogged_ha": 1065.87,
+        "built_up_flooded_ha": 0.18,
+        "roads_cut_km": 29.65,
+        "roads_potentially_cut_km": 29.65,
+        "isolated": false,
+        "dry_disconnected": false,
+        "isolated_population": 0,
+        "is_on_boundary_edge": true,
+        "touches_window_edge": true,
+        "facilities_flooded": 0,
+        "priority_score": 28.1,
+        "priority_breakdown": {
+          "population_exposed_term": 19.2,
+          "flooded_fraction_term": 8.9,
+          "isolation_term": 0.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_6913293263",
+        "safe_shelter_distance_km": 5.3,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.7363313834038,
+              24.841553736634054
+            ],
+            [
+              92.73657031037769,
+              24.84186984515192
+            ],
+            [
+              92.75386803742313,
+              24.82769377454977
+            ],
+            [
+              92.76732282429074,
+              24.788561995324834
+            ],
+            [
+              92.71568569119768,
+              24.75
+            ],
+            [
+              92.7,
+              24.75
+            ],
+            [
+              92.7,
+              24.761795630298355
+            ],
+            [
+              92.7363313834038,
+              24.841553736634054
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_05",
+      "properties": {
+        "zone_id": "zone_05",
+        "rank": 11,
+        "name": "Masimpur",
+        "block": "Silchar / Cachar",
+        "place_type": "village",
+        "population": 61444,
+        "population_exposed": 13436,
+        "population_of_cutoff_zone": 0,
+        "population_exposed_in_cutoff_zone": 0,
+        "flooded_fraction": 0.2487,
+        "flooded_area_ha": 1029.64,
+        "total_area_ha": 4140.86,
+        "cropland_flooded_ha": 573.75,
+        "cropland_flooded_or_waterlogged_ha": 573.75,
+        "built_up_flooded_ha": 0.18,
+        "roads_cut_km": 18.58,
+        "roads_potentially_cut_km": 18.58,
+        "isolated": false,
+        "dry_disconnected": false,
+        "isolated_population": 0,
+        "is_on_boundary_edge": true,
+        "touches_window_edge": true,
+        "facilities_flooded": 0,
+        "priority_score": 27.2,
+        "priority_breakdown": {
+          "population_exposed_term": 21.0,
+          "flooded_fraction_term": 6.2,
+          "isolation_term": 0.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_way_361827963",
+        "safe_shelter_distance_km": 1.46,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.76732282429074,
+              24.788561995324834
+            ],
+            [
+              92.79357022756174,
+              24.801654197515717
+            ],
+            [
+              92.80967224805431,
+              24.807949690445653
+            ],
+            [
+              92.82499641855047,
+              24.80721090274211
+            ],
+            [
+              92.81644060730468,
+              24.75
+            ],
+            [
+              92.71568569119768,
+              24.75
+            ],
+            [
+              92.76732282429074,
+              24.788561995324834
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_19",
+      "properties": {
+        "zone_id": "zone_19",
+        "rank": 12,
+        "name": "Udharbond",
+        "block": "Silchar / Cachar",
+        "place_type": "village",
+        "population": 31610,
+        "population_exposed": 7367,
+        "population_of_cutoff_zone": 0,
+        "population_exposed_in_cutoff_zone": 0,
+        "flooded_fraction": 0.2366,
+        "flooded_area_ha": 709.77,
+        "total_area_ha": 2999.89,
+        "cropland_flooded_ha": 731.52,
+        "cropland_flooded_or_waterlogged_ha": 731.52,
+        "built_up_flooded_ha": 2.25,
+        "roads_cut_km": 11.47,
+        "roads_potentially_cut_km": 11.47,
+        "isolated": false,
+        "dry_disconnected": false,
+        "isolated_population": 0,
+        "is_on_boundary_edge": true,
+        "touches_window_edge": true,
+        "facilities_flooded": 0,
+        "priority_score": 17.4,
+        "priority_breakdown": {
+          "population_exposed_term": 11.5,
+          "flooded_fraction_term": 5.9,
+          "isolation_term": 0.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_7150731704",
+        "safe_shelter_distance_km": 0.79,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.89622839982432,
+              24.804605950806458
+            ],
+            [
+              92.84941081363503,
+              24.896299160877323
+            ],
+            [
+              92.84911226742283,
+              24.9
+            ],
+            [
+              92.9,
+              24.9
+            ],
+            [
+              92.9,
+              24.80332083027543
+            ],
+            [
+              92.89622839982432,
+              24.804605950806458
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_15",
+      "properties": {
+        "zone_id": "zone_15",
+        "rank": 13,
+        "name": "Kharilp\u0101r",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 20091,
+        "population_exposed": 2950,
+        "population_of_cutoff_zone": 0,
+        "population_exposed_in_cutoff_zone": 0,
+        "flooded_fraction": 0.3479,
+        "flooded_area_ha": 253.78,
+        "total_area_ha": 729.45,
+        "cropland_flooded_ha": 187.11,
+        "cropland_flooded_or_waterlogged_ha": 187.11,
+        "built_up_flooded_ha": 0.09,
+        "roads_cut_km": 1.3,
+        "roads_potentially_cut_km": 1.3,
+        "isolated": false,
+        "dry_disconnected": false,
+        "isolated_population": 0,
+        "is_on_boundary_edge": false,
+        "touches_window_edge": false,
+        "facilities_flooded": 0,
+        "priority_score": 13.3,
+        "priority_breakdown": {
+          "population_exposed_term": 4.6,
+          "flooded_fraction_term": 8.7,
+          "isolation_term": 0.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_3921097957",
+        "safe_shelter_distance_km": 3.96,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.78958643426245,
+              24.87491119999144
+            ],
+            [
+              92.80675499411515,
+              24.81243843339497
+            ],
+            [
+              92.78193881118212,
+              24.839828019192375
+            ],
+            [
+              92.78203679168513,
+              24.869211700947325
+            ],
+            [
+              92.78237897701332,
+              24.8698086074256
+            ],
+            [
+              92.78958643426245,
+              24.87491119999144
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_12",
+      "properties": {
+        "zone_id": "zone_12",
+        "rank": 14,
+        "name": "Digh\u0101li",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 33949,
+        "population_exposed": 2809,
+        "population_of_cutoff_zone": 0,
+        "population_exposed_in_cutoff_zone": 0,
+        "flooded_fraction": 0.189,
+        "flooded_area_ha": 309.4,
+        "total_area_ha": 1637.26,
+        "cropland_flooded_ha": 202.41,
+        "cropland_flooded_or_waterlogged_ha": 202.41,
+        "built_up_flooded_ha": 0.09,
+        "roads_cut_km": 5.55,
+        "roads_potentially_cut_km": 5.55,
+        "isolated": false,
+        "dry_disconnected": false,
+        "isolated_population": 0,
+        "is_on_boundary_edge": false,
+        "touches_window_edge": false,
+        "facilities_flooded": 0,
+        "priority_score": 9.1,
+        "priority_breakdown": {
+          "population_exposed_term": 4.4,
+          "flooded_fraction_term": 4.7,
+          "isolation_term": 0.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_3921097957",
+        "safe_shelter_distance_km": 5.16,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.80675499411515,
+              24.81243843339497
+            ],
+            [
+              92.78958643426245,
+              24.87491119999144
+            ],
+            [
+              92.79506677976151,
+              24.883245575181878
+            ],
+            [
+              92.80772391975296,
+              24.870778259800286
+            ],
+            [
+              92.82305301592434,
+              24.84464135173296
+            ],
+            [
+              92.82584224991596,
+              24.80749548045021
+            ],
+            [
+              92.82499641855047,
+              24.80721090274211
+            ],
+            [
+              92.80967224805431,
+              24.807949690445653
+            ],
+            [
+              92.80675499411515,
+              24.81243843339497
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_16",
+      "properties": {
+        "zone_id": "zone_16",
+        "rank": 15,
+        "name": "M\u0101chhugh\u0101t",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 3673,
+        "population_exposed": 551,
+        "population_of_cutoff_zone": 0,
+        "population_exposed_in_cutoff_zone": 0,
+        "flooded_fraction": 0.1628,
+        "flooded_area_ha": 58.29,
+        "total_area_ha": 358.06,
+        "cropland_flooded_ha": 42.93,
+        "cropland_flooded_or_waterlogged_ha": 42.93,
+        "built_up_flooded_ha": 0.0,
+        "roads_cut_km": 0.61,
+        "roads_potentially_cut_km": 0.61,
+        "isolated": false,
+        "dry_disconnected": false,
+        "isolated_population": 0,
+        "is_on_boundary_edge": false,
+        "touches_window_edge": false,
+        "facilities_flooded": 0,
+        "priority_score": 4.9,
+        "priority_breakdown": {
+          "population_exposed_term": 0.9,
+          "flooded_fraction_term": 4.1,
+          "isolation_term": 0.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_3921097957",
+        "safe_shelter_distance_km": 4.01,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.78203679168513,
+              24.869211700947325
+            ],
+            [
+              92.78193881118212,
+              24.839828019192375
+            ],
+            [
+              92.76019103028727,
+              24.851232835565657
+            ],
+            [
+              92.78203679168513,
+              24.869211700947325
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_10",
+      "properties": {
+        "zone_id": "zone_10",
+        "rank": 16,
+        "name": "Arun\u0101chal",
+        "block": "Silchar / Cachar",
+        "place_type": "village",
+        "population": 6877,
+        "population_exposed": 477,
+        "population_of_cutoff_zone": 0,
+        "population_exposed_in_cutoff_zone": 0,
+        "flooded_fraction": 0.0974,
+        "flooded_area_ha": 64.68,
+        "total_area_ha": 664.28,
+        "cropland_flooded_ha": 45.18,
+        "cropland_flooded_or_waterlogged_ha": 45.18,
+        "built_up_flooded_ha": 0.0,
+        "roads_cut_km": 2.0,
+        "roads_potentially_cut_km": 2.0,
+        "isolated": false,
+        "dry_disconnected": false,
+        "isolated_population": 0,
+        "is_on_boundary_edge": false,
+        "touches_window_edge": false,
+        "facilities_flooded": 0,
+        "priority_score": 3.2,
+        "priority_breakdown": {
+          "population_exposed_term": 0.7,
+          "flooded_fraction_term": 2.4,
+          "isolation_term": 0.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_6913293263",
+        "safe_shelter_distance_km": 6.27,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.73885245914397,
+              24.86582247235429
+            ],
+            [
+              92.7583824471527,
+              24.875415004996732
+            ],
+            [
+              92.78237897701332,
+              24.8698086074256
+            ],
+            [
+              92.78203679168513,
+              24.869211700947325
+            ],
+            [
+              92.76019103028727,
+              24.851232835565657
+            ],
+            [
+              92.75978482290144,
+              24.85123581321345
+            ],
+            [
+              92.74190033700299,
+              24.858194563985418
+            ],
+            [
+              92.73885245914397,
+              24.86582247235429
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_07",
+      "properties": {
+        "zone_id": "zone_07",
+        "rank": 17,
+        "name": "Khelma",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 13614,
+        "population_exposed": 656,
+        "population_of_cutoff_zone": 0,
+        "population_exposed_in_cutoff_zone": 0,
+        "flooded_fraction": 0.0589,
+        "flooded_area_ha": 56.91,
+        "total_area_ha": 965.55,
+        "cropland_flooded_ha": 55.17,
+        "cropland_flooded_or_waterlogged_ha": 55.17,
+        "built_up_flooded_ha": 0.0,
+        "roads_cut_km": 0.87,
+        "roads_potentially_cut_km": 0.87,
+        "isolated": false,
+        "dry_disconnected": false,
+        "isolated_population": 0,
+        "is_on_boundary_edge": false,
+        "touches_window_edge": false,
+        "facilities_flooded": 0,
+        "priority_score": 2.5,
+        "priority_breakdown": {
+          "population_exposed_term": 1.0,
+          "flooded_fraction_term": 1.5,
+          "isolation_term": 0.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_6913293263",
+        "safe_shelter_distance_km": 3.73,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.76732282429074,
+              24.788561995324834
+            ],
+            [
+              92.75386803742313,
+              24.82769377454977
+            ],
+            [
+              92.76052804158903,
+              24.83648211589033
+            ],
+            [
+              92.79357022756174,
+              24.801654197515717
+            ],
+            [
+              92.76732282429074,
+              24.788561995324834
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_04",
+      "properties": {
+        "zone_id": "zone_04",
+        "rank": 18,
+        "name": "Srikona",
+        "block": "Silchar / Cachar",
+        "place_type": "village",
+        "population": 17674,
+        "population_exposed": 360,
+        "population_of_cutoff_zone": 0,
+        "population_exposed_in_cutoff_zone": 0,
+        "flooded_fraction": 0.0122,
+        "flooded_area_ha": 20.51,
+        "total_area_ha": 1677.07,
+        "cropland_flooded_ha": 20.25,
+        "cropland_flooded_or_waterlogged_ha": 20.25,
+        "built_up_flooded_ha": 0.0,
+        "roads_cut_km": 0.52,
+        "roads_potentially_cut_km": 0.52,
+        "isolated": false,
+        "dry_disconnected": false,
+        "isolated_population": 0,
+        "is_on_boundary_edge": true,
+        "touches_window_edge": true,
+        "facilities_flooded": 0,
+        "priority_score": 0.9,
+        "priority_breakdown": {
+          "population_exposed_term": 0.6,
+          "flooded_fraction_term": 0.3,
+          "isolation_term": 0.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_6913293263",
+        "safe_shelter_distance_km": 8.86,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.7363313834038,
+              24.841553736634054
+            ],
+            [
+              92.7,
+              24.761795630298355
+            ],
+            [
+              92.7,
+              24.844314690451966
+            ],
+            [
+              92.7363313834038,
+              24.841553736634054
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_11",
+      "properties": {
+        "zone_id": "zone_11",
+        "rank": 19,
+        "name": "R\u0101mnagar",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 38337,
+        "population_exposed": 123,
+        "population_of_cutoff_zone": 0,
+        "population_exposed_in_cutoff_zone": 0,
+        "flooded_fraction": 0.0091,
+        "flooded_area_ha": 9.64,
+        "total_area_ha": 1062.14,
+        "cropland_flooded_ha": 4.95,
+        "cropland_flooded_or_waterlogged_ha": 4.95,
+        "built_up_flooded_ha": 0.0,
+        "roads_cut_km": 0.45,
+        "roads_potentially_cut_km": 0.45,
+        "isolated": false,
+        "dry_disconnected": false,
+        "isolated_population": 0,
+        "is_on_boundary_edge": false,
+        "touches_window_edge": false,
+        "facilities_flooded": 0,
+        "priority_score": 0.4,
+        "priority_breakdown": {
+          "population_exposed_term": 0.2,
+          "flooded_fraction_term": 0.2,
+          "isolation_term": 0.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_6913293263",
+        "safe_shelter_distance_km": 3.05,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.80967224805431,
+              24.807949690445653
+            ],
+            [
+              92.79357022756174,
+              24.801654197515717
+            ],
+            [
+              92.76052804158903,
+              24.83648211589033
+            ],
+            [
+              92.75978482290144,
+              24.85123581321345
+            ],
+            [
+              92.76019103028727,
+              24.851232835565657
+            ],
+            [
+              92.78193881118212,
+              24.839828019192375
+            ],
+            [
+              92.80675499411515,
+              24.81243843339497
+            ],
+            [
+              92.80967224805431,
+              24.807949690445653
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "zone_08",
+      "properties": {
+        "zone_id": "zone_08",
+        "rank": 20,
+        "name": "Khelma",
+        "block": "Silchar / Cachar",
+        "place_type": "hamlet",
+        "population": 8431,
+        "population_exposed": 33,
+        "population_of_cutoff_zone": 0,
+        "population_exposed_in_cutoff_zone": 0,
+        "flooded_fraction": 0.0026,
+        "flooded_area_ha": 1.34,
+        "total_area_ha": 517.39,
+        "cropland_flooded_ha": 0.0,
+        "cropland_flooded_or_waterlogged_ha": 0.0,
+        "built_up_flooded_ha": 0.0,
+        "roads_cut_km": 0.09,
+        "roads_potentially_cut_km": 0.09,
+        "isolated": false,
+        "dry_disconnected": false,
+        "isolated_population": 0,
+        "is_on_boundary_edge": false,
+        "touches_window_edge": false,
+        "facilities_flooded": 0,
+        "priority_score": 0.1,
+        "priority_breakdown": {
+          "population_exposed_term": 0.1,
+          "flooded_fraction_term": 0.1,
+          "isolation_term": 0.0,
+          "critical_facilities_term": 0.0
+        },
+        "nearest_safe_shelter_id": "fac_node_6913293263",
+        "safe_shelter_distance_km": 4.66,
+        "layer_type": "DERIVED (Voronoi of OSM Villages)",
+        "methodology_note": "Settlement zones synthesized via Voronoi tessellation of OpenStreetMap village and hamlet points, clipped to study bounds. Not official administrative village boundaries."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              92.74190033700299,
+              24.858194563985418
+            ],
+            [
+              92.75978482290144,
+              24.85123581321345
+            ],
+            [
+              92.76052804158903,
+              24.83648211589033
+            ],
+            [
+              92.75386803742313,
+              24.82769377454977
+            ],
+            [
+              92.73657031037769,
+              24.84186984515192
+            ],
+            [
+              92.74190033700299,
+              24.858194563985418
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

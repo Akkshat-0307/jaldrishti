@@ -1,0 +1,119 @@
+{
+  "event_id": "assam-2022",
+  "h_star_baseline_m": 3.25,
+  "scenarios_count": 6,
+  "available_deltas_m": [
+    -1.0,
+    -0.5,
+    0.0,
+    0.5,
+    1.0,
+    2.0
+  ],
+  "bands": {
+    "minimum": {
+      "delta_m": -1.0,
+      "description": "Receding / Minimum Scenario (-1.0m stage anomaly)"
+    },
+    "likely": {
+      "delta_m": 0.0,
+      "description": "Calibrated Baseline Scenario (0.0m stage anomaly, h* = 3.25m)"
+    },
+    "maximum": {
+      "delta_m": 2.0,
+      "description": "Severe Catastrophic Scenario (+2.0m stage anomaly)"
+    }
+  },
+  "observed_reference": {
+    "source": "U-Net ResNet34 Flood Segmentation (2022-06-18 Sentinel-1)",
+    "flooded_area_ha": 9975.59,
+    "exposed_population": 101986,
+    "cutoff_zones_count": 8
+  },
+  "scenarios": [
+    {
+      "delta_m": -1.0,
+      "delta_tag": "m10",
+      "effective_water_level_m": 2.25,
+      "json_path": "/data/events/assam-2022/scenarios/scenario_m10.json",
+      "geojson_path": "/data/events/assam-2022/scenarios/scenario_m10.geojson",
+      "flooded_area_ha": 14305.42,
+      "exposed_population": 175864,
+      "cropland_waterlogged_ha": 9641.43,
+      "roads_potentially_cut_km": 735.16,
+      "cutoff_zones_count": 19,
+      "cutoff_zones_robust_count": 10,
+      "isolated_population": 395728
+    },
+    {
+      "delta_m": -0.5,
+      "delta_tag": "m05",
+      "effective_water_level_m": 2.75,
+      "json_path": "/data/events/assam-2022/scenarios/scenario_m05.json",
+      "geojson_path": "/data/events/assam-2022/scenarios/scenario_m05.geojson",
+      "flooded_area_ha": 17237.75,
+      "exposed_population": 212504,
+      "cropland_waterlogged_ha": 10935.36,
+      "roads_potentially_cut_km": 862.04,
+      "cutoff_zones_count": 19,
+      "cutoff_zones_robust_count": 10,
+      "isolated_population": 395728
+    },
+    {
+      "delta_m": 0.0,
+      "delta_tag": "p00",
+      "effective_water_level_m": 3.25,
+      "json_path": "/data/events/assam-2022/scenarios/scenario_p00.json",
+      "geojson_path": "/data/events/assam-2022/scenarios/scenario_p00.geojson",
+      "flooded_area_ha": 19327.39,
+      "exposed_population": 237499,
+      "cropland_waterlogged_ha": 11973.87,
+      "roads_potentially_cut_km": 952.24,
+      "cutoff_zones_count": 19,
+      "cutoff_zones_robust_count": 10,
+      "isolated_population": 395728
+    },
+    {
+      "delta_m": 0.5,
+      "delta_tag": "p05",
+      "effective_water_level_m": 3.75,
+      "json_path": "/data/events/assam-2022/scenarios/scenario_p05.json",
+      "geojson_path": "/data/events/assam-2022/scenarios/scenario_p05.geojson",
+      "flooded_area_ha": 20791.34,
+      "exposed_population": 255613,
+      "cropland_waterlogged_ha": 12554.55,
+      "roads_potentially_cut_km": 1016.37,
+      "cutoff_zones_count": 18,
+      "cutoff_zones_robust_count": 10,
+      "isolated_population": 340824
+    },
+    {
+      "delta_m": 1.0,
+      "delta_tag": "p10",
+      "effective_water_level_m": 4.25,
+      "json_path": "/data/events/assam-2022/scenarios/scenario_p10.json",
+      "geojson_path": "/data/events/assam-2022/scenarios/scenario_p10.geojson",
+      "flooded_area_ha": 22459.66,
+      "exposed_population": 276979,
+      "cropland_waterlogged_ha": 12985.38,
+      "roads_potentially_cut_km": 1083.05,
+      "cutoff_zones_count": 19,
+      "cutoff_zones_robust_count": 10,
+      "isolated_population": 372434
+    },
+    {
+      "delta_m": 2.0,
+      "delta_tag": "p20",
+      "effective_water_level_m": 5.25,
+      "json_path": "/data/events/assam-2022/scenarios/scenario_p20.json",
+      "geojson_path": "/data/events/assam-2022/scenarios/scenario_p20.geojson",
+      "flooded_area_ha": 24116.94,
+      "exposed_population": 299611,
+      "cropland_waterlogged_ha": 13433.4,
+      "roads_potentially_cut_km": 1153.47,
+      "cutoff_zones_count": 20,
+      "cutoff_zones_robust_count": 10,
+      "isolated_population": 427338
+    }
+  ]
+}

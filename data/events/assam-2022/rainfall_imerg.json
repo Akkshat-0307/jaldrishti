@@ -1,0 +1,58 @@
+{
+  "event_id": "assam-2022",
+  "dataset_id": "NASA/GPM_L3/IMERG_V07",
+  "provenance": "REAL (Satellite Observation, NASA GPM IMERG V07)",
+  "spatial_resolution": "0.1 degree (~10 km)",
+  "temporal_resolution": "30 minutes",
+  "region_bbox": [
+    92.7,
+    24.75,
+    92.9,
+    24.9
+  ],
+  "region_name": "Cachar / Silchar, Assam",
+  "reference_date": "2022-06-18",
+  "timestamp_extracted": "2026-11-21T17:45:59.713836+00:00",
+  "rainfall_summary": {
+    "accum_1day_mm": 67.18,
+    "accum_1day_min_mm": 58.94,
+    "accum_1day_max_mm": 85.02,
+    "accum_3day_mm": 205.28,
+    "accum_3day_min_mm": 159.09,
+    "accum_3day_max_mm": 264.29,
+    "accum_7day_mm": 276.76,
+    "accum_7day_min_mm": 219.01,
+    "accum_7day_max_mm": 358.33
+  },
+  "daily_timeline": [
+    {
+      "date": "2022-06-11",
+      "rainfall_mm": 2.76
+    },
+    {
+      "date": "2022-06-12",
+      "rainfall_mm": 0.48
+    },
+    {
+      "date": "2022-06-13",
+      "rainfall_mm": 25.32
+    },
+    {
+      "date": "2022-06-14",
+      "rainfall_mm": 42.91
+    },
+    {
+      "date": "2022-06-15",
+      "rainfall_mm": 61.04
+    },
+    {
+      "date": "2022-06-16",
+      "rainfall_mm": 77.07
+    },
+    {
+      "date": "2022-06-17",
+      "rainfall_mm": 67.18
+    }
+  ],
+  "methodological_note": "Precipitation data derived from the official NASA GPM IMERG V07 half-hourly product (NASA/GPM_L3/IMERG_V07). Half-hourly precipitation rates (mm/hr) were integrated (multiplied by 0.5) and spatially averaged over the Cachar study window [92.70, 24.75, 92.90, 24.90]. Because spatial variation across this 20 km x 16 km window is minimal, rainfall is provided as basin-wide meteorological context rather than input to a spatial regression model."
+}

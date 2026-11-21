@@ -1,0 +1,55 @@
+{
+  "event_id": "assam-2022",
+  "region": "Cachar / Silchar, Assam",
+  "timestamp": "2026-11-21T17:41:38.004009+00:00",
+  "utm_crs": "EPSG:32646",
+  "zones_count": 20,
+  "total_population_exposed": 101986,
+  "total_cropland_flooded_ha": 8169.66,
+  "total_cropland_flooded_or_waterlogged_ha": 8169.66,
+  "total_built_up_flooded_ha": 9.0,
+  "total_roads_cut_km": 196.35,
+  "total_roads_potentially_cut_km": 196.35,
+  "cutoff_zones_count": 8,
+  "cutoff_zones_touching_edge_count": 5,
+  "cutoff_zones_touching_edge": [
+    "zone_02",
+    "zone_03",
+    "zone_01",
+    "zone_14",
+    "zone_09"
+  ],
+  "cutoff_zones_robust_count": 3,
+  "cutoff_zones_robust": [
+    "zone_20",
+    "zone_13",
+    "zone_18"
+  ],
+  "isolated_population": 100310,
+  "total_cutoff_zones_population": 100310,
+  "total_cutoff_zones_exposed_population": 38481,
+  "boundary_edge_zones_count": 10,
+  "dry_disconnected_zones_count": 0,
+  "safe_shelters_count": 32,
+  "flooded_facilities_count": 0,
+  "priority_formula": "0.35 * P_norm + 0.25 * F_norm + 0.30 * Isolation + 0.10 * C_norm",
+  "default_weights": {
+    "w_pop": 0.35,
+    "w_flood": 0.25,
+    "w_iso": 0.3,
+    "w_fac": 0.1
+  },
+  "methodological_notes": {
+    "isolated_population_definition": "Population of cut-off zones (100,310) represents all residents residing in hydraulically severed settlement zones who cannot access emergency shelters by road. Of these, 38,481 residents live directly within flooded pixels (exposed population).",
+    "cropland_waterlogging_limitation": "Cropland flooded or waterlogged (8,170 ha): rice paddies and low-lying agricultural fields may naturally hold water or be waterlogged, creating radar backscatter signatures overlapping with floodwater.",
+    "boundary_truncation_warning": "Results are within the Cachar study window ([92.70, 24.75, 92.90, 24.90]); roads leaving the window are truncated, so cut-off zones near the edge may be overstated. 10 of 20 settlement zones touch the window perimeter (5 cut off, 5 connected).",
+    "roads_buffer_assumption": "Roads potentially cut (196.4 km): derived by applying a 50m spatial safety buffer around flood polygons. Limitation: bridges, flyovers, and elevated embankments are not explicitly modelled due to lack of elevation tags in OSM."
+  },
+  "provenance": {
+    "population_source": "REAL (WorldPop 2020 100m modelled estimates)",
+    "landcover_source": "REAL (ESA WorldCover v200 2021)",
+    "osm_infrastructure": "REAL (OpenStreetMap nodes & ways)",
+    "flood_impact_metrics": "DERIVED (U-Net ResNet34 spatial overlay in UTM Zone 46N)",
+    "settlement_boundaries": "DERIVED (Voronoi of OSM Villages)"
+  }
+}
