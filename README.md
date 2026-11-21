@@ -17,6 +17,27 @@ make dev-web
 
 # Run the API (FastAPI, port 8000)
 make dev-api
+
+# Run offline demo (zero network required)
+make demo
+```
+
+## System Architecture
+
+```mermaid
+flowchart LR
+    S1["Sentinel-1 SAR (ESA)"] --> GEE["GEE Processing Pipeline"]
+    GEE --> UNET["U-Net (ResNet34)"]
+    UNET --> MASK["Flood Extent (DERIVED)"]
+    
+    MASK --> IMPACT["Impact & Cut-off Engine"]
+    WP["WorldPop + OSM"] --> IMPACT
+    
+    IMPACT --> API["FastAPI Backend (:8000)"]
+    API --> WEB["Next.js Web / CC (:3000)"]
+    
+    PWA["Beacon PWA (/beacon)"] -->|"Binary / SSE / SMS"| API
+    API -->|"Real-time Alerts"| CC["Command Center Console"]
 ```
 
 ## Phone Testing & Rescue Beacon PWA (`/beacon`)
