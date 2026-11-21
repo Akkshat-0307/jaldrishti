@@ -18,7 +18,7 @@ const ALERTS: Record<string, AlertContent> = {
   as: {
     lang: "as",
     label: "অসমীয়া (Assamese)",
-    text: "সাৱধান: আপোনাৰ এলেকাত বানপানীৰ সতৰ্কতা। তৎকালীনভাৱে ওখ আশ্ৰয় শিবিৰলৈ যাওক। সুৰক্ষিত পথ: এনএইচ৩৭ / বদৰপুৰ হৈ। জৰুৰী সহায়ৰ বাবে ১০৭৭ নম্বৰত যোগাযোগ কৰক।",
+    text: "সাৱধান: আপোনাৰ এলেকাত বানপানীৰ সতৰ্কতা। তৎকালীনভাৱে ওখ আশ্ৰয় শিবিৰলৈ যাওক। সুৰক্ষিত পথ: এনএইচ৩৭ / বদৰপুৰ হৈ। স্থানীয় প্ৰশাসনৰ নিৰ্দেশনা মানি চলক।",
     encoding: "UCS-2 (Unicode)",
     charCount: 147,
     parts: 1,
@@ -26,7 +26,7 @@ const ALERTS: Record<string, AlertContent> = {
   bn: {
     lang: "bn",
     label: "বাংলা (Bengali)",
-    text: "সাবধান: আপনার এলাকায় বন্যার সতর্কতা। অবিলম্বে উঁচু আশ্রয় কেন্দ্রে যান। নিরাপদ রুট: এনএইচ৩৭ / বদরপুর হয়ে। জরুরি সহায়তার জন্য ১০৭৭ নম্বরে যোগাযোগ করুন।",
+    text: "সাবধান: আপনার এলাকায় বন্যার সতর্কতা। অবিলম্বে উঁচু আশ্রয় কেন্দ্রে যান। নিরাপদ রুট: এনএইচ৩৭ / বদরপুর হয়ে। স্থানীয় প্রশাসনের নির্দেশনা মেনে চলুন।",
     encoding: "UCS-2 (Unicode)",
     charCount: 149,
     parts: 1,
@@ -34,17 +34,17 @@ const ALERTS: Record<string, AlertContent> = {
   hi: {
     lang: "hi",
     label: "हिन्दी (Hindi)",
-    text: "सावधान: आपके क्षेत्र में बाढ़ की गंभीर चेतावनी। तत्काल ऊंचे राहत शिविर में जाएं। सुरक्षित निकासी मार्ग: NH-37 बदरपुर। आपातकालीन सहायता के लिए 1077 डायल करें।",
+    text: "सावधान: आपके क्षेत्र में बाढ़ की गंभीर चेतावनी। तत्काल ऊंचे राहत शिविर में जाएं। सुरक्षित निकासी मार्ग: NH-37 बदरपुर। स्थानीय प्रशासन के निर्देशों का पालन करें।",
     encoding: "UCS-2 (Unicode)",
-    charCount: 152,
+    charCount: 154,
     parts: 1,
   },
   en: {
     lang: "en",
     label: "English",
-    text: "EMERGENCY FLOOD WARNING: Inundation detected in your area. Evacuate immediately to designated relief shelters. Safe corridor: via NH-37. For emergency rescue dial 1077.",
+    text: "EMERGENCY FLOOD WARNING: Inundation detected in your area. Evacuate immediately to designated relief shelters. Safe corridor: via NH-37. Follow local emergency instructions.",
     encoding: "GSM-7",
-    charCount: 168,
+    charCount: 174,
     parts: 2,
   },
 };

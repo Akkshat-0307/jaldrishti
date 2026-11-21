@@ -64,7 +64,7 @@ export function KpiStrip({ summary, robustCutoffsOnly, onToggleRobust }: KpiStri
           <span className="text-xs text-white/50">residents</span>
         </div>
         <div className="text-[11px] text-white/50 mt-1 truncate">
-          WorldPop 100m within flood mask
+          WorldPop 100m (modelled estimate)
         </div>
       </div>
 
