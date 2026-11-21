@@ -1,4 +1,4 @@
-.PHONY: dev-web dev-api install build test lint clean
+.PHONY: dev-web dev-api install build test lint demo clean
 
 # ── Development ──────────────────────────────────────────────
 
@@ -7,6 +7,17 @@ dev-web:
 
 dev-api:
 	cd apps/api && source .venv/bin/activate && uvicorn main:app --reload --port 8000
+
+# ── Demo (offline-safe) ──────────────────────────────────────
+
+demo:
+	@echo "▶ Starting JalDrishti in DEMO_MODE (zero network required)"
+	@echo "  API  → http://127.0.0.1:8000"
+	@echo "  Web  → http://localhost:3000"
+	@trap 'kill 0' INT; \
+	 cd apps/api && DEMO_MODE=1 .venv/bin/python -m uvicorn main:app --host 127.0.0.1 --port 8000 & \
+	 cd apps/web && npm run start -- -p 3000 & \
+	 wait
 
 # ── Setup ────────────────────────────────────────────────────
 
