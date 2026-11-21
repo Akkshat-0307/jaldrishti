@@ -2,6 +2,7 @@
 
 import React from "react";
 import {
+  Bell,
   Cpu,
   Droplets,
   MapPin,
@@ -12,6 +13,7 @@ import {
 import { ImpactTab } from "./tabs/ImpactTab";
 import { VillagesTab } from "./tabs/VillagesTab";
 import { RoutesTab } from "./tabs/RoutesTab";
+import { BeaconsTab } from "./tabs/BeaconsTab";
 import { AlertsTab } from "./tabs/AlertsTab";
 import { WhatIfTab } from "./tabs/WhatIfTab";
 import { ModelTab } from "./tabs/ModelTab";
@@ -58,7 +60,8 @@ export function TabDrawer({
     { id: "impact", label: "Impact", icon: Droplets },
     { id: "villages", label: "Villages", icon: MapPin },
     { id: "routes", label: "Routes", icon: Navigation },
-    { id: "alerts", label: "Alerts & SOS", icon: Radio },
+    { id: "beacons", label: "Beacons", icon: Radio },
+    { id: "alerts", label: "Alerts", icon: Bell },
     { id: "whatif", label: "What-If", icon: Sliders },
     { id: "model", label: "Model Card", icon: Cpu },
   ];
@@ -113,6 +116,9 @@ export function TabDrawer({
             onSelectZone={onSelectZone}
             routeData={routeData}
           />
+        )}
+        {activeTab === "beacons" && (
+          <BeaconsTab onSelectZone={onSelectZone} />
         )}
         {activeTab === "alerts" && (
           <AlertsTab villages={villages} selectedZoneId={selectedZoneId} />

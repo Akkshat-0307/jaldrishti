@@ -193,12 +193,16 @@ class BeaconCreate(BaseModel):
     need_type: NeedType = NeedType.other
     battery: float | None = Field(default=None, ge=0.0, le=100.0)
     channel: BeaconChannel = BeaconChannel.online
+    payload_code: str | None = None
+    note: str | None = None
 
 
 class BeaconUpdate(BaseModel):
     status: BeaconStatus | None = None
     group_size: int | None = None
     need_type: NeedType | None = None
+    assigned_team: str | None = None
+    note: str | None = None
 
 
 class BeaconResponse(BaseModel):
@@ -206,13 +210,24 @@ class BeaconResponse(BaseModel):
     id: str
     lat: float
     lon: float
-    timestamp: datetime
+    timestamp: datetime | str
     group_size: int
     need_type: NeedType
     battery: float | None = None
     channel: BeaconChannel
     status: BeaconStatus
     payload_code: str
+    raw_hex: str | None = None
+    note: str | None = None
+    assigned_team: str | None = None
+    nearest_zone_id: str | None = None
+    zone_name: str | None = None
+    is_cutoff: bool = False
+    touches_edge: bool = False
+    route_or_staging_hint: str | None = None
+    provenance: str = "SIMULATED"
+    created_at: str | None = None
+    updated_at: str | None = None
 
 
 # ---------------------------------------------------------------------------

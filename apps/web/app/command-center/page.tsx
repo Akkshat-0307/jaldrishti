@@ -71,6 +71,7 @@ function CommandCenterContent() {
     showRoutes: true,
     showWhatIf: false,
     showRecession: false,
+    showBeacons: true,
     opacityUnet: 70,
     opacityTierA: 70,
     opacityWhatIf: 70,
@@ -158,6 +159,7 @@ function CommandCenterContent() {
               whatifAreaHa={whatIfDetails.areaHa}
               robustCutoffsOnly={robustCutoffsOnly}
               timelineGeojsonUrl={timelineGeojsonUrl}
+              showBeacons={layers.showBeacons}
             />
 
             {/* Floating Time Scrubber */}

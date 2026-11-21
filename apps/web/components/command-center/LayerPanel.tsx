@@ -198,7 +198,7 @@ export function LayerPanel({ layers, onChangeLayers }: LayerPanelProps) {
             </div>
 
             {/* 8. Recession Progression */}
-            <div className="space-y-1.5">
+            <div className="space-y-1.5 pb-2.5 border-b border-white/5">
               <div className="flex items-center justify-between">
                 <label className="flex items-center gap-2 cursor-pointer text-white/80">
                   <input
@@ -210,6 +210,22 @@ export function LayerPanel({ layers, onChangeLayers }: LayerPanelProps) {
                   <span>Recession Scene (June 30)</span>
                 </label>
                 <Badge variant="derived" size="sm">DERIVED</Badge>
+              </div>
+            </div>
+
+            {/* 9. Rescue Beacons */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 cursor-pointer text-white/80">
+                  <input
+                    type="checkbox"
+                    checked={layers.showBeacons}
+                    onChange={(e) => onChangeLayers({ showBeacons: e.target.checked })}
+                    className="rounded border-white/20 bg-white/5 text-rose-500 focus:ring-rose-400"
+                  />
+                  <span>Rescue Beacons (SOS)</span>
+                </label>
+                <Badge variant="simulated" size="sm">SIMULATED</Badge>
               </div>
             </div>
           </div>

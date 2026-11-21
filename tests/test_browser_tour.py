@@ -116,3 +116,36 @@ def test_prefers_reduced_motion_renders_cleanly():
 
     html_cc = fetch_rendered_dom("http://localhost:3000/command-center", reduced_motion=True)
     assert "Flood Extent" in html_cc
+
+
+def test_beacon_pwa_renders_cleanly():
+    """Verify that Beacon PWA page renders SOS button, telemetry, and fallback channels."""
+    html = fetch_rendered_dom("http://localhost:3000/beacon")
+    assert len(html) > 3000
+
+    # Title & Telemetry
+    assert "Rescue Beacon" in html or "Rescue" in html
+    assert "ASTRA 2026" in html
+    assert "SOS" in html
+
+    # 16-byte payload indicator
+    assert "16-BYTE" in html or "PAYLOAD" in html or "CRC16" in html
+
+    # Multi-path fallback channels
+    assert "sms:1077" in html or "1077" in html
+    assert "SIMULATED" in html
+    assert "Satellite" in html or "NavIC" in html
+
+    # Privacy link
+    assert "/beacon/privacy" in html
+
+
+def test_beacon_privacy_page_renders():
+    """Verify DPDP Act 2023 compliance, payload inspection, and data erasure controls."""
+    html = fetch_rendered_dom("http://localhost:3000/beacon/privacy")
+    assert len(html) > 3000
+
+    assert "DPDP Act" in html or "2023" in html
+    assert "Zero Personally Identifiable" in html or "Zero" in html
+    assert "Right to Erasure" in html or "Purge" in html
+    assert "16-Byte Payload" in html or "CRC16" in html

@@ -30,6 +30,8 @@ from routers import alerts, beacons, events, forecast, health, impact, route, wh
 async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     """Startup / shutdown lifecycle hook."""
     print(f"JalDrishti API v{API_VERSION} starting (DEMO_MODE={DEMO_MODE})")
+    from beacon_db import init_db
+    init_db()
     yield
     print("JalDrishti API shutting down")
 

@@ -252,11 +252,20 @@ export interface BeaconItem {
   lon: number;
   timestamp: string;
   group_size: number;
-  need_type: "rescue" | "medical" | "food_water" | "shelter" | "other";
-  battery?: number;
-  channel: "online" | "ble_mesh" | "packet_radio" | "sms_satellite";
-  status: "active" | "assigned" | "rescued" | "dismissed";
+  need_type: "medical" | "food" | "boat" | "multiple" | "other" | string;
+  battery?: number | null;
+  channel: "online" | "sms" | "nav_sim" | string;
+  status: "new" | "assigned" | "en_route" | "rescued" | string;
   payload_code?: string;
+  raw_hex?: string;
+  note?: string | null;
+  assigned_team?: string | null;
+  nearest_zone_id?: string | null;
+  zone_name?: string | null;
+  is_cutoff?: boolean;
+  touches_edge?: boolean;
+  route_or_staging_hint?: string | null;
+  provenance?: string;
 }
 
 export interface LayerState {
@@ -268,6 +277,7 @@ export interface LayerState {
   showRoutes: boolean;
   showWhatIf: boolean;
   showRecession: boolean;
+  showBeacons: boolean;
   opacityUnet: number;
   opacityTierA: number;
   opacityWhatIf: number;

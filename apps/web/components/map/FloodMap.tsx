@@ -5,6 +5,7 @@ import * as maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Badge } from "@/components/ui/Badge";
 import { GlassCard } from "@/components/ui/GlassCard";
+import type { BeaconItem } from "../command-center/types";
 import {
   Eye,
   EyeOff,
@@ -21,6 +22,7 @@ interface FloodMapProps {
   whatifAreaHa?: number | null;
   robustCutoffsOnly?: boolean;
   timelineGeojsonUrl?: string | null;
+  showBeacons?: boolean;
 }
 
 const EMPTY_GEOJSON: GeoJSON.FeatureCollection = {
@@ -94,6 +96,7 @@ export default function FloodMap({
   whatifAreaHa = null,
   robustCutoffsOnly = false,
   timelineGeojsonUrl,
+  showBeacons = true,
 }: FloodMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -109,7 +112,7 @@ export default function FloodMap({
   const [opacity, setOpacity] = useState(0.7);
 
   const [selectedFeature, setSelectedFeature] = useState<{
-    type: "zone" | "shelter" | "road";
+    type: "zone" | "shelter" | "road" | "beacon";
     title: string;
     properties: FeatureProperties;
   } | null>(null);
@@ -123,6 +126,49 @@ export default function FloodMap({
       source.setData(routeGeojson || EMPTY_GEOJSON);
     }
   }, [routeGeojson, mapLoaded]);
+
+  // Sync live beacons from API onto map source
+  useEffect(() => {
+    if (!mapRef.current || !mapLoaded) return;
+    const map = mapRef.current;
+
+    const syncBeacons = async () => {
+      try {
+        const res = await fetch("/api/beacons");
+        if (res.ok) {
+          const list = await res.json();
+          if (Array.isArray(list)) {
+            const geojson: GeoJSON.FeatureCollection = {
+              type: "FeatureCollection",
+              features: (list as BeaconItem[]).map((b: BeaconItem) => ({
+                type: "Feature",
+                id: b.id,
+                geometry: { type: "Point", coordinates: [b.lon, b.lat] },
+                properties: {
+                  id: b.id,
+                  status: b.status,
+                  need_type: b.need_type,
+                  group_size: b.group_size,
+                  zone_name: b.zone_name,
+                  assigned_team: b.assigned_team || "Unassigned",
+                  note: b.note || "",
+                  route_or_staging_hint: b.route_or_staging_hint || "",
+                },
+              })),
+            };
+            const src = map.getSource("rescue-beacons") as maplibregl.GeoJSONSource | undefined;
+            if (src) {
+              src.setData(geojson);
+            }
+          }
+        }
+      } catch {}
+    };
+
+    syncBeacons();
+    const timer = setInterval(syncBeacons, 8000);
+    return () => clearInterval(timer);
+  }, [mapLoaded]);
 
   // Sync selectedZoneId with map highlight when changed externally
   useEffect(() => {
@@ -424,6 +470,123 @@ export default function FloodMap({
         },
       });
 
+      // 4. Rescue Beacons Source & Layers
+      map.addSource("rescue-beacons", {
+        type: "geojson",
+        data: EMPTY_GEOJSON,
+        cluster: true,
+        clusterMaxZoom: 14,
+        clusterRadius: 35,
+      });
+
+      // Beacon clusters
+      map.addLayer({
+        id: "beacon-clusters",
+        type: "circle",
+        source: "rescue-beacons",
+        filter: ["has", "point_count"],
+        paint: {
+          "circle-color": "#E11D48",
+          "circle-radius": ["step", ["get", "point_count"], 14, 5, 18, 10, 24],
+          "circle-stroke-width": 2,
+          "circle-stroke-color": "#FFFFFF",
+          "circle-opacity": 0.9,
+        },
+      });
+
+      // Beacon cluster count label
+      map.addLayer({
+        id: "beacon-cluster-count",
+        type: "symbol",
+        source: "rescue-beacons",
+        filter: ["has", "point_count"],
+        layout: {
+          "text-field": "{point_count_abbreviated}",
+          "text-size": 11,
+        },
+        paint: {
+          "text-color": "#FFFFFF",
+        },
+      });
+
+      // Beacon unclustered pulse for new status
+      map.addLayer({
+        id: "beacon-unclustered-pulse",
+        type: "circle",
+        source: "rescue-beacons",
+        filter: ["all", ["!has", "point_count"], ["==", "status", "new"]],
+        paint: {
+          "circle-color": "#E11D48",
+          "circle-radius": 14,
+          "circle-opacity": 0.35,
+        },
+      });
+
+      // Beacon unclustered markers
+      map.addLayer({
+        id: "beacon-unclustered-point",
+        type: "circle",
+        source: "rescue-beacons",
+        filter: ["!has", "point_count"],
+        paint: {
+          "circle-color": [
+            "match",
+            ["get", "status"],
+            "new",
+            "#E11D48",
+            "assigned",
+            "#3B82F6",
+            "en_route",
+            "#A855F7",
+            "rescued",
+            "#10B981",
+            "#F59E0B",
+          ],
+          "circle-radius": 6.5,
+          "circle-stroke-color": "#FFFFFF",
+          "circle-stroke-width": 2,
+          "circle-opacity": 1.0,
+        },
+      });
+
+      // Interactions: Beacon Clusters Click
+      map.on("click", "beacon-clusters", (e) => {
+        const features = map.queryRenderedFeatures(e.point, {
+          layers: ["beacon-clusters"],
+        });
+        const clusterId = features[0]?.properties?.cluster_id;
+        const src = map.getSource("rescue-beacons") as maplibregl.GeoJSONSource;
+        if (src && clusterId !== undefined) {
+          src.getClusterExpansionZoom(clusterId).then((zoom) => {
+            if (zoom !== undefined && e.lngLat) {
+              map.easeTo({ center: e.lngLat, zoom });
+            }
+          }).catch(() => {});
+        }
+      });
+
+      // Interactions: Beacon Point Click
+      map.on("click", "beacon-unclustered-point", (e) => {
+        if (!e.features || e.features.length === 0) return;
+        const f = e.features[0];
+        const props = (f.properties || {}) as FeatureProperties;
+        setSelectedFeature({
+          type: "beacon",
+          title: `SOS: ${props.id || "Beacon"}`,
+          properties: props,
+        });
+      });
+
+      // Beacon cursor pointers
+      ["beacon-clusters", "beacon-unclustered-point"].forEach((layer) => {
+        map.on("mouseenter", layer, () => {
+          map.getCanvas().style.cursor = "pointer";
+        });
+        map.on("mouseleave", layer, () => {
+          map.getCanvas().style.cursor = "";
+        });
+      });
+
       // Interactions: Click on Zone
       map.on("click", "zones-fill", (e) => {
         if (!e.features || e.features.length === 0) return;
@@ -580,7 +743,15 @@ export default function FloodMap({
     if (map.getLayer("shelters-points")) {
       map.setLayoutProperty("shelters-points", "visibility", sheltersVis);
     }
-  }, [selectedModel, showConfidence, layerVisible, showZones, showRoads, showShelters, opacity, mapLoaded]);
+
+    const beaconsVis = showBeacons ? "visible" : "none";
+    if (map.getLayer("beacon-clusters")) {
+      map.setLayoutProperty("beacon-clusters", "visibility", beaconsVis);
+      map.setLayoutProperty("beacon-cluster-count", "visibility", beaconsVis);
+      map.setLayoutProperty("beacon-unclustered-pulse", "visibility", beaconsVis);
+      map.setLayoutProperty("beacon-unclustered-point", "visibility", beaconsVis);
+    }
+  }, [selectedModel, showConfidence, layerVisible, showZones, showRoads, showShelters, showBeacons, opacity, mapLoaded]);
 
   return (
     <div className="relative w-full h-[650px] rounded-2xl overflow-hidden border border-white/10 bg-space-950 shadow-2xl">
@@ -777,6 +948,40 @@ export default function FloodMap({
                     {selectedFeature.properties.is_cut ? "FLOOD CUT (Inundated)" : "DRY (Passable)"}
                   </span>
                 </div>
+              </div>
+            )}
+
+            {selectedFeature.type === "beacon" && (
+              <div className="space-y-1 font-mono text-[11px] pt-1">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Need:</span>
+                  <span className="text-rose-400 font-bold capitalize">
+                    {String(selectedFeature.properties.need_type || "Emergency")}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Group Count:</span>
+                  <span className="text-white font-bold">
+                    {String(selectedFeature.properties.group_size || 1)} persons
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Status:</span>
+                  <span className="text-cyan-400 font-bold capitalize">
+                    {String(selectedFeature.properties.status || "new").replace("_", " ")}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Assigned Team:</span>
+                  <span className="text-white truncate max-w-[150px]">
+                    {String(selectedFeature.properties.assigned_team || "Unassigned")}
+                  </span>
+                </div>
+                {selectedFeature.properties.note ? (
+                  <div className="pt-1 text-[10px] text-slate-300 italic border-t border-white/10">
+                    &ldquo;{String(selectedFeature.properties.note)}&rdquo;
+                  </div>
+                ) : null}
               </div>
             )}
           </GlassCard>
