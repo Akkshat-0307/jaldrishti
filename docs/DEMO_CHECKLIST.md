@@ -12,7 +12,16 @@
 - [ ] In Command Center → Routing tab → select zone_20 → route appears on map
 - [ ] In Command Center → What-if tab → move slider → flooded area updates
 - [ ] In Command Center → Alerts tab → Preview → alert text in EN/HI/AS/BN visible
-- [ ] `python3 scripts/smoke_test.py` → 14/14 PASS
+- [ ] `python3 scripts/smoke_test.py` → 15/15 PASS
+
+## Backup Video Recording Instructions
+
+1. Open QuickTime Player (macOS) → **File** → **New Screen Recording**.
+2. Select display window (1440x900 or 1280x720 recommended).
+3. Set Audio to "Built-in Microphone" or system audio.
+4. Rehearse the 5-Minute Demo Script below once before recording.
+5. Record one continuous 5-minute take following the script timings.
+6. Export as `jaldrishti_backup_demo_1080p.mp4` and store on a local USB drive or cloud drive for offline contingency.
 
 ## 5-Minute Demo Script
 
