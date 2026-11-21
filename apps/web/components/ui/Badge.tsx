@@ -5,6 +5,7 @@ export type BadgeVariant = "real" | "derived" | "simulated" | "neutral";
 
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
   variant?: BadgeVariant;
+  size?: "sm" | "md";
   children?: React.ReactNode;
 }
 
@@ -33,6 +34,7 @@ const variantStyles: Record<BadgeVariant, { container: string; dot: string; labe
 
 export function Badge({
   variant = "neutral",
+  size = "md",
   children,
   className,
   ...props
@@ -42,7 +44,8 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-mono font-medium border tracking-wider uppercase",
+        "inline-flex items-center gap-1.5 rounded-full font-mono font-medium border tracking-wider uppercase",
+        size === "sm" ? "px-2 py-0.5 text-[10px]" : "px-2.5 py-0.5 text-xs",
         config.container,
         className
       )}

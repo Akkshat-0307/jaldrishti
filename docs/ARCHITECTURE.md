@@ -79,10 +79,14 @@ During Phase 5 development, this architecture was updated to a **physically-grou
    - The HAND model is calibrated against the observed U-Net flood mask by sweeping stage level $h \in [0.25, 15.0]\text{ m}$ in $0.25\text{ m}$ increments.
    - Calibrating on the West half of the scene ($x < 338$) and testing on the East half ($x \ge 338$) yields an East test IoU of **0.4550** (F1: **0.6254**).
    - Calibrating on the East half and testing on the West half yields a West test IoU of **0.4799** (F1: **0.6486**).
-   - Full-domain calibration converges to optimal baseline $h^* = 3.25\text{ m}$ with IoU = **0.4705** and F1 = **0.6399**.
-5. **Role of Rainfall and River Forecasts:**
+   - Full-domain calibration converges to optimal baseline $h^*_{\text{iou}} = 3.25\text{ m}$ with IoU = **0.4705** and F1 = **0.6399**.
+5. **Area-Matched Baseline Calibration ($h^*_{\text{area}} = 1.50\text{ m}$):**
+   - While $h^*_{\text{iou}} = 3.25\text{ m}$ optimizes IoU, it produces $19,327\text{ ha}$ of inundation—almost double the observed U-Net extent ($9,976\text{ ha}$).
+   - In Phase 6, an Area-Matched stage $h^*_{\text{area}} = 1.50\text{ m}$ was calibrated, producing $10,408.34\text{ ha}$ (+4.3% of U-Net footprint) as the operational $\Delta h = 0.0\text{ m}$ baseline. Both baselines are preserved in `metrics.json`.
+   - A mandatory planning aid disclaimer is attached: *"Water-level scenarios are a planning aid, not a forecast."*
+6. **Role of Rainfall and River Forecasts:**
    - NASA IMERG V07 rainfall is preserved and displayed as **REAL satellite meteorological context** (1d: 67.18 mm, 3d: 205.28 mm, 7d: 276.76 mm).
-   - ECMWF GloFAS v4.0 is integrated via the Open-Meteo Flood API as **REAL modelled river outlook** for the Barak River (discharge forecast, 7-day hydrograph, trend).
+   - ECMWF GloFAS v4.0 is integrated via the Open-Meteo Flood API as **REAL modelled river outlook** for the nearest river cell (`lat=24.825, lon=92.800`). Arbitrary severity tags were removed in Phase 6, showing pure discharge metrics (499.0 m³/s current, 503.7 m³/s peak) tagged with temporal scope (`current outlook (not the 2022 event)`).
 
 ---
 
@@ -90,13 +94,15 @@ During Phase 5 development, this architecture was updated to a **physically-grou
 
 1. **Dual-Graph Reachability Analysis:**
    - A settlement zone is classified as **CUT OFF** if and only if it possesses a viable road path to a safe shelter in the pre-flood road graph ($G_{dry}$), but becomes disconnected in the flooded road graph ($G_{flooded}$).
+   - Routes originate from verified OSM village coordinates (`z["center"]`) rather than unbounded Voronoi centroids, ensuring 100% agreement between zonal impact and Dijkstra reachability.
    - Roads intersecting a 50 m floodwater buffer are treated as severed.
    - Roads within 200 m of floodwaters experience a 0.5× speed reduction and a 1.5× impedance penalty.
 2. **Boundary Truncation & Robust Cut-Off Breakdown:**
    - The study bounding box artificially truncates roads exiting the region.
    - Of the 8 identified cut-off settlement zones:
      - **5 zones** (`Ratpur`, `Badripāra`, `Kirishanpur`, `Gossaipur`, `Khoril`) intersect the bounding box edge (`touches_window_edge: true`). Because roads exiting the window cannot be traced outside the study area, cut-off status for these zones may be overstated.
-     - **3 zones** (`Debpāra`, `Māsimpur`, `Dudhpatli`) lie entirely within the interior and are **robustly cut off**.
+     - **3 zones** (`Debpāra`, `Māsimpur (North)`, `Dudhpatli`) lie entirely within the interior and are **robustly cut off**.
+   - Duplicate village names in Cachar are formally disambiguated: `Masimpur (South)` vs `Māsimpur (North)`, `Khelma (South)` vs `Khelma (North)`, `Rāmnagar (West)` vs `Rāmnagar (East)`.
 3. **Alternate Route Divergence Constraint:**
    - Candidate alternate routes must share $\le 80\%$ of their length with the primary route corridor. If the shared fraction exceeds 80%, the system explicitly returns `has_alternate: false` ("no distinct alternate route") to prevent misleading users with near-duplicate paths.
 4. **Boat / Air Staging Disclaimer:**
@@ -110,8 +116,9 @@ During Phase 5 development, this architecture was updated to a **physically-grou
 | Layer / Component | Provenance Tag | Source Dataset / Technique |
 | :--- | :--- | :--- |
 | Baseline Thresholding Mask | `DERIVED` | Sentinel-1 GRD IW, Otsu + Change Detection + JRC + HAND |
-| U-Net AI Segmentation Mask | `DERIVED` | U-Net ResNet34, Sen1Floods11 Pretrained |
-| HAND Water-Level Scenarios | `DERIVED` | MERIT-Hydro HAND ($h^* = 3.25\text{ m}$, $\Delta h \in [-1.0, +2.0]\text{ m}$) |
+| U-Net AI Segmentation Mask | `DERIVED` | U-Net ResNet34, Sen1Floods11 Pretrained (Peak: 9,976 ha, Recession: 4,995 ha) |
+| Multi-temporal Satellite Timeline | `DERIVED` | Sentinel-1 (2022-05-01 Dry, 2022-06-18 Peak, 2022-06-30 Recession) |
+| HAND Water-Level Scenarios | `SIMULATED` | MERIT-Hydro HAND ($h^*_{\text{area}} = 1.50\text{ m}$, $\Delta h \in [-1.0, +2.0]\text{ m}$) |
 | Satellite Rainfall Context | `REAL` | NASA GPM IMERG V07 Half-Hourly Precipitation (0.1°) |
 | GloFAS River Outlook | `REAL (modelled)` | ECMWF GloFAS v4.0 River Discharge via Open-Meteo API |
 | Safe Facilities & Road Graph | `REAL` | OpenStreetMap (Hospitals, Schools, Drivable Highway Network) |
@@ -120,3 +127,24 @@ During Phase 5 development, this architecture was updated to a **physically-grou
 | Evacuation Routes | `DERIVED` | Multi-Target Dijkstra on Flooded OSM Road Network |
 | Staging Transfer Vectors | `DERIVED` | Nearest Topological Component Egress Hint |
 | Emergency Alerts & CAP v1.2 | `DERIVED` | Multi-lingual SMS Templates & OASIS CAP v1.2 XML |
+
+---
+
+## 4. Frontend Component Architecture (Phase 6)
+
+The Command Center UI was refactored in Phase 6 from a monolithic page into high-cohesion, modular components under `apps/web/components/command-center/`, each strictly adhering to `< 350 lines`:
+
+- **Data Layer (`hooks/useEventData.ts`):** Unified TanStack Query hooks fetching event details, impacts, routes, scenarios, timeline, and river forecast, with automatic offline fallback to `/data/events/assam-2022/*.json` for `DEMO_MODE=1`.
+- **TopBar (`TopBar.tsx`):** Event selector, status badges (`REAL/DERIVED`), demo tour trigger, accessible table view toggle, language selector (EN, HI, AS, BN), and system health indicator.
+- **KPI Strip (`KpiStrip.tsx`):** 6 key operational metrics with provenance badges: Flooded Area, Exposed Population, Cut-Off Zones, Cropland Waterlogged, Potentially Severed Roads, and Safe Shelters.
+- **TimeScrubber (`TimeScrubber.tsx`):** Multi-temporal satellite scrubber stepping through May 1 Dry, June 18 Peak Flood, and June 30 Recession scenes with auto-play support.
+- **TabDrawer (`TabDrawer.tsx` & `tabs/*`):** Collapsible right-hand drawer hosting 6 specialized tab views:
+  - `ImpactTab`: Inundation breakdown, land cover, rainfall accumulation, and river discharge.
+  - `VillagesTab`: 20-zone impact table with sorting, search, edge-touch toggle, and priority scores.
+  - `RoutesTab`: Dijkstra evacuation paths, distance/ETA physics breakdown, alternate corridors, and boat/air staging hints.
+  - `AlertsTab`: Multilingual SMS broadcast previews (GSM-7/UCS-2), CAP v1.2 XML feed viewer, and offline packet SOS beacon monitor.
+  - `WhatIfTab`: HAND water-level delta slider ($\Delta h \in [-1.0, +2.0]\text{ m}$), delta vs observed comparison, and planning aid disclaimer.
+  - `ModelTab`: Complete model card, Sen1Floods11 ablation benchmarks, and failure mode analysis.
+- **Accessible Data Table (`AccessibleDataTable.tsx`):** High-contrast, screen-reader optimized data table for accessibility compliance and hackathon judges who prefer tabular inspection over map interactions.
+- **Guided Demo Tour (`GuidedTour.tsx`):** 8-step interactive tour guiding judges through every core system capability.
+- **Command Palette (`CommandPalette.tsx`):** Fast keyboard-driven navigation (`Ctrl+K` / `Cmd+K`) across views, zones, and operations.

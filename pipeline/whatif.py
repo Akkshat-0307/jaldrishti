@@ -171,7 +171,21 @@ def calibrate_water_level(
             best_precision = prec
             best_recall = rec
 
-    print(f"Optimal baseline water level h* = {best_h:.2f} m with IoU = {best_iou:.4f}, F1 = {best_f1:.4f}")
+    print(f"Optimal IoU water level h* = {best_h:.2f} m with IoU = {best_iou:.4f}, F1 = {best_f1:.4f}")
+
+    # Area-Matched stage (closest predicted inundated area to observed U-Net flood footprint)
+    target_unet_pixels = int(np.sum(unet_mask))
+    best_h_area = float(h_min)
+    min_pixel_diff = float("inf")
+    best_area_res = sweep_results[0]
+    for res in sweep_results:
+        diff = abs(res["predicted_pixels"] - target_unet_pixels)
+        if diff < min_pixel_diff:
+            min_pixel_diff = diff
+            best_h_area = res["water_level_m"]
+            best_area_res = res
+
+    print(f"Area-Matched baseline water level h* = {best_h_area:.2f} m with IoU = {best_area_res['iou']:.4f}, F1 = {best_area_res['f1']:.4f}")
 
     # Spatial Block Cross-Validation (West half vs East half)
     h_dim, w_dim = hand.shape
@@ -245,8 +259,18 @@ def calibrate_water_level(
     }
 
     calibration_metadata = {
-        "h_star_optimal_m": best_h,
+        "h_star_optimal_m": best_h_area,  # Area-matched stage is primary baseline
+        "h_star_area_matched_m": best_h_area,
+        "h_star_iou_optimal_m": best_h,
         "full_domain_metrics": {
+            "iou": round(best_area_res["iou"], 4),
+            "f1": round(best_area_res["f1"], 4),
+            "precision": round(best_area_res["precision"], 4),
+            "recall": round(best_area_res["recall"], 4),
+            "predicted_pixels": best_area_res["predicted_pixels"],
+        },
+        "iou_optimal_metrics": {
+            "h_m": best_h,
             "iou": round(best_iou, 4),
             "f1": round(best_f1, 4),
             "precision": round(best_precision, 4),
@@ -478,6 +502,7 @@ def generate_scenarios(
             "delta_tag": tag,
             "effective_water_level_m": h_eff,
             "h_star_baseline_m": h_star,
+            "planning_aid_note": "Water-level scenarios are a planning aid, not a forecast.",
             "layer_provenance": "DERIVED (HAND Water-Level Scenario)",
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "utm_crs": UTM_CRS,
@@ -541,6 +566,13 @@ def generate_scenarios(
     master_index = {
         "event_id": "assam-2022",
         "h_star_baseline_m": h_star,
+        "baseline_mode": "area_matched",
+        "planning_aid_note": "Water-level scenarios are a planning aid, not a forecast.",
+        "alternative_baseline": {
+            "type": "iou_optimal",
+            "h_star_m": 3.25,
+            "note": "IoU-optimal stage (h* = 3.25m) available as selectable alternative.",
+        },
         "scenarios_count": len(scenario_summaries),
         "available_deltas_m": deltas,
         "bands": {
@@ -607,11 +639,16 @@ def run_phase5_whatif_pipeline(
 
     metrics_data["hand_calibration"] = {
         "calibrated_h_star_m": h_star,
-        "optimal_metrics": calib["full_domain_metrics"],
+        "selected_baseline": "area_matched",
+        "h_star_area_matched_m": calib["h_star_area_matched_m"],
+        "h_star_iou_optimal_m": calib["h_star_iou_optimal_m"],
+        "area_matched_metrics": calib["full_domain_metrics"],
+        "iou_optimal_metrics": calib["iou_optimal_metrics"],
+        "planning_aid_note": "Water-level scenarios are a planning aid, not a forecast.",
         "spatial_cross_validation": calib["spatial_cross_validation"],
         "calibration_sweep_sample": [
             res for res in calib["sweep_curve"]
-            if res["water_level_m"] in [1.0, 2.0, 2.5, 3.0, 3.25, 3.5, 4.0, 5.0, 6.0, 8.0, 10.0]
+            if res["water_level_m"] in [0.5, 1.0, 1.43, 1.5, 2.0, 2.5, 3.0, 3.25, 3.5, 4.0, 5.0, 6.0, 8.0, 10.0]
         ],
     }
 

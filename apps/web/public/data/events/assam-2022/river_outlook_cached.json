@@ -1,6 +1,8 @@
 {
   "river_name": "Barak River",
   "station_location": "Silchar / Cachar, Assam",
+  "cell_label": "nearest GloFAS river cell",
+  "temporal_scope": "current outlook (not the 2022 event)",
   "coordinates": [
     92.8,
     24.825
@@ -8,7 +10,7 @@
   "elevation_m": 27.0,
   "model_source": "ECMWF GloFAS v4.0 via Open-Meteo Flood API",
   "layer_provenance": "REAL (modelled, GloFAS-derived)",
-  "fetch_timestamp": "2026-11-21T17:46:37.190347+00:00",
+  "fetch_timestamp": "2026-11-21T18:51:08.072428+00:00",
   "source_mode": "live",
   "units": {
     "river_discharge": "m\u00b3/s"
@@ -16,7 +18,6 @@
   "current_discharge_m3s": 499.0,
   "peak_forecast_discharge_m3s": 503.7,
   "trend": "stable",
-  "flood_severity": "moderate",
   "daily_forecast": [
     {
       "date": "2026-11-21",
@@ -68,5 +69,5 @@
       "min_m3s": 464.6
     }
   ],
-  "disclaimer": "GloFAS river discharge values are global hydrological model outputs forced by numerical weather predictions. Useful for regional trend and timing outlook, but not equivalent to in-situ gauge measurements."
+  "disclaimer": "GloFAS river discharge values are global hydrological model outputs forced by numerical weather predictions for the nearest GloFAS river cell (current outlook, not the 2022 event). Useful for regional trend and timing outlook, but not equivalent to in-situ gauge measurements."
 }

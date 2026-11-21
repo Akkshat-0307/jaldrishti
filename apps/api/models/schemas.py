@@ -224,6 +224,8 @@ class RiverForecast(BaseModel):
     lon: float | None = 92.800
     river_name: str | None = "Barak River"
     station_location: str | None = "Silchar / Cachar, Assam"
+    cell_label: str = "nearest GloFAS river cell"
+    temporal_scope: str = "current outlook (not the 2022 event)"
     coordinates: list[float] = Field(default_factory=lambda: [92.8, 24.825])
     elevation_m: float | None = None
     model_source: str = "ECMWF GloFAS v4.0 via Open-Meteo Flood API"
@@ -233,7 +235,7 @@ class RiverForecast(BaseModel):
     current_discharge_m3s: float = 0.0
     peak_forecast_discharge_m3s: float = 0.0
     trend: str = "stable"
-    flood_severity: str = "moderate"
+    flood_severity: str | None = None
     discharge_m3s: list[float] = Field(default_factory=list, description="Daily discharge forecast in m³/s")
     dates: list[str] = Field(default_factory=list, description="ISO date strings matching discharge values")
     daily_forecast: list[dict[str, Any]] = Field(default_factory=list)

@@ -20,6 +20,7 @@ interface FloodMapProps {
   whatifGeojsonUrl?: string | null;
   whatifAreaHa?: number | null;
   robustCutoffsOnly?: boolean;
+  timelineGeojsonUrl?: string | null;
 }
 
 const EMPTY_GEOJSON: GeoJSON.FeatureCollection = {
@@ -71,6 +72,19 @@ interface FeatureProperties {
   [key: string]: unknown;
 }
 
+function isWebGLSupported(): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    const canvas = document.createElement("canvas");
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+    );
+  } catch {
+    return false;
+  }
+}
+
 export default function FloodMap({
   initialModel = "unet",
   selectedZoneId = null,
@@ -79,11 +93,13 @@ export default function FloodMap({
   whatifGeojsonUrl = null,
   whatifAreaHa = null,
   robustCutoffsOnly = false,
+  timelineGeojsonUrl,
 }: FloodMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
 
   const [mapLoaded, setMapLoaded] = useState(false);
+  const [webGLError, setWebGLError] = useState(false);
   const [selectedModel, setSelectedModel] = useState<"tier_a" | "unet" | "whatif">(initialModel);
   const [showConfidence, setShowConfidence] = useState<boolean>(false);
   const [layerVisible, setLayerVisible] = useState(true);
@@ -125,15 +141,22 @@ export default function FloodMap({
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    const map = new maplibregl.Map({
-      container: mapContainerRef.current,
-      style: DARK_STYLE,
-      center: [92.80, 24.83],
-      zoom: 11.5,
-      pitch: 0,
-      bearing: 0,
-      attributionControl: false,
-    });
+    try {
+      if (!isWebGLSupported()) {
+        console.warn("WebGL is not supported in this environment.");
+        setWebGLError(true);
+        return;
+      }
+
+      const map = new maplibregl.Map({
+        container: mapContainerRef.current,
+        style: DARK_STYLE,
+        center: [92.80, 24.83],
+        zoom: 11.5,
+        pitch: 0,
+        bearing: 0,
+        attributionControl: false,
+      });
 
     map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
     map.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-left");
@@ -453,11 +476,15 @@ export default function FloodMap({
       setMapLoaded(true);
     });
 
-    mapRef.current = map;
-    return () => {
-      map.remove();
-      mapRef.current = null;
-    };
+      mapRef.current = map;
+      return () => {
+        map.remove();
+        mapRef.current = null;
+      };
+    } catch (err) {
+      console.warn("Failed to initialize MapLibre GL:", err);
+      setWebGLError(true);
+    }
   }, [onSelectZone]);
 
   // Sync initialModel if changed externally
@@ -476,6 +503,19 @@ export default function FloodMap({
       source.setData(whatifGeojsonUrl);
     }
   }, [whatifGeojsonUrl, mapLoaded]);
+
+  // Sync timelineGeojsonUrl with unet-polygons
+  useEffect(() => {
+    if (!mapRef.current || !mapLoaded || timelineGeojsonUrl === undefined) return;
+    const map = mapRef.current;
+    const source = map.getSource("unet-polygons") as maplibregl.GeoJSONSource | undefined;
+    if (!source) return;
+    if (timelineGeojsonUrl === null) {
+      source.setData(EMPTY_GEOJSON);
+    } else {
+      source.setData(timelineGeojsonUrl);
+    }
+  }, [timelineGeojsonUrl, mapLoaded]);
 
   // Filter cut-off rings when robustCutoffsOnly toggles
   useEffect(() => {
@@ -545,6 +585,20 @@ export default function FloodMap({
   return (
     <div className="relative w-full h-[650px] rounded-2xl overflow-hidden border border-white/10 bg-space-950 shadow-2xl">
       <div ref={mapContainerRef} className="w-full h-full" />
+
+      {webGLError && (
+        <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 bg-space-950/95 text-center">
+          <div className="max-w-md p-6 rounded-xl border border-white/10 bg-white/5 backdrop-blur-md space-y-3">
+            <h3 className="text-base font-semibold text-white">Interactive Map (WebGL)</h3>
+            <p className="text-xs text-slate-400">
+              MapLibre hardware-accelerated canvas requires WebGL. All flood intelligence data, KPIs, settlement zones, and evacuation routes are accessible via the Table View.
+            </p>
+            <div className="text-[11px] font-mono text-cyan-400">
+              Press &quot;Table View&quot; button above for comprehensive data inspection.
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Floating Header Card (Top Left) */}
       <div className="absolute top-4 left-4 z-10 flex flex-col gap-2 max-w-md">

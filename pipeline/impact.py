@@ -157,10 +157,27 @@ def build_settlement_zones(
         area_ha = round(poly_utm.area / 10000.0, 2)
         area_km2 = round(area_ha / 100.0, 2)
 
+        # Disambiguate duplicate village names
+        v_name = matched_village["name"]
+        if matched_village["osm_id"] == 1303258525 or (v_name == "Masimpur" and matched_village["lat"] < 24.83):
+            v_name = "Masimpur (South)"
+        elif matched_village["osm_id"] == 1303258526 or (v_name in ("Masimpur", "Māsimpur") and matched_village["lat"] >= 24.83):
+            v_name = "Māsimpur (North)"
+        elif v_name == "Khelma":
+            if matched_village["lat"] < 24.832:
+                v_name = "Khelma (South)"
+            else:
+                v_name = "Khelma (North)"
+        elif v_name == "Rāmnagar":
+            if matched_village["lon"] < 92.755:
+                v_name = "Rāmnagar (West)"
+            else:
+                v_name = "Rāmnagar (East)"
+
         zone_id = f"zone_{zone_idx:02d}"
         zones.append({
             "zone_id": zone_id,
-            "name": matched_village["name"],
+            "name": v_name,
             "block": "Silchar / Cachar",
             "place_type": matched_village["place_type"],
             "center": [matched_village["lon"], matched_village["lat"]],
@@ -666,6 +683,7 @@ def run_phase3_impact_pipeline(
             "name": z["name"],
             "block": z["block"],
             "place_type": z["place_type"],
+            "center": z["center"],
             "population": z["population"],
             "population_exposed": z["population_exposed"],
             "population_of_cutoff_zone": z["population"] if z["isolated"] else 0,

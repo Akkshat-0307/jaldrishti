@@ -138,13 +138,25 @@
     "flood_polygons": "DERIVED"
   },
   "hand_calibration": {
-    "calibrated_h_star_m": 3.25,
-    "optimal_metrics": {
+    "calibrated_h_star_m": 1.5,
+    "selected_baseline": "area_matched",
+    "h_star_area_matched_m": 1.5,
+    "h_star_iou_optimal_m": 3.25,
+    "area_matched_metrics": {
+      "iou": 0.4169,
+      "f1": 0.5885,
+      "precision": 0.5751,
+      "recall": 0.6026,
+      "predicted_pixels": 115282
+    },
+    "iou_optimal_metrics": {
+      "h_m": 3.25,
       "iou": 0.4705,
       "f1": 0.6399,
       "precision": 0.5063,
       "recall": 0.8695
     },
+    "planning_aid_note": "Water-level scenarios are a planning aid, not a forecast.",
     "spatial_cross_validation": {
       "description": "Spatial block cross-validation (West longitude half vs East longitude half)",
       "fold_1": {
@@ -168,12 +180,28 @@
     },
     "calibration_sweep_sample": [
       {
+        "water_level_m": 0.5,
+        "iou": 0.2858,
+        "f1": 0.4445,
+        "precision": 0.6159,
+        "recall": 0.3478,
+        "predicted_pixels": 62122
+      },
+      {
         "water_level_m": 1.0,
         "iou": 0.3587,
         "f1": 0.528,
         "precision": 0.5945,
         "recall": 0.4749,
         "predicted_pixels": 87890
+      },
+      {
+        "water_level_m": 1.5,
+        "iou": 0.4169,
+        "f1": 0.5885,
+        "precision": 0.5751,
+        "recall": 0.6026,
+        "predicted_pixels": 115282
       },
       {
         "water_level_m": 2.0,

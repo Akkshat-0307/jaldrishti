@@ -17,6 +17,10 @@
         "name": "Debp\u0101ra",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.8420472,
+          24.8616743
+        ],
         "population": 44734,
         "population_exposed": 13629,
         "population_of_cutoff_zone": 44734,
@@ -88,6 +92,10 @@
         "name": "Ratpur",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.7180862,
+          24.8471106
+        ],
         "population": 14578,
         "population_exposed": 7660,
         "population_of_cutoff_zone": 14578,
@@ -167,6 +175,10 @@
         "name": "Badrip\u0101ra",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.7565277,
+          24.8874779
+        ],
         "population": 9751,
         "population_exposed": 5087,
         "population_of_cutoff_zone": 9751,
@@ -242,6 +254,10 @@
         "name": "Kirishanpur",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.709192,
+          24.8958038
+        ],
         "population": 10243,
         "population_exposed": 5128,
         "population_of_cutoff_zone": 10243,
@@ -306,9 +322,13 @@
       "properties": {
         "zone_id": "zone_13",
         "rank": 5,
-        "name": "M\u0101simpur",
+        "name": "M\u0101simpur (North)",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.7698421,
+          24.8796138
+        ],
         "population": 5162,
         "population_exposed": 2245,
         "population_of_cutoff_zone": 5162,
@@ -384,6 +404,10 @@
         "name": "Sonb\u0101ragh\u0101t",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.8375518,
+          24.7521707
+        ],
         "population": 54904,
         "population_exposed": 22436,
         "population_of_cutoff_zone": 0,
@@ -459,6 +483,10 @@
         "name": "Gossaipur",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.8197634,
+          24.8769566
+        ],
         "population": 9664,
         "population_exposed": 3187,
         "population_of_cutoff_zone": 9664,
@@ -538,6 +566,10 @@
         "name": "Dudhpatli",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.8212386,
+          24.8700895
+        ],
         "population": 4049,
         "population_exposed": 1093,
         "population_of_cutoff_zone": 4049,
@@ -601,6 +633,10 @@
         "name": "Khoril",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.7692735,
+          24.8987671
+        ],
         "population": 2129,
         "population_exposed": 452,
         "population_of_cutoff_zone": 2129,
@@ -665,9 +701,13 @@
       "properties": {
         "zone_id": "zone_06",
         "rank": 10,
-        "name": "R\u0101mnagar",
+        "name": "R\u0101mnagar (West)",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.7466554,
+          24.8255169
+        ],
         "population": 36424,
         "population_exposed": 12307,
         "population_of_cutoff_zone": 0,
@@ -744,9 +784,13 @@
       "properties": {
         "zone_id": "zone_05",
         "rank": 11,
-        "name": "Masimpur",
+        "name": "Masimpur (South)",
         "block": "Silchar / Cachar",
         "place_type": "village",
+        "center": [
+          92.7968881,
+          24.7582519
+        ],
         "population": 61444,
         "population_exposed": 13436,
         "population_of_cutoff_zone": 0,
@@ -822,6 +866,10 @@
         "name": "Udharbond",
         "block": "Silchar / Cachar",
         "place_type": "village",
+        "center": [
+          92.8817754,
+          24.8819591
+        ],
         "population": 31610,
         "population_exposed": 7367,
         "population_of_cutoff_zone": 0,
@@ -893,6 +941,10 @@
         "name": "Kharilp\u0101r",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.7874616,
+          24.8547261
+        ],
         "population": 20091,
         "population_exposed": 2950,
         "population_of_cutoff_zone": 0,
@@ -964,6 +1016,10 @@
         "name": "Digh\u0101li",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.8017282,
+          24.8586468
+        ],
         "population": 33949,
         "population_exposed": 2809,
         "population_of_cutoff_zone": 0,
@@ -1047,6 +1103,10 @@
         "name": "M\u0101chhugh\u0101t",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.7765155,
+          24.8547626
+        ],
         "population": 3673,
         "population_exposed": 551,
         "population_of_cutoff_zone": 0,
@@ -1110,6 +1170,10 @@
         "name": "Arun\u0101chal",
         "block": "Silchar / Cachar",
         "place_type": "village",
+        "center": [
+          92.7667954,
+          24.8665733
+        ],
         "population": 6877,
         "population_exposed": 477,
         "population_of_cutoff_zone": 0,
@@ -1186,9 +1250,13 @@
       "properties": {
         "zone_id": "zone_07",
         "rank": 17,
-        "name": "Khelma",
+        "name": "Khelma (South)",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.7608943,
+          24.8304127
+        ],
         "population": 13614,
         "population_exposed": 656,
         "population_of_cutoff_zone": 0,
@@ -1256,6 +1324,10 @@
         "name": "Srikona",
         "block": "Silchar / Cachar",
         "place_type": "village",
+        "center": [
+          92.717456,
+          24.8388178
+        ],
         "population": 17674,
         "population_exposed": 360,
         "population_of_cutoff_zone": 0,
@@ -1316,9 +1388,13 @@
       "properties": {
         "zone_id": "zone_11",
         "rank": 19,
-        "name": "R\u0101mnagar",
+        "name": "R\u0101mnagar (East)",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.7665698,
+          24.8357972
+        ],
         "population": 38337,
         "population_exposed": 123,
         "population_of_cutoff_zone": 0,
@@ -1395,9 +1471,13 @@
       "properties": {
         "zone_id": "zone_08",
         "rank": 20,
-        "name": "Khelma",
+        "name": "Khelma (North)",
         "block": "Silchar / Cachar",
         "place_type": "hamlet",
+        "center": [
+          92.7545857,
+          24.8351935
+        ],
         "population": 8431,
         "population_exposed": 33,
         "population_of_cutoff_zone": 0,

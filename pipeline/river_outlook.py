@@ -87,6 +87,8 @@ def fetch_river_outlook(
         payload = {
             "river_name": "Barak River",
             "station_location": "Silchar / Cachar, Assam",
+            "cell_label": "nearest GloFAS river cell",
+            "temporal_scope": "current outlook (not the 2022 event)",
             "coordinates": [round(lon, 4), round(lat, 4)],
             "elevation_m": raw.get("elevation", 27.0),
             "model_source": "ECMWF GloFAS v4.0 via Open-Meteo Flood API",
@@ -99,11 +101,11 @@ def fetch_river_outlook(
             "current_discharge_m3s": round(float(current_discharge), 1),
             "peak_forecast_discharge_m3s": round(float(peak_discharge), 1),
             "trend": trend,
-            "flood_severity": "severe" if peak_discharge > 2500 else ("high" if peak_discharge > 1200 else "moderate"),
             "daily_forecast": forecast_points,
             "disclaimer": (
                 "GloFAS river discharge values are global hydrological model outputs forced by numerical weather "
-                "predictions. Useful for regional trend and timing outlook, but not equivalent to in-situ gauge measurements."
+                "predictions for the nearest GloFAS river cell (current outlook, not the 2022 event). "
+                "Useful for regional trend and timing outlook, but not equivalent to in-situ gauge measurements."
             ),
         }
 
@@ -140,4 +142,4 @@ if __name__ == "__main__":
     print("Cached River Outlook:")
     print(f"  River: {res['river_name']} at {res['station_location']}")
     print(f"  Current Discharge: {res['current_discharge_m3s']} m³/s, Peak: {res['peak_forecast_discharge_m3s']} m³/s")
-    print(f"  Trend: {res['trend']}, Severity: {res['flood_severity']}")
+    print(f"  Trend: {res['trend']}, Temporal Scope: {res['temporal_scope']}")

@@ -1,0 +1,82 @@
+{
+  "timestamp": "2026-11-21T19:17:34Z",
+  "results": {
+    "page_load": true,
+    "tour_steps": 8,
+    "accessible_table": {
+      "has_table": true,
+      "row_count": 20,
+      "caption": "Settlement zones in Cachar, Assam showing flood exposure, isolation status, and evacuation priority scores.",
+      "headers": [
+        "Zone ID",
+        "Settlement Name",
+        "Status",
+        "Route Avail.",
+        "Touches Edge",
+        "Total Pop",
+        "Exposed Pop",
+        "Flooded ha",
+        "Priority Score"
+      ],
+      "sample_row": [
+        "zone_20",
+        "Debp\u0101ra",
+        "CUT OFF",
+        "No",
+        "No",
+        "44,734",
+        "13,629",
+        "1376.0 ha",
+        "59.3"
+      ]
+    },
+    "dates_tested": [
+      {
+        "date": "2022-05-01",
+        "display": {
+          "text": "Baseline Dry (2022-05-01)",
+          "subtext": "0 ha (Normal conditions)"
+        }
+      },
+      {
+        "date": "2022-06-30",
+        "display": {
+          "text": "Flood Recession (2022-06-30)",
+          "subtext": "4,994.68 ha (49.95 km\u00b2)"
+        }
+      },
+      {
+        "date": "2022-06-18",
+        "display": {
+          "text": "Peak Flood (2022-06-18)",
+          "subtext": "9,976 ha (99.76 km\u00b2)"
+        }
+      }
+    ],
+    "whatif": {
+      "whatif_open": true,
+      "has_disclaimer": true,
+      "has_effective_level": true,
+      "has_slider": false
+    },
+    "ax_nodes_count": 587
+  },
+  "console_errors": [
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment.",
+    "[warning] WebGL is not supported in this environment."
+  ]
+}

@@ -118,27 +118,34 @@ Rather than training a LightGBM or XGBoost model on satellite rainfall grids, Ja
 
 ### Calibration & Spatial Cross-Validation
 The relative water-level $h$ was calibrated against the observed U-Net flood mask by sweeping $h \in [0.25, 15.0]\text{ m}$ in $0.25\text{ m}$ increments.
-- **Optimal Baseline Water-Level ($h^*$):** $3.25\text{ m}$
-  - Full-Domain IoU: **0.4705**
-  - Full-Domain F1 Score: **0.6399**
-  - Precision: **0.5401**, Recall: **0.7845**
+- **Area-Matched Baseline Water-Level ($h^*_{\text{area}}$):** $1.50\text{ m}$
+  - Calibrated by matching the HAND connected inundation area ($10,408.34\text{ ha}$) to the observed U-Net extent ($9,975.59\text{ ha}$, $\Delta = +4.3\%$).
+  - Serves as the primary operational $\Delta h = 0.0\text{ m}$ baseline for what-if simulations.
+  - IoU at $h = 1.50\text{ m}$: **0.3708**, Precision: **0.7812**, Recall: **0.4285**.
+- **IoU-Optimal Baseline Water-Level ($h^*_{\text{iou}}$):** $3.25\text{ m}$
+  - Full-Domain IoU: **0.4705**, Full-Domain F1 Score: **0.6399**, Precision: **0.5401**, Recall: **0.7845**.
+  - Inundated Area: $19,327.39\text{ ha}$ (almost $2\times$ observed extent).
+  - Preserved as a selectable alternative baseline in `metrics.json`.
 - **Spatial Block Cross-Validation (Longitude Half Split at $x = 338$):**
   - *Fold 1 (Calibrate West, Test East):* Calibrated $h = 3.25\text{ m}$, Train IoU = 0.4882 $\rightarrow$ **East Test IoU: 0.4550**, Test F1: **0.6254**
   - *Fold 2 (Calibrate East, Test West):* Calibrated $h = 2.50\text{ m}$, Train IoU = 0.4571 $\rightarrow$ **West Test IoU: 0.4799**, Test F1: **0.6486**
   - **Mean Spatial Test IoU:** **0.4674** | **Mean Spatial Test F1:** **0.6370**
 
-### Precomputed Scenarios Table ($\Delta h$ relative to $h^* = 3.25\text{ m}$)
+> **Planning Aid Disclaimer:**
+> Water-level scenarios are a planning aid, not a forecast. They model terrain ponding along drainage channels under hypothetical river stage anomalies.
+
+### Precomputed Scenarios Table ($\Delta h$ relative to Area-Matched $h^*_{\text{area}} = 1.50\text{ m}$)
 
 | Scenario ($\Delta h$) | Effective $h$ | Flooded Area (ha) | Exposed Population | Cropland Waterlogged (ha) | Roads Potentially Cut (km) | Cut-off Zones (Total / Robust) |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **$-1.0\text{ m}$** | $2.25\text{ m}$ | 14,305.42 ha | 175,864 | 9,641.43 ha | 735.16 km | 19 / 10 |
-| **$-0.5\text{ m}$** | $2.75\text{ m}$ | 17,237.75 ha | 212,504 | 10,935.36 ha | 862.04 km | 19 / 10 |
-| **$0.0\text{ m}$ (Calibrated Baseline)** | $3.25\text{ m}$ | 19,327.39 ha | 237,499 | 11,973.87 ha | 952.24 km | 19 / 10 |
-| **$+0.5\text{ m}$** | $3.75\text{ m}$ | 20,791.34 ha | 255,613 | 12,554.55 ha | 1,016.37 km | 18 / 10 |
-| **$+1.0\text{ m}$** | $4.25\text{ m}$ | 22,459.66 ha | 276,979 | 12,985.38 ha | 1,083.05 km | 19 / 10 |
-| **$+2.0\text{ m}$** | $5.25\text{ m}$ | 24,116.94 ha | 299,611 | 13,433.40 ha | 1,153.47 km | 20 / 10 |
+| **$-1.0\text{ m}$** | $0.50\text{ m}$ | 5,273.18 ha | 62,356 | 3,600.90 ha | 339.65 km | 14 / 6 |
+| **$-0.5\text{ m}$** | $1.00\text{ m}$ | 7,760.25 ha | 94,371 | 5,400.54 ha | 446.82 km | 18 / 10 |
+| **$0.0\text{ m}$ (Area-Matched Baseline)** | $1.50\text{ m}$ | 10,408.34 ha | 128,959 | 7,277.40 ha | 568.58 km | 18 / 10 |
+| **$+0.5\text{ m}$** | $2.00\text{ m}$ | 13,206.02 ha | 163,184 | 9,047.88 ha | 683.80 km | 19 / 10 |
+| **$+1.0\text{ m}$** | $2.50\text{ m}$ | 15,690.42 ha | 195,527 | 10,415.25 ha | 805.40 km | 19 / 10 |
+| **$+2.0\text{ m}$** | $3.50\text{ m}$ | 20,247.27 ha | 248,990 | 12,352.14 ha | 992.41 km | 18 / 10 |
 
-*Note on $0.0\text{ m}$ Scenario vs U-Net Mask:* Scenario $0.0\text{ m}$ represents the topographically-simulated HAND equilibrium footprint at $h^* = 3.25\text{ m}$, whereas the U-Net mask (9,975.59 ha) represents the observed SAR backscatter footprint on 2022-06-18. Both layers are distinctly preserved, labeled, and selectable.
+*Note on $0.0\text{ m}$ Scenario vs U-Net Mask:* Scenario $0.0\text{ m}$ represents the topographically-simulated HAND equilibrium footprint at $h^*_{\text{area}} = 1.50\text{ m}$ (10,408.34 ha), closely mirroring the observed U-Net extent (9,975.59 ha). Both layers are distinctly preserved, labeled, and selectable.
 
 ---
 
@@ -150,6 +157,7 @@ The relative water-level $h$ was calibrated against the observed U-Net flood mas
   - 3-day (72h) accumulation (2022-06-15 to 2022-06-18): **205.28 mm** (min: 159.09 mm, max: 264.29 mm).
   - 7-day (168h) accumulation (2022-06-11 to 2022-06-18): **276.76 mm** (min: 219.01 mm, max: 358.33 mm).
 - **River Discharge Outlook (`REAL (modelled)`):**
-  - Source: ECMWF GloFAS v4.0 via Open-Meteo Flood API for Barak River (`lat=24.825, lon=92.800`).
+  - Source: ECMWF GloFAS v4.0 via Open-Meteo Flood API for nearest Barak River cell (`lat=24.825, lon=92.800`).
+  - Scope: Tagged explicitly as `current outlook (not the 2022 event)`.
   - Current Discharge: **499.0 m³/s**, Peak Forecast Discharge: **503.7 m³/s**.
-  - Trend: **Stable**, Severity: **Moderate**. Cached snapshot provided for offline `DEMO_MODE=1` execution.
+  - Trend: **Stable**. Uncalibrated severity tags removed in Phase 6; raw discharge numbers displayed directly. Cached snapshot provided for offline `DEMO_MODE=1` execution.

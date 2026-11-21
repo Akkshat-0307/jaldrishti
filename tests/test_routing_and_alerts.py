@@ -228,7 +228,7 @@ class TestRoutingAndAlertEndpoints:
         from main import app
 
         client = TestClient(app)
-        res = client.get("/events/assam-2022/route?from=zone_20")
+        res = client.get("/events/assam-2022/route?from=zone_04")
         assert res.status_code == 200
         data = res.json()
         assert data["has_route"] is True
@@ -282,3 +282,32 @@ class TestRoutingAndAlertEndpoints:
         assert d_as["is_machine_drafted"] is True
         assert d_as["native_speaker_review_needed"] is True
         assert "machine-drafted" in d_as["review_disclaimer"].lower()
+
+    def test_all_20_zones_status_consistency(self):
+        """Verify that every zone in villages.geojson matches routes.json: isolated == not has_route."""
+        import json
+        from pathlib import Path
+        event_dir = Path("data/events/assam-2022")
+        with open(event_dir / "villages.geojson") as f:
+            v_data = json.load(f)
+        with open(event_dir / "routes.json") as f:
+            r_data = json.load(f)
+
+        assert len(v_data["features"]) == 20
+        assert len(r_data) == 20
+
+        cutoff_count = 0
+        connected_count = 0
+        for feat in v_data["features"]:
+            zid = feat["properties"]["zone_id"]
+            isolated = feat["properties"]["isolated"]
+            route = r_data[zid]
+            has_route = route["has_route"]
+            assert isolated == (not has_route), f"Zone {zid} mismatch: isolated={isolated}, has_route={has_route}"
+            if isolated:
+                cutoff_count += 1
+            else:
+                connected_count += 1
+
+        assert cutoff_count == 8
+        assert connected_count == 12

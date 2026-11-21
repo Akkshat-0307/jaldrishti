@@ -139,6 +139,7 @@ class RoutingEngine:
                     "name": f["properties"]["name"],
                     "rank": f["properties"].get("rank", 1),
                     "isolated": f["properties"].get("isolated", False),
+                    "center": f["properties"].get("center") or [shape(f["geometry"]).centroid.x, shape(f["geometry"]).centroid.y],
                     "centroid": shape(f["geometry"]).centroid,
                 }
                 for f in v_data.get("features", [])
@@ -603,8 +604,8 @@ def precompute_all_zone_routes(
 
     for z in engine.zones:
         z_id = z["zone_id"]
-        c = z["centroid"]
-        res = engine.find_route(c.x, c.y, origin_label=z["name"])
+        c_lon, c_lat = z["center"]
+        res = engine.find_route(c_lon, c_lat, origin_label=z["name"])
         routes_by_zone[z_id] = res
 
     out_file = Path(event_dir) / "routes.json"

@@ -1,0 +1,40 @@
+{
+  "event_id": "assam-2022",
+  "description": "Multi-temporal satellite radar flood progression for Cachar / Silchar",
+  "provenance": "DERIVED (Sentinel-1 SAR IW GRD via Google Earth Engine + U-Net ResNet34)",
+  "dates": [
+    {
+      "date": "2022-05-01",
+      "label": "Baseline Dry",
+      "stage": "pre_flood",
+      "satellite_scene_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220501T234737",
+      "flooded_area_ha": 0.0,
+      "flooded_area_km2": 0.0,
+      "population_exposed": 0,
+      "polygon_geojson": null,
+      "status_badge": "REAL (S1 Baseline Dry)"
+    },
+    {
+      "date": "2022-06-18",
+      "label": "Peak Flood",
+      "stage": "peak",
+      "satellite_scene_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220618T234743_20220618T234808_043724_053835_0EB8",
+      "flooded_area_ha": 9976.0,
+      "flooded_area_km2": 99.76,
+      "population_exposed": 101986,
+      "polygon_geojson": "/data/events/assam-2022/flood_polygons_unet.geojson",
+      "status_badge": "DERIVED (U-Net ResNet34 Peak)"
+    },
+    {
+      "date": "2022-06-30",
+      "label": "Flood Recession",
+      "stage": "recession",
+      "satellite_scene_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220630T234744_20220630T234809_043899_053D9A_3654",
+      "flooded_area_ha": 4994.68,
+      "flooded_area_km2": 49.95,
+      "population_exposed": 83393,
+      "polygon_geojson": "/data/events/assam-2022/flood_polygons_recession.geojson",
+      "status_badge": "DERIVED (U-Net ResNet34 Recession)"
+    }
+  ]
+}
