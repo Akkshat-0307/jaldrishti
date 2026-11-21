@@ -13,26 +13,27 @@ In strict compliance with `AGENTS.md`, every layer and subsystem is categorized 
 | Layer / Feature | Classification | Source / Ground Truth | Verification & Evidence |
 | :--- | :---: | :--- | :--- |
 | **Sentinel-1 SAR Chips** | **REAL** | ESA Copernicus via Google Earth Engine (`COPERNICUS/S1_GRD`) | 88 test chips + 15 Bolivia chips from official Sen1Floods11 bucket |
-| **Sentinel-1 Assam Composite** | **REAL** | Sentinel-1 GRD SAR acquisition over Cachar (June 16–22, 2022) | Processed in GEE; raw backscatter intensities preserved |
-| **Reference May 2022 Composite** | **REAL** | Sentinel-1 GRD SAR baseline acquisition (May 1–10, 2022) | Non-flooded seasonal baseline reference |
+| **Sentinel-1 Peak Flood Scene** | **REAL** | Sentinel-1 GRD single scene (`COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220618T234743_20220618T234808_043724_05385D_E87E`) | Single scene from 2022-06-18T23:47:43Z; Relative Orbit 77, Descending pass (not a composite) |
+| **Sentinel-1 Baseline Scene** | **REAL** | Sentinel-1 GRD single scene (`COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220501T234740_20220501T234805_043024_05231C_1E38`) | Single scene from 2022-05-01T23:47:40Z; seasonal non-flooded reference (not a composite) |
+| **Sentinel-1 Recession Scene** | **REAL** | Sentinel-1 GRD single scene (`COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220630T234744_20220630T234809_043899_053D9A_3654`) | Single scene from 2022-06-30T23:47:44Z; flood recession stage (not a composite) |
 | **Hand-Labelled Ground Truth** | **REAL** | Sen1Floods11 ground-truth annotations (Bonafilia et al., 2020) | Official test split (88 chips) & Bolivia held-out split (15 chips) |
-| **HAND Elevation Model** | **REAL** | MERIT Hydro hydrologically-conditioned elevation (`MERIT/Hydro`) | 30m resolution raster conditioned on drainage network |
-| **SRTM Slope** | **REAL** | USGS SRTM GL1 30m (`USGS/SRTMGL1_003`) | Slope in degrees, filtered to discard false water on terrain >5° |
-| **JRC Permanent Water** | **REAL** | EC JRC Global Surface Water v1.4 (`JRC/GSW1_4/GlobalSurfaceWater`) | Permanent water seasonality >10 months masked out |
-| **Population Grid** | **MODELLED** | WorldPop Global Project 100m unconstrained (`WorldPop/GP/100m/pop`) | Modelled 2020 raster estimate within Cachar study window (427,338 total) |
-| **Barak River Discharge** | **MODELLED** | Copernicus Emergency Management Service (GloFAS v4.0) | Ensemble median river discharge & 5-day flood wave forecast |
-| **Land Cover (Cropland/Urban)** | **REAL** | ESA WorldCover 10m v200 2021 (`ESA/WorldCover/v200`) | Class 40 (Cropland) and Class 50 (Built-up) |
-| **OSM Road & Facility Graph** | **REAL** | OpenStreetMap via OSMnx & Overpass API | 32 emergency shelters, drivable road network in UTM Zone 46N |
+| **HAND Elevation Model** | **REAL** | MERIT Hydro hydrologically-conditioned elevation (`MERIT/Hydro/v1_0_1`) | 30m resolution raster conditioned on drainage network |
+| **Copernicus GLO-30 Slope** | **REAL** | Copernicus DEM GLO-30 30m (`COPERNICUS/DEM/GLO30_2024_1`) | Derived via `ee.Terrain.slope(dem)`. Slope > 5.0° masked out to suppress radar shadow false positives |
+| **JRC Permanent Water** | **REAL** | EC JRC Global Surface Water v1.4 (`JRC/GSW1_4/GlobalSurfaceWater`) | Permanent water occurrence threshold > 80.0% masked out |
+| **Population Grid** | **MODELLED** | WorldPop Global Project 100m unconstrained (`WorldPop/GP/100m/pop`) | Modelled 2020 raster estimate within Cachar study window (427,338 total, 101,986 exposed) |
+| **Barak River Discharge** | **MODELLED** | Open-Meteo Flood API (ECMWF GloFAS v4.0) | 7-day daily forecast horizon (`forecast_days=7`) for Barak River cell at Silchar (`24.825° N, 92.800° E`); current temporal outlook |
+| **Land Cover (Cropland/Urban)** | **REAL** | ESA WorldCover 10m v200 2021 (`ESA/WorldCover/v200`) | Class 40 (Cropland: 8,169.66 ha flooded/waterlogged) and Class 50 (Built-up: 9.0 ha) |
+| **OSM Road & Facility Graph** | **REAL** | OpenStreetMap via OSMnx & Overpass API | Exactly 6,918 road features (5,945 passable, 973 potentially cut / 196.35 km), 32 emergency shelters |
 | **Self-Hosted Vector Basemap** | **REAL** | OpenStreetMap via Protomaps extract (`cachar.pmtiles`, 2.5 MB) | Local MapLibre vector style with offline glyphs and sprites |
-| **U-Net Flood Segmentation** | **DERIVED** | ResNet34 U-Net inference on Sentinel-1 composite | 0.6804 test IoU, 0.6879 Bolivia IoU; 9,976 ha flooded extent |
-| **Zonal Impact Metrics** | **DERIVED** | Vector intersection of flood mask with Voronoi settlement zones | 101,986 exposed; 100,310 cut-off zone residents; 8,170 ha cropland |
-| **Evacuation Routes & ETAs** | **DERIVED** | NetworkX Dijkstra on non-flooded OSM edges with 50m flood buffer | Physics-based road-class speeds; secondary alternate paths |
-| **HAND Water-Level What-If** | **DERIVED** | Stepwise terrain thresholding on MERIT-Hydro HAND raster | Monotonic 0.0m to +2.0m flood expansion scenarios |
+| **U-Net Flood Segmentation** | **DERIVED** | ResNet34 U-Net inference on Sentinel-1 single scene (`...E87E`) | 0.6804 test IoU, 0.6879 Bolivia IoU; 9,975.59 ha (99.76 km²) flooded extent across 215 polygons |
+| **Zonal Impact Metrics** | **DERIVED** | Vector intersection of flood mask with Voronoi settlement zones | 101,986 exposed; 100,310 cut-off zone residents; 8,169.66 ha cropland |
+| **Evacuation Routes & ETAs** | **DERIVED** | NetworkX Dijkstra on non-flooded OSM edges with 50m flood buffer | Physics-based road-class speeds; secondary alternate paths (> 20% corridor divergence) |
+| **HAND Water-Level What-If** | **DERIVED** | Stepwise terrain thresholding on MERIT-Hydro HAND raster | Monotonic 0.0m to +2.0m flood expansion scenarios relative to $h^*_{\text{area}} = 1.50\text{ m}$ |
 | **Priority Ranking Score** | **DERIVED** | Multi-criteria formula: 0.35·P + 0.25·F + 0.30·Iso + 0.10·Fac | Dynamic re-weighting computed on demand |
-| **Rescue Beacon PWA Storage** | **DERIVED** | Client-side IndexedDB queue and Service Worker Cache API | Versioned `jaldrishti-v2` shell, offline auto-sync |
-| **Rescue Beacon SMS Fallback** | **SIMULATED** | Pre-formatted GSM SMS template to demo placeholder number | Configured via `NEXT_PUBLIC_DEMO_SMS_NUMBER` (`+91 00000 00000`) |
-| **1077 Government Integration** | **SIMULATED** | Not integrated with live Assam SDMA / 1077 dispatch | Prominently disclaimed in Beacon UI and privacy documentation |
+| **Rescue Beacon SMS Fallback** | **SIMULATED** | Pre-formatted GSM SMS template to demo placeholder number | Configured via `NEXT_PUBLIC_DEMO_SMS_NUMBER` (`+91 00000 00000`); no 1077 or government dispatch integration |
 | **Distress Beacons Layer** | **SIMULATED** | Seeded and user-submitted emergency beacons | Badged as SIMULATED demo data in Command Center map & drawer |
+
+*(Note: Rescue Beacon offline caching via IndexedDB and Service Worker Cache API is client-side PWA architecture, not a geospatial data layer.)*
 
 
 ## 2. Phase 9 Hardening & Deployment Verification

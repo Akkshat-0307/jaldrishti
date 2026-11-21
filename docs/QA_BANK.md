@@ -31,4 +31,15 @@ No. The SMS fallback sends a pre-formatted SOS payload to a placeholder demo num
 
 ### Q7: Why did you use HAND instead of LightGBM for the what-if simulation?
 **Answer:**
-Within a ~100 km × 80 km single-event study window, IMERG rainfall has almost zero spatial gradient (virtually identical across all 20 zones). Training a supervised ML model on our own derived U-Net mask would have been circular. HAND (Height Above Nearest Drainage) provides a physics-based, hydrologically conditioned topographic elevation proxy where water stage changes monotonically follow natural drainage lines.
+Within the ~20 km × 16 km Cachar study bounding box (`[92.70, 24.75, 92.90, 24.90]`), NASA IMERG 0.1° rainfall has almost zero spatial gradient (mean: 205.28 mm, range: 159.09–264.29 mm across only 2–4 cells). Training a supervised ML model on our own derived U-Net mask would have been statistically circular. HAND (Height Above Nearest Drainage) provides a physics-based, hydrologically conditioned topographic elevation proxy where water stage changes monotonically follow natural drainage lines.
+
+### Q8: What exact satellite scenes, DEM, and ancillary thresholds are used?
+**Answer:**
+- **Sentinel-1 SAR:** Single scenes listed in `manifest.json` (Relative Orbit 77, Descending pass, VV+VH), NOT date-range composites:
+  - Baseline: `COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220501T234740_20220501T234805_043024_05231C_1E38` (2022-05-01)
+  - Flood Peak: `COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220618T234743_20220618T234808_043724_05385D_E87E` (2022-06-18)
+  - Flood Recession: `COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220630T234744_20220630T234809_043899_053D9A_3654` (2022-06-30)
+- **Slope DEM:** Copernicus DEM GLO-30 (`COPERNICUS/DEM/GLO30_2024_1`), 30 m resolution, derived via `ee.Terrain.slope(dem)`. Slopes > 5.0° masked out. (Not SRTM).
+- **Permanent Water:** EC JRC Global Surface Water v1.4 (`occurrence > 80.0%`).
+- **River Outlook:** Open-Meteo Flood API (ECMWF GloFAS v4.0), 7-day daily forecast horizon (`forecast_days=7`) for Barak River cell at Silchar (`24.825° N, 92.800° E`), current temporal outlook (not 2022 hindcast).
+- **Road Network:** Exactly 6,918 LineString features in `roads.geojson` (5,945 passable, 973 potentially cut / 196.35 km cut under 50 m flood buffer in UTM Zone 46N).

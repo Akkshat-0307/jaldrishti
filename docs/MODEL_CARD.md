@@ -67,12 +67,12 @@ All metrics below are **empirically measured** by `pipeline/evaluate.py` directl
 ---
 
 ## 5. Application to Assam (June 2022 Event)
-- **Scene:** Sentinel-1 IW GRD composite covering Cachar / Silchar, Assam (92.70°E–92.90°E, 24.75°N–24.90°N).
+- **Scene:** Single Sentinel-1 IW GRD scene `COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220618T234743_20220618T234808_043724_05385D_E87E` (acquired 2022-06-18T23:47:43Z, Relative Orbit 77, Descending pass; not a date-range composite) covering Cachar / Silchar, Assam (92.70°E–92.90°E, 24.75°N–24.90°N). Baseline: `...20220501T234740_..._1E38`; Recession: `...20220630T234744_..._3654`.
 - **Post-Processing Applied:**
-  1. Permanent water masking: JRC Global Surface Water occurrence > 80% excluded.
-  2. HAND terrain gating: Height Above Nearest Drainage > 15 m excluded.
-  3. Slope gating: Slope > 5° excluded (suppresses mountain radar shadow false positives).
-  4. Minimum area threshold: Blobs < 0.5 ha filtered in projected UTM Zone 46N (`EPSG:32646`).
+  1. Permanent water masking: EC JRC Global Surface Water v1.4 occurrence > 80.0% excluded (`perm_water_threshold_pct = 80.0`).
+  2. HAND terrain gating: MERIT Hydro v1.0.1 Height Above Nearest Drainage > 15.0 m excluded.
+  3. Slope gating: Copernicus DEM GLO-30 30m (`COPERNICUS/DEM/GLO30_2024_1`), slope > 5.0° excluded (suppresses mountain radar shadow false positives).
+  4. Minimum area threshold: Blobs < 0.5 ha (6 connected pixels) filtered in projected UTM Zone 46N (`EPSG:32646`).
 - **Measurements:**
   - **U-Net Flood Extent:** 9,975.59 ha (99.76 km²) across 215 polygons.
   - **Tier A Baseline Flood Extent:** 12,617.47 ha (126.17 km²) across 680 polygons.
@@ -158,6 +158,7 @@ The relative water-level $h$ was calibrated against the observed U-Net flood mas
   - 7-day (168h) accumulation (2022-06-11 to 2022-06-18): **276.76 mm** (min: 219.01 mm, max: 358.33 mm).
 - **River Discharge Outlook (`MODELLED`):**
   - Source: ECMWF GloFAS v4.0 model output via Open-Meteo Flood API for nearest Barak River cell (`lat=24.825, lon=92.800`).
+  - Forecast Horizon: 7-day daily forecast horizon (`forecast_days=7`), daily discharge mean, max, min.
   - Scope: Tagged explicitly as `current outlook (not the 2022 event)`.
   - Current Discharge: **499.0 m³/s**, Peak Forecast Discharge: **503.7 m³/s**.
   - Trend: **Stable**. Uncalibrated severity tags removed in Phase 6; raw discharge numbers displayed directly. Cached snapshot provided for offline `DEMO_MODE=1` execution.

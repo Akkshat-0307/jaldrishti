@@ -101,9 +101,30 @@ tests/          pytest & Playwright
 docs/           Blueprint, model card, architecture
 ```
 
+## Data Layers & Provenance
+
+Every layer is labelled **REAL**, **DERIVED**, or **SIMULATED** per `AGENTS.md`:
+
+| Layer | Source / Ground Truth | Classification | Notes |
+| :--- | :--- | :---: | :--- |
+| **Sentinel-1 SAR** | ESA Copernicus single scenes via GEE (`COPERNICUS/S1_GRD`) | **REAL** | Single scenes (`...1E38` baseline, `...E87E` peak, `...3654` recession), Rel. Orbit 77 (not composites) |
+| **Copernicus GLO-30 DEM** | Copernicus 30m Global DEM (`COPERNICUS/DEM/GLO30_2024_1`) | **REAL** | Terrain slope in degrees; slope > 5.0° masked out |
+| **JRC Permanent Water** | EC JRC Global Surface Water v1.4 (`occurrence > 80.0%`) | **REAL** | Perennial water masked out to prevent false alarms |
+| **River Discharge Outlook** | Open-Meteo Flood API (ECMWF GloFAS v4.0) | **MODELLED** | 7-day daily forecast horizon for Barak River cell at Silchar (`24.825° N, 92.800° E`) |
+| **OSM Road Network** | OpenStreetMap via OSMnx / Protomaps PMTiles | **REAL** | 6,918 features in `roads.geojson` (5,945 passable, 973 potentially cut / 196.35 km) |
+| **U-Net Flood Extent** | ResNet34 U-Net on Sentinel-1 single scene (`...E87E`) | **DERIVED** | 9,975.59 ha (99.76 km²), 215 polygons in `flood_polygons_unet.geojson` |
+| **Zonal Cut-off Impact** | Voronoi settlement zones + 50m road buffer intersection | **DERIVED** | 101,986 exposed; 100,310 cut-off zone residents (8 cut-off zones: 3 robust, 5 border) |
+| **Distress Beacons** | PWA client binary packed payload / API store | **SIMULATED** | Seeded and demo submitted beacons; SMS fallback to demo number (`+91 00000 00000`) |
+
+*(Note: Rescue Beacon offline caching via IndexedDB and Service Worker Cache API is client-side PWA architecture, not a geospatial data layer.)*
+
 ## Documentation
 
 - [Build Blueprint](docs/BLUEPRINT.md) — full architecture, phases, and acceptance criteria.
+- [Data Sources & Provenance](docs/DATA_SOURCES.md) — dataset catalog, scene IDs, thresholds, and licenses.
+- [Model Card](docs/MODEL_CARD.md) — U-Net ResNet34 architecture, training setup, Sen1Floods11 ablation, and limitations.
+- [Phase 9 Verification Report](docs/REPORT_PHASE_9.md) — comprehensive audit, test coverage, and deployment verification.
+- [Defense & Judge Q&A Bank](docs/QA_BANK.md) — factual answers and technical questions for competition review.
 
 ## License
 

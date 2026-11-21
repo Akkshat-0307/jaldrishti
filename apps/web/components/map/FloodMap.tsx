@@ -334,7 +334,7 @@ export default function FloodMap({
 
       map.addSource("whatif-polygons", {
         type: "geojson",
-        data: "/data/events/assam-2022/scenarios/scenario_p00.geojson",
+        data: EMPTY_GEOJSON,
       });
 
       // 2. Phase 3 Sources (Settlement Zones, Roads, Shelters)
@@ -791,15 +791,19 @@ export default function FloodMap({
     }
   }, [initialModel]);
 
-  // Sync whatifGeojsonUrl when changed externally
+  // Sync whatifGeojsonUrl when changed externally or when whatif model selected
   useEffect(() => {
-    if (!mapRef.current || !mapLoaded || !whatifGeojsonUrl) return;
+    if (!mapRef.current || !mapLoaded) return;
     const map = mapRef.current;
     const source = map.getSource("whatif-polygons") as maplibregl.GeoJSONSource | undefined;
-    if (source) {
-      source.setData(whatifGeojsonUrl);
+    if (!source) return;
+
+    if (selectedModel === "whatif") {
+      source.setData(whatifGeojsonUrl || "/data/events/assam-2022/scenarios/scenario_p00.geojson");
+    } else {
+      source.setData(EMPTY_GEOJSON);
     }
-  }, [whatifGeojsonUrl, mapLoaded]);
+  }, [whatifGeojsonUrl, selectedModel, mapLoaded]);
 
   // Sync timelineGeojsonUrl with unet-polygons
   useEffect(() => {

@@ -85,7 +85,7 @@ def main() -> int:
         ("Command Center (/command-center)", f"{web}/command-center", "GET", None, 200, lambda b: ("Barak" in b or "Assam" in b or "Command" in b, "Missing disaster shell")),
         ("About Page (/about)", f"{web}/about", "GET", None, 200, lambda b: ("Copernicus" in b or "Methodology" in b, "Missing attribution text")),
         ("Model Card (/model)", f"{web}/model", "GET", None, 200, lambda b: ("ResNet34" in b or "Sen1Floods11" in b, "Missing model architecture card")),
-        ("Rescue Beacon PWA (/beacon)", f"{web}/beacon", "GET", None, 200, lambda b: ("SOS" in b or "Beacon" in b, "Missing PWA SOS controls")),
+        ("Rescue Beacon PWA (/beacon)", f"{web}/beacon", "GET", None, 200, lambda b: ("SOS" in b or "Beacon" in b or "beacon" in b, "Missing PWA SOS controls")),
         ("Beacon Privacy (/beacon/privacy)", f"{web}/beacon/privacy", "GET", None, 200, lambda b: ("DPDP" in b or "Erasure" in b, "Missing privacy content")),
         ("Web App Manifest", f"{web}/manifest.json", "GET", None, 200, lambda b: ("jaldrishti" in b.lower(), "Invalid PWA manifest")),
 

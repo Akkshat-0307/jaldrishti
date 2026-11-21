@@ -24,7 +24,17 @@ const ATTRIBUTIONS: Attribution[] = [
     usage: "Dual-polarization (VV + VH) microwave backscatter for cloud-penetrating water detection.",
     badge: "real",
     details:
-      "Captured at C-band (5.405 GHz) in Interferometric Wide Swath mode. Ground range detected at 10m spatial resolution. Scenes from May 1, June 18, and June 30, 2022 covering the Barak River Basin.",
+      "Captured at C-band (5.405 GHz) in Interferometric Wide Swath mode at 10m resolution. Single scene acquisitions: May 1 baseline (S1A...1E38), June 18 peak flood (S1A...E87E), and June 30 recession (S1A...3654), Relative Orbit 77, Descending pass (not composites).",
+  },
+  {
+    dataset: "Copernicus DEM GLO-30 (30m)",
+    provider: "Copernicus Space Component / ESA",
+    license: "Copernicus Open Access Policy",
+    licenseUrl: "https://spacedata.copernicus.eu/collections/copernicus-digital-elevation-model",
+    usage: "30m global digital elevation model for calculating terrain slope and radar shadow masking.",
+    badge: "real",
+    details:
+      "Terrain slope computed via ee.Terrain.slope(dem). Slopes > 5.0° are masked out in pipeline/baseline.py and pipeline/infer_unet.py to eliminate radar shadow false positives.",
   },
   {
     dataset: "WorldPop Gridded Population (100m)",
@@ -34,7 +44,7 @@ const ATTRIBUTIONS: Attribution[] = [
     usage: "High-resolution UN-adjusted population distribution for exposure and cut-off aggregation.",
     badge: "real",
     details:
-      "100m raster clipped strictly to the Cachar study window. Reconciled to exactly 427,338 inhabitants across all 20 village zones with zero pixel double-counting.",
+      "100m raster clipped strictly to the Cachar study window. Reconciled to exactly 427,338 inhabitants across all 20 village zones with zero pixel double-counting (101,986 exposed).",
   },
   {
     dataset: "ESA WorldCover 10m 2021 v200",
@@ -44,7 +54,7 @@ const ATTRIBUTIONS: Attribution[] = [
     usage: "Land cover classification for cropland (class 40) and built-up infrastructure (class 50).",
     badge: "real",
     details:
-      "Used to compute agricultural waterlogging and settlement exposure. Note: Rice paddies may overlap with detected water in early monsoon crop stages.",
+      "Used to compute agricultural waterlogging (8,169.66 ha) and settlement exposure (9.0 ha built-up). Note: Rice paddies may overlap with detected water in early monsoon crop stages.",
   },
   {
     dataset: "OpenStreetMap (OSM) & Protomaps Vector Basemap",
@@ -54,7 +64,7 @@ const ATTRIBUTIONS: Attribution[] = [
     usage: "Self-hosted offline vector basemap (PMTiles) covering Cachar study window, drivable road network, emergency shelters, and facilities.",
     badge: "real",
     details:
-      "Extracted via OSMnx and Protomaps daily OpenStreetMap build. Rendered locally via MapLibre GL with local font glyphs for zero-network resilience.",
+      "Extracted via OSMnx and Protomaps daily OpenStreetMap build. Exactly 6,918 drivable road segments (5,945 passable, 973 potentially cut / 196.35 km), 32 emergency shelters, and 20 Voronoi village settlement zones.",
   },
   {
     dataset: "JRC Global Surface Water (Occurrence & Seasonality)",
@@ -64,7 +74,7 @@ const ATTRIBUTIONS: Attribution[] = [
     usage: "Permanent water masking to isolate episodic flood inundation from perennial rivers and lakes.",
     badge: "real",
     details:
-      "Pixels with water occurrence > 80% are excluded from emergency flood masks to prevent false alarms on natural river courses.",
+      "Pixels with water occurrence > 80.0% (perm_water_threshold_pct = 80.0) are excluded from emergency flood masks to prevent false alarms on natural river courses.",
   },
   {
     dataset: "MERIT Hydro / Height Above Nearest Drainage (HAND)",
@@ -74,7 +84,7 @@ const ATTRIBUTIONS: Attribution[] = [
     usage: "Relative elevation above the drainage network for terrain hydrologic what-if simulations.",
     badge: "real",
     details:
-      "Used to gate steep terrain radar shadow (< 15m HAND) and drive hydrodynamic stage anomaly scenarios (-1.0m to +2.0m).",
+      "Used to gate steep terrain radar shadow (< 15m HAND) and drive hydrodynamic stage anomaly scenarios (-1.0m to +2.0m relative to area-matched h* = 1.50m).",
   },
   {
     dataset: "NASA Visible Earth — Blue Marble Next Generation",
@@ -87,14 +97,14 @@ const ATTRIBUTIONS: Attribution[] = [
       "Public-domain Blue Marble composite downsampled and optimized to 123 KB JPEG for offline, zero-network WebGL rendering.",
   },
   {
-    dataset: "Open-Meteo & NASA GPM IMERG Precipitation",
-    provider: "Open-Meteo API / NASA Earth Science Data Systems",
+    dataset: "Open-Meteo Flood API (ECMWF GloFAS v4.0) & NASA GPM IMERG",
+    provider: "Open-Meteo API / ECMWF / NASA Earth Science Data Systems",
     license: "Open-Meteo Non-Commercial / NASA Open Data",
     licenseUrl: "https://open-meteo.com/",
     usage: "Rainfall accumulation histories and 7-day river basin discharge outlooks.",
     badge: "real",
     details:
-      "Precipitation time series and GloFAS-aligned river discharge metrics cached statically for zero-network resilience.",
+      "7-day daily forecast horizon (forecast_days=7) for Barak River cell at Silchar (24.825° N, 92.800° E). Statically cached in river_outlook_cached.json for zero-network resilience. Note: This provides current temporal river discharge outlook, not the 2022 event hindcast.",
   },
 ];
 
@@ -187,7 +197,7 @@ export default function AboutPage() {
             <h2 className="text-2xl font-heading font-bold text-white flex items-center gap-2">
               <Database className="w-5 h-5 text-aurora-400" /> Source Datasets &amp; Licenses
             </h2>
-            <span className="font-mono text-xs text-slate-400">7 Primary Public Catalogues</span>
+            <span className="font-mono text-xs text-slate-400">8 Primary Public Catalogues</span>
           </div>
 
           <div className="grid grid-cols-1 gap-6">
