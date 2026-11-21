@@ -102,6 +102,7 @@ def main() -> int:
             lambda b: ("cap_xml" in json.loads(b) and "text" in json.loads(b), "missing CAP XML or text payload"),
         ),
         ("What-If Scenario (GET /events/.../whatif)", f"{api}/events/assam-2022/whatif?delta_m=0.0", "GET", None, 200, lambda b: (json.loads(b).get("effective_water_level_m") == 1.5, "effective stage mismatch")),
+        ("River Outlook (GET /forecast/river)", f"{api}/forecast/river", "GET", None, 200, lambda b: ("current_discharge_m3s" in json.loads(b), "missing discharge metrics")),
         ("Beacon List (GET /beacons)", f"{api}/beacons", "GET", None, 200, lambda b: (isinstance(json.loads(b), list) and len(json.loads(b)) > 0, "beacons list empty or invalid")),
         (
             "Beacon Ingest (POST /beacons)",
