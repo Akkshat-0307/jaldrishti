@@ -36,6 +36,7 @@ pipeline/weights/
 *.tif
 *.tiff
 *.pmtiles
+!apps/web/public/basemap/cachar.pmtiles
 data/cache/
 
 # === OS ===

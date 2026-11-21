@@ -166,3 +166,19 @@ def test_offline_cdp_e2e_flush_and_deduplication():
     assert result.returncode == 0, f"CDP test failed:\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
     assert "PASS: Offline queue enqueued, auto-flushed online, and deduplicated cleanly!" in result.stdout
 
+
+def test_offline_pmtiles_basemap_and_layers():
+    """Verify self-hosted PMTiles basemap and unet-fill/zones-fill rendering under zero network."""
+    node_bin = shutil.which("node")
+    if not node_bin:
+        pytest.skip("Node.js not available to run CDP test.")
+    chrome_bin = get_chrome_executable()
+    if not chrome_bin:
+        pytest.skip("Chrome not available on host.")
+
+    script_path = os.path.join(os.path.dirname(__file__), "..", "scripts", "test_offline_map.mjs")
+    result = subprocess.run([node_bin, script_path], capture_output=True, text=True, timeout=30)
+    assert result.returncode == 0, f"CDP test failed:\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+    assert "PASS: Map rendered offline!" in result.stdout
+
+

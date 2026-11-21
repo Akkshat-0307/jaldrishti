@@ -15,14 +15,19 @@ interface LayerPanelProps {
 }
 
 export function LayerPanel({ layers, onChangeLayers }: LayerPanelProps) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isCollapsed, setIsCollapsed] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 1024;
+    }
+    return false;
+  });
 
   return (
     <aside
       id="layer-panel"
       aria-label="Map layer control panel"
       className={`absolute left-3 top-3 z-20 transition-all duration-300 ease-in-out ${
-        isCollapsed ? "w-10" : "w-72"
+        isCollapsed ? "w-10" : "w-72 max-w-[calc(100vw-24px)]"
       }`}
     >
       <div className="bg-slate-950/85 backdrop-blur-md border border-white/10 rounded-xl shadow-2xl overflow-hidden flex flex-col">

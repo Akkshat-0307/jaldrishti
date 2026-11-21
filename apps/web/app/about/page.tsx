@@ -47,14 +47,14 @@ const ATTRIBUTIONS: Attribution[] = [
       "Used to compute agricultural waterlogging and settlement exposure. Note: Rice paddies may overlap with detected water in early monsoon crop stages.",
   },
   {
-    dataset: "OpenStreetMap (OSM) Transportation & POIs",
-    provider: "© OpenStreetMap contributors",
-    license: "Open Database License (ODbL 1.0)",
+    dataset: "OpenStreetMap (OSM) & Protomaps Vector Basemap",
+    provider: "© OpenStreetMap contributors, Protomaps",
+    license: "Open Database License (ODbL 1.0) & BSD-3-Clause",
     licenseUrl: "https://www.openstreetmap.org/copyright",
-    usage: "Drivable road network graph, shelter locations, hospitals, and administrative boundaries.",
+    usage: "Self-hosted offline vector basemap (PMTiles) covering Cachar study window, drivable road network, emergency shelters, and facilities.",
     badge: "real",
     details:
-      "Extracted via OSMnx for the Cachar study bounding box. Filtered to drivable highway classes with estimated speed profiles for evacuation routing.",
+      "Extracted via OSMnx and Protomaps daily OpenStreetMap build. Rendered locally via MapLibre GL with local font glyphs for zero-network resilience.",
   },
   {
     dataset: "JRC Global Surface Water (Occurrence & Seasonality)",

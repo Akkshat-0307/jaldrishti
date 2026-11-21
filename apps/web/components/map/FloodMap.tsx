@@ -2,12 +2,15 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
+import * as pmtiles from "pmtiles";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Badge } from "@/components/ui/Badge";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { getApiUrl } from "@/lib/api";
 import type { BeaconItem } from "../command-center/types";
 import {
+  ChevronDown,
+  ChevronUp,
   Eye,
   EyeOff,
   ShieldCheck,
@@ -31,27 +34,90 @@ const EMPTY_GEOJSON: GeoJSON.FeatureCollection = {
   features: [],
 };
 
-const DARK_STYLE: maplibregl.StyleSpecification = {
+// Register pmtiles protocol singleton
+let pmtilesRegistered = false;
+function ensurePmtiles() {
+  if (typeof window !== "undefined") {
+    try {
+      if (typeof maplibregl.setWorkerUrl === "function") {
+        maplibregl.setWorkerUrl("/maplibre-gl-worker.mjs");
+      }
+      if (!pmtilesRegistered) {
+        const protocol = new pmtiles.Protocol();
+        maplibregl.addProtocol("pmtiles", protocol.tile);
+        pmtilesRegistered = true;
+      }
+    } catch (e) {
+      console.warn("PMTiles/Worker setup notice:", e);
+    }
+  }
+}
+
+const PMTILES_DARK_STYLE: maplibregl.StyleSpecification = {
   version: 8,
+  glyphs: "/fonts/{fontstack}/{range}.pbf",
   sources: {
-    "carto-dark": {
-      type: "raster",
-      tiles: [
-        "https://a.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-        "https://b.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-        "https://c.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}@2x.png",
-      ],
-      tileSize: 256,
-      attribution: "© OpenStreetMap contributors, © CARTO",
+    protomaps: {
+      type: "vector",
+      url: "pmtiles:///basemap/cachar.pmtiles",
+      attribution:
+        'Map data © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a> contributors, <a href="https://protomaps.com" target="_blank" rel="noopener">Protomaps</a>',
     },
   },
   layers: [
     {
-      id: "carto-dark-tiles",
-      type: "raster",
-      source: "carto-dark",
-      minzoom: 0,
-      maxzoom: 19,
+      id: "background",
+      type: "background",
+      paint: { "background-color": "#070b13" },
+    },
+    {
+      id: "earth",
+      type: "fill",
+      source: "protomaps",
+      "source-layer": "earth",
+      paint: { "fill-color": "#0c1320" },
+    },
+    {
+      id: "landuse",
+      type: "fill",
+      source: "protomaps",
+      "source-layer": "landuse",
+      paint: { "fill-color": "#0f1726", "fill-opacity": 0.45 },
+    },
+    {
+      id: "water",
+      type: "fill",
+      source: "protomaps",
+      "source-layer": "water",
+      paint: { "fill-color": "#081b30" },
+    },
+    {
+      id: "roads-casing",
+      type: "line",
+      source: "protomaps",
+      "source-layer": "roads",
+      paint: { "line-color": "#121b28", "line-width": 1.5 },
+    },
+    {
+      id: "roads",
+      type: "line",
+      source: "protomaps",
+      "source-layer": "roads",
+      paint: { "line-color": "#1d2839", "line-width": 1 },
+    },
+    {
+      id: "buildings",
+      type: "fill",
+      source: "protomaps",
+      "source-layer": "buildings",
+      paint: { "fill-color": "#151f2f", "fill-opacity": 0.35 },
+    },
+    {
+      id: "boundaries",
+      type: "line",
+      source: "protomaps",
+      "source-layer": "boundaries",
+      paint: { "line-color": "#2c3b4f", "line-dasharray": [2, 2], "line-width": 0.8 },
     },
   ],
 };
@@ -104,6 +170,8 @@ export default function FloodMap({
 
   const [mapLoaded, setMapLoaded] = useState(false);
   const [webGLError, setWebGLError] = useState(false);
+  const [basemapError, setBasemapError] = useState(false);
+  const [headerCollapsed, setHeaderCollapsed] = useState(false);
   const [selectedModel, setSelectedModel] = useState<"tier_a" | "unet" | "whatif">(initialModel);
   const [showConfidence, setShowConfidence] = useState<boolean>(false);
   const [layerVisible, setLayerVisible] = useState(true);
@@ -195,9 +263,11 @@ export default function FloodMap({
         return;
       }
 
+      ensurePmtiles();
+
       const map = new maplibregl.Map({
         container: mapContainerRef.current,
-        style: DARK_STYLE,
+        style: PMTILES_DARK_STYLE,
         center: [92.80, 24.83],
         zoom: 11.5,
         pitch: 0,
@@ -205,8 +275,16 @@ export default function FloodMap({
         attributionControl: false,
       });
 
-    map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
-    map.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-left");
+      map.addControl(new maplibregl.NavigationControl({ showCompass: false }), "top-right");
+      map.addControl(new maplibregl.ScaleControl({ unit: "metric" }), "bottom-left");
+
+      map.on("error", (e) => {
+        const msg = e.error?.message || "";
+        if (msg.includes("pmtiles") || (e as { sourceId?: string }).sourceId === "protomaps") {
+          console.warn("Basemap source notice:", e.error);
+          setBasemapError(true);
+        }
+      });
 
     map.on("load", () => {
       // 1. Flood polygons sources
@@ -503,6 +581,7 @@ export default function FloodMap({
         filter: ["has", "point_count"],
         layout: {
           "text-field": "{point_count_abbreviated}",
+          "text-font": ["Noto Sans Bold"],
           "text-size": 11,
         },
         paint: {
@@ -638,12 +717,18 @@ export default function FloodMap({
       map.on("mouseleave", "roads-lines", resetPointer);
 
       setMapLoaded(true);
+      if (typeof window !== "undefined") {
+        (window as unknown as { __JALDRISHTI_MAP__?: maplibregl.Map }).__JALDRISHTI_MAP__ = map;
+      }
     });
 
       mapRef.current = map;
       return () => {
         map.remove();
         mapRef.current = null;
+        if (typeof window !== "undefined") {
+          delete (window as unknown as { __JALDRISHTI_MAP__?: maplibregl.Map }).__JALDRISHTI_MAP__;
+        }
       };
     } catch (err) {
       console.warn("Failed to initialize MapLibre GL:", err);
@@ -773,108 +858,88 @@ export default function FloodMap({
       )}
 
       {/* Floating Header Card (Top Left) */}
-      <div className="absolute top-4 left-4 z-10 flex flex-col gap-2 max-w-md">
-        <GlassCard className="p-4 space-y-3 backdrop-blur-md">
+      <div className="absolute top-3 left-14 sm:left-16 z-10 flex flex-col gap-2 max-w-[calc(100vw-80px)] sm:max-w-xs">
+        <GlassCard className="p-3 space-y-2 backdrop-blur-md border-white/10 shadow-xl">
           <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-aurora-400 animate-pulse" />
-              <h3 className="font-heading font-semibold text-white text-sm">
-                Cachar Flood Extent & Impact
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="w-2 h-2 rounded-full bg-aurora-400 animate-pulse shrink-0" />
+              <h3 className="font-heading font-semibold text-white text-xs truncate">
+                Cachar Flood Extent
               </h3>
             </div>
-            <div className="flex gap-1">
-              <Badge variant="real">Sentinel-1</Badge>
-              <Badge variant="derived">
-                {selectedModel === "unet"
-                  ? "U-Net ResNet34"
-                  : selectedModel === "tier_a"
-                  ? "Tier A"
-                  : "HAND What-If"}
-              </Badge>
-            </div>
-          </div>
-
-          {/* Model Toggle Buttons */}
-          <div className="grid grid-cols-3 gap-1 p-1 bg-space-950/80 rounded-lg border border-white/10 text-xs font-mono">
-            <button
-              onClick={() => setSelectedModel("unet")}
-              className={`flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-md transition-all cursor-pointer text-[11px] ${
-                selectedModel === "unet"
-                  ? "bg-aurora-500/20 text-aurora-300 font-bold border border-aurora-500/30"
-                  : "text-slate-400 hover:text-white"
-              }`}
-            >
-              <Sparkles className="w-3 h-3 shrink-0" />
-              <span>U-Net</span>
-            </button>
-            <button
-              onClick={() => setSelectedModel("tier_a")}
-              className={`flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-md transition-all cursor-pointer text-[11px] ${
-                selectedModel === "tier_a"
-                  ? "bg-blue-500/20 text-blue-300 font-bold border border-blue-500/30"
-                  : "text-slate-400 hover:text-white"
-              }`}
-            >
-              <ShieldCheck className="w-3 h-3 shrink-0" />
-              <span>Tier A</span>
-            </button>
-            <button
-              onClick={() => setSelectedModel("whatif")}
-              className={`flex items-center justify-center gap-1 py-1.5 px-1.5 rounded-md transition-all cursor-pointer text-[11px] ${
-                selectedModel === "whatif"
-                  ? "bg-purple-500/20 text-purple-300 font-bold border border-purple-500/30"
-                  : "text-slate-400 hover:text-white"
-              }`}
-            >
-              <span className="w-2 h-2 rounded-full bg-purple-400 shrink-0" />
-              <span>What-If</span>
-            </button>
-          </div>
-
-          <div className="grid grid-cols-2 gap-2 pt-2 border-t border-white/10 text-xs font-mono">
-            <div>
-              <span className="text-slate-400 block">Flooded Area</span>
-              <span
-                className={`font-bold text-sm ${
-                  selectedModel === "unet"
-                    ? "text-aurora-400"
-                    : selectedModel === "tier_a"
-                    ? "text-blue-400"
-                    : "text-purple-400"
-                }`}
+            <div className="flex items-center gap-1 shrink-0">
+              <Badge variant="real" className="text-[9px] py-0 px-1">Sentinel-1</Badge>
+              <button
+                onClick={() => setHeaderCollapsed(!headerCollapsed)}
+                className="p-1 rounded text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                title={headerCollapsed ? "Expand details" : "Collapse details"}
+                aria-label="Toggle model details"
               >
-                {selectedModel === "unet"
-                  ? "99.76 km²"
-                  : selectedModel === "tier_a"
-                  ? "126.17 km²"
-                  : whatifAreaHa
-                  ? `${(whatifAreaHa / 100.0).toFixed(2)} km²`
-                  : "193.27 km²"}
-              </span>
-              <span className="text-[10px] text-slate-500 block">
-                {selectedModel === "unet"
-                  ? "(9,976 ha in UTM-46N)"
-                  : selectedModel === "tier_a"
-                  ? "(12,617 ha in UTM-46N)"
-                  : whatifAreaHa
-                  ? `(${whatifAreaHa.toLocaleString()} ha in UTM-46N)`
-                  : "(19,327 ha in UTM-46N)"}
-              </span>
-            </div>
-            <div>
-              <span className="text-slate-400 block">Layer Mode</span>
-              <span className="text-white font-bold text-sm">
-                {selectedModel === "unet"
-                  ? "Observed SAR"
-                  : selectedModel === "tier_a"
-                  ? "Otsu Baseline"
-                  : "HAND Scenario"}
-              </span>
-              <span className="text-[10px] text-slate-500 block">
-                {selectedModel === "whatif" ? "Hydrological Stage" : "(> 0.5 ha filter)"}
-              </span>
+                {headerCollapsed ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
+              </button>
             </div>
           </div>
+
+          {!headerCollapsed && (
+            <>
+              {/* Model Toggle Buttons */}
+              <div className="grid grid-cols-3 gap-1 p-0.5 bg-space-950/80 rounded-lg border border-white/10 text-[10px] font-mono">
+                <button
+                  onClick={() => setSelectedModel("unet")}
+                  className={`flex items-center justify-center gap-1 py-1 px-1 rounded transition-all cursor-pointer ${
+                    selectedModel === "unet"
+                      ? "bg-aurora-500/20 text-aurora-300 font-bold border border-aurora-500/30"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  <Sparkles className="w-2.5 h-2.5 shrink-0" />
+                  <span>U-Net</span>
+                </button>
+                <button
+                  onClick={() => setSelectedModel("tier_a")}
+                  className={`flex items-center justify-center gap-1 py-1 px-1 rounded transition-all cursor-pointer ${
+                    selectedModel === "tier_a"
+                      ? "bg-blue-500/20 text-blue-300 font-bold border border-blue-500/30"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  <ShieldCheck className="w-2.5 h-2.5 shrink-0" />
+                  <span>Otsu</span>
+                </button>
+                <button
+                  onClick={() => setSelectedModel("whatif")}
+                  className={`flex items-center justify-center gap-1 py-1 px-1 rounded transition-all cursor-pointer ${
+                    selectedModel === "whatif"
+                      ? "bg-purple-500/20 text-purple-300 font-bold border border-purple-500/30"
+                      : "text-slate-400 hover:text-white"
+                  }`}
+                >
+                  <span>What-If</span>
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between pt-1 border-t border-white/10 text-[10px] font-mono">
+                <span className="text-slate-400">Flooded Area:</span>
+                <span
+                  className={`font-bold ${
+                    selectedModel === "unet"
+                      ? "text-aurora-400"
+                      : selectedModel === "tier_a"
+                      ? "text-blue-400"
+                      : "text-purple-400"
+                  }`}
+                >
+                  {selectedModel === "unet"
+                    ? "99.76 km² (9,976 ha)"
+                    : selectedModel === "tier_a"
+                    ? "126.17 km² (12,617 ha)"
+                    : whatifAreaHa
+                    ? `${(whatifAreaHa / 100.0).toFixed(2)} km²`
+                    : "193.27 km²"}
+                </span>
+              </div>
+            </>
+          )}
         </GlassCard>
 
         {/* Selected Feature Inspector */}
@@ -989,12 +1054,12 @@ export default function FloodMap({
         )}
       </div>
 
-      {/* Floating Layer Controls (Bottom Right) */}
-      <div className="absolute bottom-4 right-4 z-10 flex flex-col items-end gap-2">
-        <GlassCard className="p-3 flex items-center gap-2 backdrop-blur-md text-xs font-mono">
+      {/* Floating Quick Controls (Bottom Right - Hidden on mobile to prevent clutter) */}
+      <div className="absolute bottom-3 right-3 z-10 hidden md:flex items-center gap-1.5">
+        <GlassCard className="p-1.5 flex items-center gap-1 backdrop-blur-md text-[11px] font-mono">
           <button
             onClick={() => setShowZones(!showZones)}
-            className={`px-2 py-1 rounded border transition-all cursor-pointer ${
+            className={`px-2 py-0.5 rounded border transition-all cursor-pointer ${
               showZones ? "bg-amber-500/20 text-amber-300 border-amber-500/30" : "bg-white/5 text-slate-400 border-white/10"
             }`}
           >
@@ -1002,7 +1067,7 @@ export default function FloodMap({
           </button>
           <button
             onClick={() => setShowRoads(!showRoads)}
-            className={`px-2 py-1 rounded border transition-all cursor-pointer ${
+            className={`px-2 py-0.5 rounded border transition-all cursor-pointer ${
               showRoads ? "bg-red-500/20 text-red-300 border-red-500/30" : "bg-white/5 text-slate-400 border-white/10"
             }`}
           >
@@ -1010,7 +1075,7 @@ export default function FloodMap({
           </button>
           <button
             onClick={() => setShowShelters(!showShelters)}
-            className={`px-2 py-1 rounded border transition-all cursor-pointer ${
+            className={`px-2 py-0.5 rounded border transition-all cursor-pointer ${
               showShelters ? "bg-safe-500/20 text-safe-300 border-safe-500/30" : "bg-white/5 text-slate-400 border-white/10"
             }`}
           >
@@ -1018,7 +1083,7 @@ export default function FloodMap({
           </button>
           <button
             onClick={() => setShowConfidence(!showConfidence)}
-            className={`px-2 py-1 rounded border transition-all cursor-pointer ${
+            className={`px-2 py-0.5 rounded border transition-all cursor-pointer ${
               showConfidence ? "bg-cyan-500/20 text-cyan-300 border-cyan-500/30" : "bg-white/5 text-slate-400 border-white/10"
             }`}
           >
@@ -1026,25 +1091,34 @@ export default function FloodMap({
           </button>
           <button
             onClick={() => setOpacity((prev) => (prev >= 0.85 ? 0.35 : prev + 0.25))}
-            className="px-2 py-1 rounded bg-white/5 border border-white/10 text-slate-400 hover:text-white cursor-pointer"
+            className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-400 hover:text-white cursor-pointer"
           >
-            Opacity {Math.round(opacity * 100)}%
+            {Math.round(opacity * 100)}%
           </button>
           <button
             onClick={() => setLayerVisible(!layerVisible)}
-            className="flex items-center gap-1.5 px-2 py-1 rounded bg-white/5 border border-white/10 text-slate-300 hover:text-white cursor-pointer"
+            className="flex items-center gap-1 px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300 hover:text-white cursor-pointer"
           >
-            {layerVisible ? <Eye className="w-3.5 h-3.5 text-aurora-400" /> : <EyeOff className="w-3.5 h-3.5 text-slate-500" />}
-            <span>Flood Mask</span>
+            {layerVisible ? <Eye className="w-3 h-3 text-aurora-400" /> : <EyeOff className="w-3 h-3 text-slate-500" />}
+            <span>Mask</span>
           </button>
         </GlassCard>
       </div>
 
-      {/* Provenance Footer Indicator (Bottom Center) */}
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 pointer-events-none">
-        <div className="px-3 py-1 rounded-full bg-space-950/80 border border-white/10 text-[11px] font-mono text-slate-400 flex items-center gap-2">
-          <Badge variant="derived" className="text-[10px] py-0 px-2">DERIVED</Badge>
-          <span>Settlement zones: Voronoi of OSM villages clipped to Cachar window</span>
+      {/* Provenance & Attribution Footer (Bottom Left next to scale bar) */}
+      <div className="absolute bottom-2.5 left-24 sm:left-28 z-10 pointer-events-none max-w-[calc(100vw-120px)] sm:max-w-md">
+        <div className="px-2.5 py-0.5 rounded-full bg-slate-950/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-slate-400 flex items-center gap-1.5 pointer-events-auto shadow-md">
+          <Badge variant="derived" className="text-[9px] py-0 px-1">DERIVED</Badge>
+          <span className="truncate">Voronoi zones clipped to Cachar</span>
+          <span className="text-white/20">|</span>
+          <span className="text-slate-400 whitespace-nowrap">
+            Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" className="underline hover:text-white">OSM</a>, <a href="https://protomaps.com" target="_blank" rel="noopener" className="underline hover:text-white">Protomaps</a>
+          </span>
+          {basemapError && (
+            <span className="ml-1 text-amber-300 text-[9px] font-bold">
+              (Basemap offline fallback)
+            </span>
+          )}
         </div>
       </div>
     </div>
