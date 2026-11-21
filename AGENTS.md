@@ -1,0 +1,9 @@
+- Read docs/BLUEPRINT.md before any task. Work only on the current phase.
+- Never hard-code or invent data, metrics or statistics. UI numbers come from /data or code.
+- Label every layer REAL, DERIVED or SIMULATED.
+- Compute areas in a projected CRS (UTM), never in EPSG:4326.
+- Type everything; run lint, type-check and tests before declaring a phase done.
+- Every API call needs a static fallback. DEMO_MODE=1 must work with zero network.
+- Animate only transform and opacity; respect prefers-reduced-motion.
+- No secrets in the repo. Keep Earth Engine credentials in the pipeline only.
+- After each phase, write a short REPORT (what is real, what is simulated, known gaps).
