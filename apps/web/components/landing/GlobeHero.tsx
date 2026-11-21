@@ -18,11 +18,11 @@ export function GlobeHero() {
       const canvas = document.createElement("canvas");
       const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
       if (!gl) {
-        setWebglSupported(false);
+        requestAnimationFrame(() => setWebglSupported(false));
         return;
       }
     } catch {
-      setWebglSupported(false);
+      requestAnimationFrame(() => setWebglSupported(false));
       return;
     }
 

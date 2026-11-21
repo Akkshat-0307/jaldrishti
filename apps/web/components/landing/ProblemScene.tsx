@@ -22,8 +22,8 @@ function Counter({ from = 0, to, duration = 1.2, formatter = (v) => v.toLocaleSt
     if (!inView) return;
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion) {
-      setVal(to);
-      return;
+      const animId = requestAnimationFrame(() => setVal(to));
+      return () => cancelAnimationFrame(animId);
     }
 
     let start: number | null = null;

@@ -1,9 +1,9 @@
 """Unit tests for Phase 2: U-Net flood segmentation, dataset loader, metrics, and loss."""
 
-import numpy as np
 import pytest
 
-torch = pytest.importorskip("torch")
+np = pytest.importorskip("numpy", reason="numpy not installed (heavy ML dependency)")
+torch = pytest.importorskip("torch", reason="torch not installed (heavy ML dependency)")
 
 from pipeline.dataset import TRAIN_STATS
 from pipeline.infer_unet import compute_mask_agreement

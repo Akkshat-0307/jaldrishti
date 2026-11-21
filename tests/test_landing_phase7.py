@@ -4,14 +4,24 @@ import json
 import os
 from pathlib import Path
 import pytest
-import requests
+
+requests = pytest.importorskip("requests", reason="requests not installed (web integration test)")
 
 BASE_URL = "http://localhost:3000"
+REPO_ROOT = Path(__file__).resolve().parent.parent
+
+
+def _is_web_server_up() -> bool:
+    try:
+        res = requests.get(f"{BASE_URL}/", timeout=1)
+        return res.status_code == 200
+    except Exception:
+        return False
 
 
 def test_landing_static_assets_exist():
     """Verify all real satellite and composite images generated for Phase 7 exist."""
-    landing_dir = Path("apps/web/public/assets/landing")
+    landing_dir = REPO_ROOT / "apps/web/public/assets/landing"
     expected_assets = [
         "s1_baseline.png",
         "s1_peak.png",
@@ -28,6 +38,8 @@ def test_landing_static_assets_exist():
 
 def test_landing_page_renders_all_scenes():
     """Verify landing page at http://localhost:3000/ contains all 9 narrative scenes and key data."""
+    if not _is_web_server_up():
+        pytest.skip(f"Web server not running at {BASE_URL} (skipping landing integration test)")
     res = requests.get(f"{BASE_URL}/", timeout=10)
     assert res.status_code == 200, f"Landing page returned status {res.status_code}"
     html = res.text
@@ -87,6 +99,8 @@ def test_landing_page_renders_all_scenes():
 
 def test_about_page_attributions_and_governance():
     """Verify /about page contains all open data attributions, licenses, and governance definitions."""
+    if not _is_web_server_up():
+        pytest.skip(f"Web server not running at {BASE_URL} (skipping about page integration test)")
     res = requests.get(f"{BASE_URL}/about", timeout=10)
     assert res.status_code == 200, f"/about returned status {res.status_code}"
     html = res.text
@@ -114,6 +128,8 @@ def test_about_page_attributions_and_governance():
 
 def test_model_card_page_metrics_integrity():
     """Verify /model page renders docs/MODEL_CARD.md data faithfully with exact numbers."""
+    if not _is_web_server_up():
+        pytest.skip(f"Web server not running at {BASE_URL} (skipping model card integration test)")
     res = requests.get(f"{BASE_URL}/model", timeout=10)
     assert res.status_code == 200, f"/model returned status {res.status_code}"
     html = res.text

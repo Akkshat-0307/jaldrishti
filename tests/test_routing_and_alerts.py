@@ -4,9 +4,11 @@ import json
 import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any, Dict, List
-
-import networkx as nx
 import pytest
+
+nx = pytest.importorskip("networkx", reason="networkx not installed (routing graph dependency)")
+shapely = pytest.importorskip("shapely", reason="shapely not installed (routing geometry dependency)")
+
 from shapely.geometry import LineString, Point, box, shape
 from shapely.ops import transform, unary_union
 

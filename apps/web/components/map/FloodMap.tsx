@@ -293,7 +293,7 @@ export default function FloodMap({
     try {
       if (!isWebGLSupported()) {
         console.warn("WebGL is not supported in this environment.");
-        setWebGLError(true);
+        requestAnimationFrame(() => setWebGLError(true));
         return;
       }
 
@@ -779,14 +779,15 @@ export default function FloodMap({
       };
     } catch (err) {
       console.warn("Failed to initialize MapLibre GL:", err);
-      setWebGLError(true);
+      requestAnimationFrame(() => setWebGLError(true));
     }
   }, [onSelectZone]);
 
   // Sync initialModel if changed externally
   useEffect(() => {
     if (initialModel) {
-      setSelectedModel(initialModel);
+      const animId = requestAnimationFrame(() => setSelectedModel(initialModel));
+      return () => cancelAnimationFrame(animId);
     }
   }, [initialModel]);
 

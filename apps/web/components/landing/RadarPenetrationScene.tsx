@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useCallback } from "react";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 import Image from "next/image";
 import { Radio, CloudRain, Sun, MoveHorizontal } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
@@ -8,8 +8,19 @@ import { GlassCard } from "@/components/ui/GlassCard";
 
 export function RadarPenetrationScene() {
   const [sliderPos, setSliderPos] = useState<number>(50); // percentage 0 to 100
+  const [containerWidth, setContainerWidth] = useState<number>(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const isDragging = useRef<boolean>(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => setContainerWidth(el.clientWidth);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
 
   const handlePointerDown = () => {
     isDragging.current = true;
@@ -107,7 +118,7 @@ export function RadarPenetrationScene() {
               width={676}
               height={556}
               className="absolute inset-0 w-full h-full object-cover max-w-none"
-              style={{ width: containerRef.current ? `${containerRef.current.clientWidth}px` : "100%" }}
+              style={{ width: containerWidth ? `${containerWidth}px` : "100%" }}
             />
             {/* Top Left Label */}
             <div className="absolute top-4 left-4 z-10 px-3 py-1.5 rounded-md bg-space-950/80 backdrop-blur-md border border-white/20 text-xs font-mono text-slate-300 flex items-center gap-2">

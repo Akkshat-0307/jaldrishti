@@ -1,12 +1,15 @@
 """Tests for Phase 3: Impact assessment, cut-off village logic, and priority scoring."""
 
 from typing import Any, Dict, List
-import networkx as nx
-import numpy as np
 import pytest
+
+nx = pytest.importorskip("networkx", reason="networkx not installed (spatial graph dependency)")
+np = pytest.importorskip("numpy", reason="numpy not installed (spatial pipeline dependency)")
+shapely = pytest.importorskip("shapely", reason="shapely not installed (spatial pipeline dependency)")
+pyproj = pytest.importorskip("pyproj", reason="pyproj not installed (spatial pipeline dependency)")
+
 from shapely.geometry import Point, Polygon, box
 from shapely.ops import transform
-import pyproj
 
 from pipeline.impact import (
     calculate_priority_scores,

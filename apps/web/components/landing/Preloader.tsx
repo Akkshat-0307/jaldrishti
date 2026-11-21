@@ -6,6 +6,15 @@ import { motion, AnimatePresence } from "framer-motion";
 export function Preloader() {
   const [show, setShow] = useState<boolean>(false);
 
+  const handleDismiss = () => {
+    try {
+      sessionStorage.setItem("jaldrishti_preloader_seen", "true");
+    } catch {
+      // ignore
+    }
+    setShow(false);
+  };
+
   useEffect(() => {
     // Check reduced motion, lighthouse audit or previous session visit
     try {
@@ -16,27 +25,20 @@ export function Preloader() {
         /Lighthouse|Headless|Chrome-Lighthouse|Googlebot/i.test(navigator.userAgent);
       const forcePreloader = new URLSearchParams(window.location.search).get("preloader") === "1";
       if (!forcePreloader && (reducedMotion || seen || isLighthouse)) {
-        setShow(false);
         return;
       }
-      setShow(true);
+      const raf = requestAnimationFrame(() => setShow(true));
       const timer = setTimeout(() => {
         handleDismiss();
       }, 1200);
-      return () => clearTimeout(timer);
-    } catch {
-      setShow(false);
-    }
-  }, []);
-
-  const handleDismiss = () => {
-    try {
-      sessionStorage.setItem("jaldrishti_preloader_seen", "true");
+      return () => {
+        cancelAnimationFrame(raf);
+        clearTimeout(timer);
+      };
     } catch {
       // ignore
     }
-    setShow(false);
-  };
+  }, []);
 
   return (
     <AnimatePresence>

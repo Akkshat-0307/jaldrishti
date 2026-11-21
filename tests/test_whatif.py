@@ -2,12 +2,18 @@
 
 import json
 from pathlib import Path
-
-import numpy as np
 import pytest
+
+np = pytest.importorskip("numpy", reason="numpy not installed (HAND pipeline dependency)")
+scipy = pytest.importorskip("scipy", reason="scipy not installed (HAND pipeline dependency)")
+
 from fastapi.testclient import TestClient
 
-from apps.api.main import app
+try:
+    from apps.api.main import app
+except ImportError:
+    from main import app
+
 from pipeline.river_outlook import fetch_river_outlook
 from pipeline.whatif import (
     DELTA_TAGS,

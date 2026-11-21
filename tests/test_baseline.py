@@ -3,11 +3,14 @@
 from __future__ import annotations
 
 import math
-import numpy as np
 import pytest
+
+np = pytest.importorskip("numpy", reason="numpy not installed (spatial pipeline dependency)")
+pyproj = pytest.importorskip("pyproj", reason="pyproj not installed (spatial pipeline dependency)")
+shapely = pytest.importorskip("shapely", reason="shapely not installed (spatial pipeline dependency)")
+
 from shapely.geometry import Polygon
 from shapely.ops import transform
-import pyproj
 
 from pipeline.baseline import (
     apply_speckle_filter,

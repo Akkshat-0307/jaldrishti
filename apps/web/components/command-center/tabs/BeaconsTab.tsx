@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -164,7 +164,7 @@ export function BeaconsTab({ onSelectZone, onSelectBeacon }: BeaconsTabProps) {
   };
 
   // Initial Fetch & SSE Setup
-  const fetchBeacons = useCallback(async () => {
+  const fetchBeacons = async () => {
     try {
       const res = await fetch(getApiUrl("/beacons"));
       if (res.ok) {
@@ -176,10 +176,10 @@ export function BeaconsTab({ onSelectZone, onSelectBeacon }: BeaconsTabProps) {
     } catch {
       // In DEMO_MODE=1 or static fallback, keep DEFAULT_BEACONS
     }
-  }, []);
+  };
 
   useEffect(() => {
-    fetchBeacons();
+    void fetchBeacons();
 
     // Setup SSE connection
     if (typeof window !== "undefined" && "EventSource" in window) {
@@ -233,7 +233,7 @@ export function BeaconsTab({ onSelectZone, onSelectBeacon }: BeaconsTabProps) {
         es.close();
       };
     }
-  }, [fetchBeacons]);
+  }, []);
 
   // Patch Beacon Status
   const handleUpdateStatus = async (beaconId: string, nextStatus: string, team?: string) => {

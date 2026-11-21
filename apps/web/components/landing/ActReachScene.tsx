@@ -58,11 +58,11 @@ export function ActReachScene() {
   useEffect(() => {
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reducedMotion) {
-      setTypedChars(curAlert.text.length);
-      return;
+      const animId = requestAnimationFrame(() => setTypedChars(curAlert.text.length));
+      return () => cancelAnimationFrame(animId);
     }
 
-    setTypedChars(0);
+    const resetId = requestAnimationFrame(() => setTypedChars(0));
     let current = 0;
     const interval = setInterval(() => {
       current += 2;
@@ -72,7 +72,10 @@ export function ActReachScene() {
       }
     }, 25);
 
-    return () => clearInterval(interval);
+    return () => {
+      cancelAnimationFrame(resetId);
+      clearInterval(interval);
+    };
   }, [selectedLang, curAlert.text]);
 
   return (

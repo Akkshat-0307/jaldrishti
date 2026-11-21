@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -165,16 +165,27 @@ export default function BeaconPwaPage() {
   const [accuracy, setAccuracy] = useState<number | null>(null);
   const [gpsStatus, setGpsStatus] = useState<"locating" | "locked" | "simulated">("locating");
   const [batteryLevel, setBatteryLevel] = useState<number | null>(null);
-  const [isOnline, setIsOnline] = useState<boolean>(true);
+  const [isOnline, setIsOnline] = useState<boolean>(() => (typeof window !== "undefined" ? navigator.onLine : true));
 
   const [needType, setNeedType] = useState<NeedType>("medical");
   const [groupSize, setGroupSize] = useState<number>(3);
   const [note, setNote] = useState<string>("");
+  const [createdTs] = useState<number>(() => Math.floor(Date.now() / 1000));
 
-  // Packed binary representation
-  const [payloadBytes, setPayloadBytes] = useState<Uint8Array | null>(null);
-  const [hexCode, setHexCode] = useState<string>("");
-  const [base32Code, setBase32Code] = useState<string>("");
+  // Packed binary representation (derived from lat, lon, needType, groupSize)
+  const { payloadBytes, hexCode, base32Code } = useMemo(() => {
+    try {
+      const packed = packBeaconPayload(lat, lon, createdTs, needType, groupSize);
+      return {
+        payloadBytes: packed,
+        hexCode: "0x" + bytesToHex(packed),
+        base32Code: encodeBase32(packed),
+      };
+    } catch (e) {
+      console.warn("Payload packing error:", e);
+      return { payloadBytes: null, hexCode: "", base32Code: "" };
+    }
+  }, [lat, lon, createdTs, needType, groupSize]);
 
   // SOS Hold-to-confirm progress (0 to 100)
   const [holdProgress, setHoldProgress] = useState<number>(0);
@@ -235,12 +246,14 @@ export default function BeaconPwaPage() {
       setQueuedCount(remaining.length);
     }
   }, []);
-  flushRef.current = flushQueue;
+
+  useEffect(() => {
+    flushRef.current = flushQueue;
+  }, [flushQueue]);
 
   // Service Worker & Geolocation Acquisition
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setIsOnline(navigator.onLine);
       const handleOnline = () => {
         setIsOnline(true);
         flushQueue();
@@ -315,7 +328,7 @@ export default function BeaconPwaPage() {
           { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
         );
       } else {
-        setGpsStatus("simulated");
+        requestAnimationFrame(() => setGpsStatus("simulated"));
       }
 
       // Initial queue check
@@ -328,19 +341,6 @@ export default function BeaconPwaPage() {
       };
     }
   }, [flushQueue]);
-
-  // Recalculate 16-byte packed payload
-  useEffect(() => {
-    try {
-      const nowTs = Math.floor(Date.now() / 1000);
-      const packed = packBeaconPayload(lat, lon, nowTs, needType, groupSize);
-      setPayloadBytes(packed);
-      setHexCode("0x" + bytesToHex(packed));
-      setBase32Code(encodeBase32(packed));
-    } catch (e) {
-      console.warn("Payload packing error:", e);
-    }
-  }, [lat, lon, needType, groupSize]);
 
   // Dispatch Beacon function
   const handleTransmitBeacon = useCallback(async (channelOverride?: "online" | "sms" | "nav_sim") => {
@@ -409,7 +409,10 @@ export default function BeaconPwaPage() {
     setQueuedCount(qList.length);
     setDispatchStatus("queued");
   }, [payloadBytes, isOnline, lat, lon, groupSize, needType, batteryLevel, note, base32Code, hexCode]);
-  transmitRef.current = handleTransmitBeacon;
+
+  useEffect(() => {
+    transmitRef.current = handleTransmitBeacon;
+  }, [handleTransmitBeacon]);
 
   // Hold-to-confirm logic (1.5 seconds)
   const startHold = () => {
