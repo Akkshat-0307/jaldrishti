@@ -85,7 +85,7 @@ export function ImpactTab({ summary, riverOutlook }: ImpactTabProps) {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5 font-semibold text-white">
             <Users className="h-4 w-4 text-amber-400" />
-            <span>Population Impact Breakdown</span>
+            <span>Population Impact (Modelled Estimate)</span>
           </div>
           <Badge variant="derived" size="sm">DERIVED</Badge>
         </div>
@@ -107,7 +107,7 @@ export function ImpactTab({ summary, riverOutlook }: ImpactTabProps) {
 
         <div className="text-[10px] text-white/50 bg-white/5 p-2 rounded leading-relaxed">
           <Info className="h-3 w-3 inline text-cyan-400 mr-1" />
-          Exposed population represents residents whose dwellings intersect detected floodwater. Cut-off population encompasses all residents residing in hydraulically severed zones who cannot access emergency shelters by road.
+          Modelled estimates derived from WorldPop 2020 (100m UN-adjusted raster). Exposed population represents residents whose cells intersect detected floodwater. Cut-off population encompasses residents residing in hydraulically severed zones who cannot access emergency shelters by road.
         </div>
       </div>
 

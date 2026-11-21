@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { getApiUrl } from "@/lib/api";
 import type { BeaconItem } from "../types";
 import {
   Battery,
@@ -148,7 +149,7 @@ export function BeaconsTab({ onSelectZone, onSelectBeacon }: BeaconsTabProps) {
   // Initial Fetch & SSE Setup
   const fetchBeacons = useCallback(async () => {
     try {
-      const res = await fetch("/api/beacons");
+      const res = await fetch(getApiUrl("/beacons"));
       if (res.ok) {
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
@@ -165,9 +166,18 @@ export function BeaconsTab({ onSelectZone, onSelectBeacon }: BeaconsTabProps) {
 
     // Setup SSE connection
     if (typeof window !== "undefined" && "EventSource" in window) {
-      const es = new EventSource("/api/beacons/stream");
+      const streamUrl = getApiUrl("/beacons/stream");
+      const es = new EventSource(streamUrl);
 
       es.onopen = () => setSseConnected(true);
+
+      es.addEventListener("ping", () => {
+        setSseConnected(true);
+      });
+
+      es.addEventListener("sync", () => {
+        setSseConnected(true);
+      });
 
       es.addEventListener("beacon", (e: MessageEvent) => {
         try {
@@ -229,7 +239,7 @@ export function BeaconsTab({ onSelectZone, onSelectBeacon }: BeaconsTabProps) {
     );
 
     try {
-      await fetch(`/api/beacons/${beaconId}`, {
+      await fetch(getApiUrl(`/beacons/${beaconId}`), {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -319,7 +329,7 @@ export function BeaconsTab({ onSelectZone, onSelectBeacon }: BeaconsTabProps) {
 
     // Send to API if live
     try {
-      await fetch("/api/beacons", {
+      await fetch(getApiUrl("/beacons"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

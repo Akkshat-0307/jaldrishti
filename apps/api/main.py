@@ -44,15 +44,16 @@ app = FastAPI(
 )
 
 # ---------------------------------------------------------------------------
-# CORS – allow all origins for development
+# CORS – allow all origins for web client and direct SSE streaming
 # ---------------------------------------------------------------------------
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Last-Event-ID", "Content-Type"],
 )
 
 # ---------------------------------------------------------------------------

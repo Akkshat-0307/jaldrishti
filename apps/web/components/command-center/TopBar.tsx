@@ -1,11 +1,13 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
+import { getApiUrl } from "@/lib/api";
 import {
   Languages,
   Play,
+  RefreshCw,
   Satellite,
   Search,
   Table as TableIcon,
@@ -36,6 +38,35 @@ export function TopBar({
     { code: "bn", label: "বাংলা" },
   ];
 
+  const [serverStatus, setServerStatus] = useState<"checking" | "waking" | "connected" | "fallback">("checking");
+
+  useEffect(() => {
+    let active = true;
+    const wakingTimer = setTimeout(() => {
+      if (active) setServerStatus("waking");
+    }, 1200);
+
+    const ping = async () => {
+      try {
+        const res = await fetch(getApiUrl("/health"));
+        clearTimeout(wakingTimer);
+        if (res.ok && active) {
+          setServerStatus("connected");
+        } else if (active) {
+          setServerStatus("fallback");
+        }
+      } catch {
+        clearTimeout(wakingTimer);
+        if (active) setServerStatus("fallback");
+      }
+    };
+    ping();
+    return () => {
+      active = false;
+      clearTimeout(wakingTimer);
+    };
+  }, []);
+
   return (
     <header className="h-14 border-b border-white/10 bg-black/60 backdrop-blur-md px-4 flex items-center justify-between z-30 shrink-0">
       {/* Brand & Event Selector */}
@@ -60,6 +91,35 @@ export function TopBar({
           <Badge variant="real" size="sm">
             REAL SATELLITE
           </Badge>
+
+          {/* Server Warm-Up & Connection Pill */}
+          {serverStatus === "waking" && (
+            <span
+              className="hidden lg:inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30 animate-pulse"
+              title="Free-tier container is booting from sleep"
+            >
+              <RefreshCw className="w-3 h-3 animate-spin text-amber-400" />
+              <span>Waking Server...</span>
+            </span>
+          )}
+          {serverStatus === "connected" && (
+            <span
+              className="hidden lg:inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+              title="FastAPI server is live and responsive"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span>API Live</span>
+            </span>
+          )}
+          {serverStatus === "fallback" && (
+            <span
+              className="hidden lg:inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-mono bg-blue-500/20 text-blue-300 border border-blue-500/30"
+              title="API asleep or offline; Command Center operating from 100% verified static fallbacks"
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400" />
+              <span>Static Fallback Safe</span>
+            </span>
+          )}
         </div>
       </div>
 

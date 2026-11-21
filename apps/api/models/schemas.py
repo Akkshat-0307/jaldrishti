@@ -187,22 +187,22 @@ class BeaconChannel(str, Enum):
 
 
 class BeaconCreate(BaseModel):
-    lat: float
-    lon: float
-    group_size: int = 1
+    lat: float = Field(ge=-90.0, le=90.0, description="Latitude in decimal degrees")
+    lon: float = Field(ge=-180.0, le=180.0, description="Longitude in decimal degrees")
+    group_size: int = Field(default=1, ge=1, le=100, description="Number of stranded individuals")
     need_type: NeedType = NeedType.other
     battery: float | None = Field(default=None, ge=0.0, le=100.0)
     channel: BeaconChannel = BeaconChannel.online
-    payload_code: str | None = None
-    note: str | None = None
+    payload_code: str | None = Field(default=None, max_length=64)
+    note: str | None = Field(default=None, max_length=300)
 
 
 class BeaconUpdate(BaseModel):
     status: BeaconStatus | None = None
-    group_size: int | None = None
+    group_size: int | None = Field(default=None, ge=1, le=100)
     need_type: NeedType | None = None
-    assigned_team: str | None = None
-    note: str | None = None
+    assigned_team: str | None = Field(default=None, max_length=120)
+    note: str | None = Field(default=None, max_length=300)
 
 
 class BeaconResponse(BaseModel):

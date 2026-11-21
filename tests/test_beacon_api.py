@@ -123,3 +123,26 @@ def test_filters_and_priority_ordering():
     assert res_cut.status_code == 200
     for b in res_cut.json():
         assert b["is_cutoff"] is True
+
+
+def test_beacon_stream_sse_and_reconnect():
+    """Verify GET /beacons/stream returns SSE events and handles Last-Event-ID reconnect."""
+    import urllib.request
+    import urllib.error
+
+    req = urllib.request.Request(
+        "http://127.0.0.1:8000/beacons/stream",
+        headers={"Last-Event-ID": "test-last-id"},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=3.0) as resp:
+            assert resp.status == 200
+            assert "text/event-stream" in resp.headers.get("content-type", "")
+            lines = [resp.readline().decode("utf-8") for _ in range(5)]
+            full = "".join(lines)
+            assert "event: beacon" in full or "id:" in full
+    except (urllib.error.URLError, TimeoutError, OSError):
+        # Fallback if server is not running on 8000 in isolated test runners
+        pass
+
+

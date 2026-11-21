@@ -5,6 +5,7 @@ import * as maplibregl from "maplibre-gl";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Badge } from "@/components/ui/Badge";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { getApiUrl } from "@/lib/api";
 import type { BeaconItem } from "../command-center/types";
 import {
   Eye,
@@ -134,7 +135,7 @@ export default function FloodMap({
 
     const syncBeacons = async () => {
       try {
-        const res = await fetch("/api/beacons");
+        const res = await fetch(getApiUrl("/beacons"));
         if (res.ok) {
           const list = await res.json();
           if (Array.isArray(list)) {

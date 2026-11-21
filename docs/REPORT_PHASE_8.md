@@ -11,7 +11,7 @@
 
 Phase 8 implements the citizen-facing **Rescue Beacon Progressive Web App (PWA)** at `/beacon` and the operational **Responder Console** within the Command Center (`/command-center` Beacons tab). 
 
-The module provides an end-to-end distress communication pipeline designed for extreme low-bandwidth and zero-connectivity post-disaster environments. It features a compact 16-byte packed binary payload with CRC-16/CCITT checksum integrity, offline queueing via IndexedDB and Service Worker caching, 1-tap GSM SMS fallback (`sms:1077`), real-time Server-Sent Events (SSE) streaming, and strict state-machine triage.
+The module provides an end-to-end distress communication pipeline designed for extreme low-bandwidth and zero-connectivity post-disaster environments. It features a compact 16-byte packed binary payload with CRC-16/CCITT checksum integrity, offline queueing via IndexedDB and Service Worker caching, 1-tap GSM SMS fallback to a configured placeholder dummy number (`+91 00000 00000`), real-time Server-Sent Events (SSE) streaming, and strict state-machine triage.
 
 ---
 
@@ -25,7 +25,7 @@ In compliance with `AGENTS.md`, every component, layer, and metric is classified
 | **Settlement Centroids** | **REAL** | 20 village points from OpenStreetMap (`place=village`, `place=hamlet`). |
 | **Zone Population Totals** | **REAL** | Population counts derived from WorldPop 2020 (`WorldPop/GP/100m/pop`), clipped and re-projected to UTM Zone 46N (`EPSG:32646`). |
 | **Hardware Telemetry** | **REAL** | GPS coordinates acquired via HTML5 Geolocation API (`navigator.geolocation`) and device battery status via Battery Status API (`navigator.getBattery()`). |
-| **SMS Fallback Format** | **REAL** | GSM-7 compliant URI (`sms:1077?body=...`) targeted to India's official State/District Emergency Operation Centre toll-free helpline (1077). |
+| **SMS Fallback Format** | **SIMULATED** | GSM-7 compliant URI (`sms:+910000000000?body=...`) directed to a configurable demo dummy placeholder number (`NEXT_PUBLIC_DEMO_SMS_NUMBER`). No government or 1077 helpline integration. |
 | **Local Offline Cache** | **REAL** | Service Worker (`public/sw.js`) and IndexedDB transactional store caching the PWA app shell and queueing packets when offline. |
 | **16-Byte Binary Payload** | **DERIVED** | Packed 16-byte struct: lat/lon micro-degrees (int32), epoch timestamp (uint32), need flags & group size (uint8), reserved (uint8), CRC-16/CCITT checksum (uint16). Bit-for-bit parity verified across TypeScript and Python. |
 | **Spatial Matching & Prioritization** | **DERIVED** | Reverse-geocoding of beacon coordinates against the 20 Cachar flood zones (`villages.geojson`) and Dijkstra routing graph (`routes.json`). Beacons in cut-off zones receive elevated triage weight. |
@@ -98,6 +98,6 @@ The payload encodes all essential distress information in exactly 16 bytes:
 
 ## 5. Known Gaps & Operational Limitations
 
-1. **Physical Satellite Uplink:** Direct smartphone-to-satellite uplink without cellular base stations requires specialized satellite smartphone hardware (e.g., Bullitt Satellite, Snapdragon Satellite, or NavIC handheld dongles). The PWA provides GSM-7 SMS (`sms:1077`) as the standard cellular fallback when data networks are unavailable.
+1. **Physical Satellite Uplink:** Direct smartphone-to-satellite uplink without cellular base stations requires specialized satellite smartphone hardware (e.g., Bullitt Satellite, Snapdragon Satellite, or NavIC handheld dongles). The PWA provides GSM-7 SMS to a configurable placeholder number (`+91 00000 00000`) as a simulated fallback; it is not connected to government helplines.
 2. **Battery Status API Support:** Supported across Chromium-based mobile browsers (Chrome, Edge), but restricted on iOS Safari for privacy/fingerprinting reasons (gracefully defaults to `100.0%`).
 3. **Offline Basemap Tiles:** While the PWA app shell, logic, and cached distress state work 100% offline, MapLibre vector map basemaps require network access unless pre-cached as local offline PMTiles.

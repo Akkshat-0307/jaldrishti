@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import time
 from datetime import datetime, timezone
 from typing import Any
 
@@ -30,6 +31,26 @@ router = APIRouter(prefix="/beacons", tags=["beacons"])
 # Active SSE subscriber queues
 _sse_subscribers: set[asyncio.Queue[dict[str, Any]]] = set()
 
+# In-memory sliding window rate limiter
+_write_rate_limits: dict[str, list[float]] = {}
+_RATE_LIMIT_WINDOW = 60.0
+_MAX_WRITES_PER_WINDOW = 60
+
+
+def check_rate_limit(request: Request) -> None:
+    client_ip = request.client.host if request.client else "127.0.0.1"
+    now = time.time()
+    history = _write_rate_limits.setdefault(client_ip, [])
+    # Evict older than 60s
+    _write_rate_limits[client_ip] = [t for t in history if now - t < _RATE_LIMIT_WINDOW]
+    if len(_write_rate_limits[client_ip]) >= _MAX_WRITES_PER_WINDOW:
+        raise HTTPException(
+            status_code=429,
+            detail={"code": 429, "message": "Rate limit exceeded: maximum 60 write requests per minute."},
+            headers={"Retry-After": "60"},
+        )
+    _write_rate_limits[client_ip].append(now)
+
 
 async def broadcast_beacon_event(event_type: str, beacon: dict[str, Any]) -> None:
     """Broadcast an event to all connected SSE clients."""
@@ -41,8 +62,9 @@ async def broadcast_beacon_event(event_type: str, beacon: dict[str, Any]) -> Non
 
 
 @router.post("", response_model=BeaconResponse, status_code=201)
-async def create_beacon(body: BeaconCreate) -> BeaconResponse:
+async def create_beacon(body: BeaconCreate, request: Request) -> BeaconResponse:
     """Ingest a new rescue beacon (idempotent by payload_code)."""
+    check_rate_limit(request)
     data = body.model_dump()
 
     # If payload_code is provided without explicit coords or needs, unpack it
@@ -154,6 +176,8 @@ async def beacon_stream(request: Request) -> EventSourceResponse:
     client_queue: asyncio.Queue[dict[str, Any]] = asyncio.Queue()
     _sse_subscribers.add(client_queue)
 
+    last_event_id = request.headers.get("last-event-id") or request.query_params.get("last_event_id")
+
     async def _event_generator() -> Any:
         try:
             # Initial snapshot of existing beacons
@@ -172,6 +196,13 @@ async def beacon_stream(request: Request) -> EventSourceResponse:
                     "data": json.dumps(payload),
                 }
 
+            if last_event_id:
+                yield {
+                    "event": "sync",
+                    "id": f"sync-{int(datetime.now(tz=timezone.utc).timestamp())}",
+                    "data": json.dumps({"resumed_from": last_event_id, "status": "ok"}),
+                }
+
             # Listen for live updates or emit keep-alive pings every 15s
             while True:
                 if await request.is_disconnected():
@@ -180,16 +211,20 @@ async def beacon_stream(request: Request) -> EventSourceResponse:
                     event = await asyncio.wait_for(client_queue.get(), timeout=15.0)
                     yield {
                         "event": event["event"],
-                        "id": event["data"].get("id", ""),
+                        "id": event["data"].get("id", f"evt-{int(datetime.now(tz=timezone.utc).timestamp())}"),
                         "data": json.dumps(event["data"]),
                     }
                 except asyncio.TimeoutError:
                     # Heartbeat comment/ping
-                    yield {"event": "ping", "data": ""}
+                    yield {
+                        "event": "ping",
+                        "id": f"ping-{int(datetime.now(tz=timezone.utc).timestamp())}",
+                        "data": json.dumps({"time": datetime.now(tz=timezone.utc).isoformat()}),
+                    }
         finally:
             _sse_subscribers.discard(client_queue)
 
-    return EventSourceResponse(_event_generator())
+    return EventSourceResponse(_event_generator(), ping=15)
 
 
 @router.get("/{beacon_id}", response_model=BeaconResponse)
@@ -233,8 +268,9 @@ async def get_beacon(beacon_id: str) -> BeaconResponse:
 
 
 @router.patch("/{beacon_id}", response_model=BeaconResponse)
-async def update_beacon(beacon_id: str, body: BeaconUpdate) -> BeaconResponse:
+async def update_beacon(beacon_id: str, body: BeaconUpdate, request: Request) -> BeaconResponse:
     """Update beacon status obeying state machine, or assign team/notes."""
+    check_rate_limit(request)
     updated, error = update_beacon_status(
         beacon_id=beacon_id,
         target_status=body.status.value if body.status else None,

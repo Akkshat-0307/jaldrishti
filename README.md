@@ -21,7 +21,7 @@ make dev-api
 
 ## Phone Testing & Rescue Beacon PWA (`/beacon`)
 
-The **Rescue Beacon PWA** is designed for citizens stranded without cellular data. It encodes distress signals into a 16-byte packed binary payload with CRC-16/CCITT checksum, caches the app shell via Service Worker, queues packets in IndexedDB when offline, and falls back to GSM SMS (`sms:1077`).
+The **Rescue Beacon PWA** is designed for citizens stranded without cellular data. It encodes distress signals into a 16-byte packed binary payload with CRC-16/CCITT checksum, caches the app shell via Service Worker, queues packets in IndexedDB when offline, and falls back to GSM SMS (to a configurable demo placeholder number `+91 00000 00000`). *Note: In this demo environment, SMS directs to a dummy recipient for testing; it does not integrate with any live emergency dispatch or government 1077 helpline.*
 
 ### 1. Running Over HTTPS on Mobile
 
@@ -57,7 +57,7 @@ ngrok http 3000
 2. **Disconnect:** Turn on **Airplane Mode** (disable Wi-Fi and mobile data).
 3. **Trigger SOS:** Select your need (Medical, Boat Rescue, Food/Water) and group size, then **press and hold the red SOS button for 1.5 seconds** (haptic vibration activates).
 4. **Offline Queue:** The client encodes your coordinates and distress state into a 16-byte binary payload, signs it with CRC-16, and enqueues it in IndexedDB.
-5. **SMS Fallback:** If offline, a 1-tap **Send Emergency SMS to 1077** button opens your device's native SMS composer with the compact hex code pre-filled.
+5. **SMS Fallback:** If offline, a 1-tap **Send Demo SMS** button opens your device's native SMS composer with the compact hex code pre-filled to the demo number (+91 00000 00000).
 6. **Auto-Reconnection:** Turn off Airplane Mode. The client detects the network `online` event and flushes the IndexedDB queue to the backend. The responder console at `/command-center` updates in real time via Server-Sent Events (SSE).
 
 ## Docker

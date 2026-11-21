@@ -24,6 +24,7 @@ import {
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { getApiUrl } from "@/lib/api";
 import {
   packBeaconPayload,
   encodeBase32,
@@ -36,6 +37,8 @@ import {
   getQueuedBeacons,
   QueuedBeacon,
 } from "@/lib/offlineQueue";
+
+const DEMO_SMS_NUMBER = process.env.NEXT_PUBLIC_DEMO_SMS_NUMBER || "+91 00000 00000";
 
 interface Translation {
   title: string;
@@ -78,7 +81,7 @@ const TRANSLATIONS: Record<string, Translation> = {
     queuedOffline: "No signal: Saved to offline queue. Will auto-sync when online.",
     assignedTo: "Rescue Team Assigned",
     smsFallback: "SMS Fallback (Offline Carrier Link)",
-    smsButton: "Send via SMS to Disaster Control (1077)",
+    smsButton: `Send Demo SMS (${DEMO_SMS_NUMBER})`,
     satSimLabel: "Satellite Short-Message Channel",
     satSimNotice: "SIMULATED: No NavIC or satellite hardware is used",
     accuracy: "GPS Accuracy",
@@ -100,7 +103,7 @@ const TRANSLATIONS: Record<string, Translation> = {
     queuedOffline: "নেটৱৰ্ক নাই: অফলাইন সংৰক্ষিত। সংযোগ পালে নিজে প্ৰেৰণ হ'ব।",
     assignedTo: "উদ্ধাৰকাৰী দল নিযুক্ত",
     smsFallback: "SMS জৰিয়তে প্ৰেৰণ (অফলাইন সংকেত)",
-    smsButton: "১০৭৭ নম্বৰলৈ SMS পঠিয়াওক",
+    smsButton: `SMS পঠিয়াওক (${DEMO_SMS_NUMBER})`,
     satSimLabel: "উপগ্ৰহ চুটি-বাৰ্তা চেনেল",
     satSimNotice: "SIMULATED: কোনো NavIC বা উপগ্ৰহ হাৰ্ডৱেৰ ব্যৱহাৰ কৰা হোৱা নাই",
     accuracy: "GPS নিখুঁততা",
@@ -122,7 +125,7 @@ const TRANSLATIONS: Record<string, Translation> = {
     queuedOffline: "নেটওয়ার্ক নেই: অফলাইনে জমা হয়েছে। সংযোগ পেলেই পাঠানো হবে।",
     assignedTo: "উদ্ধারকারী দল নিযুক্ত",
     smsFallback: "SMS এর মাধ্যমে পাঠান (অফলাইন)",
-    smsButton: "১০৭৭ নম্বরে SMS পাঠান",
+    smsButton: `SMS পাঠান (${DEMO_SMS_NUMBER})`,
     satSimLabel: "স্যাটেলাইট মেসেজ চ্যানেল",
     satSimNotice: "SIMULATED: কোনো NavIC বা স্যাটেলাইট হার্ডওয়্যার ব্যবহৃত নয়",
     accuracy: "GPS নির্ভুলতা",
@@ -144,7 +147,7 @@ const TRANSLATIONS: Record<string, Translation> = {
     queuedOffline: "नेटवर्क नहीं: ऑफलाइन सहेजा गया। नेटवर्क मिलते ही भेजा जाएगा।",
     assignedTo: "बचाव दल तैनात",
     smsFallback: "SMS के माध्यम से भेजें (ऑफलाइन)",
-    smsButton: "1077 पर SMS भेजें",
+    smsButton: `SMS भेजें (${DEMO_SMS_NUMBER})`,
     satSimLabel: "उपग्रह लघु-संदेश चैनल",
     satSimNotice: "SIMULATED: किसी NavIC या उपग्रह हार्डवेयर का उपयोग नहीं",
     accuracy: "GPS सटीकता",
@@ -192,12 +195,23 @@ export default function BeaconPwaPage() {
 
   // Offline queue count
   const [queuedCount, setQueuedCount] = useState<number>(0);
+  const [updateAvailable, setUpdateAvailable] = useState<boolean>(false);
+  const [waitingWorker, setWaitingWorker] = useState<ServiceWorker | null>(null);
+
+  const transmitRef = useRef<((channelOverride?: "online" | "sms" | "nav_sim") => Promise<void>) | null>(null);
+  const flushRef = useRef<(() => Promise<void>) | null>(null);
+
+  const handleApplyUpdate = () => {
+    if (waitingWorker) {
+      waitingWorker.postMessage({ type: "SKIP_WAITING" });
+    }
+  };
 
   // Flush offline queue helper
   const flushQueue = useCallback(async () => {
     const sent = await flushOfflineQueue(async (beacon) => {
       try {
-        const res = await fetch("/api/beacons", {
+        const res = await fetch(getApiUrl("/beacons"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -221,6 +235,7 @@ export default function BeaconPwaPage() {
       setQueuedCount(remaining.length);
     }
   }, []);
+  flushRef.current = flushQueue;
 
   // Service Worker & Geolocation Acquisition
   useEffect(() => {
@@ -236,8 +251,40 @@ export default function BeaconPwaPage() {
       window.addEventListener("offline", handleOffline);
       window.addEventListener("focus", handleOnline);
 
+      // Automated testing hook for offline CDP test
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (window as any).__JALDRISHTI_TEST__ = {
+        transmit: (ch?: "online" | "sms" | "nav_sim") => transmitRef.current?.(ch),
+        flush: () => flushRef.current?.(),
+        isOnline: () => navigator.onLine,
+        getQueuedBeacons,
+      };
+
       if ("serviceWorker" in navigator) {
-        navigator.serviceWorker.register("/sw.js").catch(() => {});
+        navigator.serviceWorker
+          .register("/sw.js")
+          .then((reg) => {
+            if (reg.waiting) {
+              setWaitingWorker(reg.waiting);
+              setUpdateAvailable(true);
+            }
+            reg.addEventListener("updatefound", () => {
+              const newWorker = reg.installing;
+              if (newWorker) {
+                newWorker.addEventListener("statechange", () => {
+                  if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+                    setWaitingWorker(newWorker);
+                    setUpdateAvailable(true);
+                  }
+                });
+              }
+            });
+          })
+          .catch(() => {});
+
+        navigator.serviceWorker.addEventListener("controllerchange", () => {
+          window.location.reload();
+        });
       }
 
       // Check battery
@@ -322,7 +369,7 @@ export default function BeaconPwaPage() {
     // If online, post to API
     if (isOnline && channel !== "sms") {
       try {
-        const res = await fetch("/api/beacons", {
+        const res = await fetch(getApiUrl("/beacons"), {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(beaconData),
@@ -362,6 +409,7 @@ export default function BeaconPwaPage() {
     setQueuedCount(qList.length);
     setDispatchStatus("queued");
   }, [payloadBytes, isOnline, lat, lon, groupSize, needType, batteryLevel, note, base32Code, hexCode]);
+  transmitRef.current = handleTransmitBeacon;
 
   // Hold-to-confirm logic (1.5 seconds)
   const startHold = () => {
@@ -470,6 +518,23 @@ export default function BeaconPwaPage() {
           </select>
         </div>
       </header>
+
+      {/* Update Available Banner */}
+      {updateAvailable && (
+        <div className="p-3 rounded-xl bg-cyan-950/80 border border-cyan-400/50 flex items-center justify-between text-xs font-mono animate-fadeIn">
+          <div className="flex items-center gap-2 text-cyan-200">
+            <RefreshCw className="w-4 h-4 animate-spin text-cyan-400" />
+            <span>Update available. Reload to activate the latest offline assets.</span>
+          </div>
+          <Button
+            size="sm"
+            onClick={handleApplyUpdate}
+            className="h-7 px-3 bg-cyan-500 hover:bg-cyan-600 text-black font-bold text-xs"
+          >
+            Reload Now
+          </Button>
+        </div>
+      )}
 
       {/* Main Form Content */}
       <main className="py-6 space-y-6">
@@ -715,11 +780,14 @@ export default function BeaconPwaPage() {
               <Badge variant="real">Zero Data Needed</Badge>
             </div>
             <p className="text-[11px] text-slate-400 leading-normal">
-              Encodes your coordinate and need into a standard 160-character GSM SMS to State Disaster Emergency Ops (1077).
+              Encodes your coordinate and need into a standard 160-character GSM SMS packet.
             </p>
+            <div className="p-2 rounded bg-amber-500/10 border border-amber-500/30 text-[10px] text-amber-300 font-mono">
+              <strong>Demo Notice:</strong> SMS goes to a placeholder demo number ({DEMO_SMS_NUMBER}). For simulation only; not integrated with the 1077 helpline or any government channel.
+            </div>
             <div className="flex flex-col sm:flex-row gap-2 pt-1">
               <a
-                href={`sms:1077?body=${encodeURIComponent(smsBody)}`}
+                href={`sms:${DEMO_SMS_NUMBER}?body=${encodeURIComponent(smsBody)}`}
                 className="flex-1 inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-xs font-medium min-h-[44px] transition-colors"
               >
                 <Send className="w-3.5 h-3.5" />

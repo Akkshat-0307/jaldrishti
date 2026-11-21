@@ -132,7 +132,8 @@ def test_beacon_pwa_renders_cleanly():
     assert "16-BYTE" in html or "PAYLOAD" in html or "CRC16" in html
 
     # Multi-path fallback channels
-    assert "sms:1077" in html or "1077" in html
+    assert "sms:" in html
+    assert "placeholder demo number" in html or "Demo Notice" in html
     assert "SIMULATED" in html
     assert "Satellite" in html or "NavIC" in html
 
@@ -149,3 +150,19 @@ def test_beacon_privacy_page_renders():
     assert "Zero Personally Identifiable" in html or "Zero" in html
     assert "Right to Erasure" in html or "Purge" in html
     assert "16-Byte Payload" in html or "CRC16" in html
+
+
+def test_offline_cdp_e2e_flush_and_deduplication():
+    """Verify offline queueing and online flush via headless Chrome CDP automation."""
+    node_bin = shutil.which("node")
+    if not node_bin:
+        pytest.skip("Node.js not available to run CDP test.")
+    chrome_bin = get_chrome_executable()
+    if not chrome_bin:
+        pytest.skip("Chrome not available on host.")
+
+    script_path = os.path.join(os.path.dirname(__file__), "..", "scripts", "test_offline_cdp.mjs")
+    result = subprocess.run([node_bin, script_path], capture_output=True, text=True, timeout=30)
+    assert result.returncode == 0, f"CDP test failed:\nstdout:\n{result.stdout}\nstderr:\n{result.stderr}"
+    assert "PASS: Offline queue enqueued, auto-flushed online, and deduplicated cleanly!" in result.stdout
+

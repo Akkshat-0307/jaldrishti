@@ -180,7 +180,7 @@ export function AssessScene() {
         <div className="p-4 rounded-lg bg-space-900/60 border border-white/10 space-y-1">
           <span className="text-xs text-slate-400">TOTAL POPULATION</span>
           <div className="text-2xl font-bold text-white">427,338</div>
-          <p className="text-[11px] text-slate-400">100% Reconciled Raster Total</p>
+          <p className="text-[11px] text-slate-400">Modelled Estimate (WorldPop 2020)</p>
         </div>
 
         <div className="p-4 rounded-lg bg-space-900/60 border border-white/10 space-y-1">

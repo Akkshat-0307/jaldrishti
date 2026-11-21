@@ -122,14 +122,14 @@ export function ProblemScene() {
         <GlassCard className="p-6 space-y-3 border-aurora-400/30 hover:border-aurora-400/50 transition-colors">
           <div className="flex items-center justify-between text-slate-400">
             <Users className="w-5 h-5 text-aurora-400" />
-            <Badge variant="real">WorldPop Reconciled</Badge>
+            <Badge variant="real">WorldPop (Modelled Estimate)</Badge>
           </div>
           <div className="text-4xl lg:text-5xl font-mono font-black text-aurora-400">
             <Counter to={427338} />
           </div>
-          <p className="text-sm font-semibold text-slate-200">Population in Cachar Study Window</p>
+          <p className="text-sm font-semibold text-slate-200">Population in Study Window (Modelled Estimate)</p>
           <p className="text-xs text-slate-400 leading-normal">
-            100% verified raster population across 20 village zones; 101,986 people exposed inside the flood mask.
+            Modelled estimate (WorldPop 2020) across 20 village zones; 101,986 people exposed inside the flood mask.
           </p>
         </GlassCard>
       </div>

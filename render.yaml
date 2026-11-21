@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: jaldrishti-api
+    runtime: docker
+    dockerContext: .
+    dockerfilePath: apps/api/Dockerfile
+    plan: free
+    region: oregon
+    healthCheckPath: /health
+    envVars:
+      - key: DEMO_MODE
+        value: "1"
+      - key: DATA_DIR
+        value: "/app/data"
+      - key: PORT
+        value: "8000"
