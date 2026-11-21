@@ -28,6 +28,7 @@ interface FloodMapProps {
   robustCutoffsOnly?: boolean;
   timelineGeojsonUrl?: string | null;
   showBeacons?: boolean;
+  isLayerPanelCollapsed?: boolean;
 }
 
 const EMPTY_GEOJSON: GeoJSON.FeatureCollection = {
@@ -165,6 +166,7 @@ export default function FloodMap({
   robustCutoffsOnly = false,
   timelineGeojsonUrl,
   showBeacons = true,
+  isLayerPanelCollapsed = true,
 }: FloodMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -906,7 +908,11 @@ export default function FloodMap({
       )}
 
       {/* Floating Header Card (Top Left) */}
-      <div className="absolute top-3 left-14 sm:left-16 z-10 flex flex-col gap-2 max-w-[calc(100vw-80px)] sm:max-w-xs">
+      <div
+        className={`absolute top-3 transition-all duration-300 z-10 flex flex-col gap-2 max-w-[calc(100vw-80px)] sm:max-w-xs ${
+          isLayerPanelCollapsed ? "left-14 sm:left-16" : "left-[304px]"
+        }`}
+      >
         <GlassCard className="p-3 space-y-2 backdrop-blur-md border-white/10 shadow-xl">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-1.5 min-w-0">
@@ -1102,8 +1108,8 @@ export default function FloodMap({
         )}
       </div>
 
-      {/* Floating Quick Controls (Bottom Right - Hidden on mobile to prevent clutter) */}
-      <div className="absolute bottom-3 right-3 z-10 hidden md:flex items-center gap-1.5">
+      {/* Floating Quick Controls (Stacked above timeline at bottom-24 right-3) */}
+      <div className="absolute bottom-24 right-3 z-10 hidden md:flex items-center gap-1.5">
         <GlassCard className="p-1.5 flex items-center gap-1 backdrop-blur-md text-[11px] font-mono">
           <button
             onClick={() => setShowZones(!showZones)}

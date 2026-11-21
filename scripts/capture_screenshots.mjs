@@ -32,6 +32,8 @@ async function fetchJson(url) {
 const VIEWPORTS = [
   { name: "command_center_1440x900.png", width: 1440, height: 900, isMobile: false },
   { name: "command_center_1280x720.png", width: 1280, height: 720, isMobile: false },
+  { name: "command_center_1200x800.png", width: 1200, height: 800, isMobile: false },
+  { name: "command_center_1024x768.png", width: 1024, height: 768, isMobile: false },
   { name: "command_center_390x844.png",  width: 390,  height: 844, isMobile: true  },
 ];
 

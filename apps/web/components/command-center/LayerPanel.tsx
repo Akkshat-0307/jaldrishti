@@ -12,15 +12,33 @@ import {
 interface LayerPanelProps {
   layers: LayerState;
   onChangeLayers: (updated: Partial<LayerState>) => void;
+  isCollapsed?: boolean;
+  onToggleCollapse?: (collapsed: boolean) => void;
 }
 
-export function LayerPanel({ layers, onChangeLayers }: LayerPanelProps) {
-  const [isCollapsed, setIsCollapsed] = useState(() => {
+export function LayerPanel({
+  layers,
+  onChangeLayers,
+  isCollapsed: controlledCollapsed,
+  onToggleCollapse,
+}: LayerPanelProps) {
+  const [internalCollapsed, setInternalCollapsed] = useState(() => {
     if (typeof window !== "undefined") {
-      return window.innerWidth < 1024;
+      return window.innerWidth < 1280;
     }
-    return false;
+    return true;
   });
+
+  const isCollapsed = controlledCollapsed !== undefined ? controlledCollapsed : internalCollapsed;
+
+  const handleToggle = () => {
+    const next = !isCollapsed;
+    if (onToggleCollapse) {
+      onToggleCollapse(next);
+    } else {
+      setInternalCollapsed(next);
+    }
+  };
 
   return (
     <aside
@@ -42,7 +60,7 @@ export function LayerPanel({ layers, onChangeLayers }: LayerPanelProps) {
             )}
           </div>
           <button
-            onClick={() => setIsCollapsed(!isCollapsed)}
+            onClick={handleToggle}
             className="p-1 rounded text-white/50 hover:text-white hover:bg-white/10 transition-colors"
             title={isCollapsed ? "Expand Layer Panel" : "Collapse Layer Panel"}
             aria-label={isCollapsed ? "Expand layer panel" : "Collapse layer panel"}

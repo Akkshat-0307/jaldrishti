@@ -72,27 +72,36 @@ export function TabDrawer({
       aria-label="Intelligence drawer tabs"
       className="w-full lg:w-96 border-l border-white/10 bg-slate-950/85 backdrop-blur-md flex flex-col h-full z-20 shrink-0"
     >
-      {/* Tab Navigation Header */}
-      <div className="flex border-b border-white/10 bg-black/40 overflow-x-auto scrollbar-none shrink-0">
-        {tabs.map((t) => {
-          const Icon = t.icon;
-          const isActive = activeTab === t.id;
-          return (
-            <button
-              key={t.id}
-              id={`${t.id}-tab`}
-              onClick={() => onSelectTab(t.id)}
-              className={`flex-1 min-w-[70px] py-2.5 px-2 flex flex-col items-center gap-1 border-b-2 text-xs font-medium transition-all ${
-                isActive
-                  ? "border-cyan-400 text-white bg-white/5"
-                  : "border-transparent text-white/50 hover:text-white/80 hover:bg-white/5"
-              }`}
-            >
-              <Icon className={`h-4 w-4 ${isActive ? "text-cyan-400" : "text-white/40"}`} />
-              <span className="text-[11px] truncate tracking-tight">{t.label}</span>
-            </button>
-          );
-        })}
+      {/* Tab Navigation Header with Fade Edges */}
+      <div className="relative border-b border-white/10 bg-black/40 shrink-0">
+        {/* Left fade edge */}
+        <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-3 bg-gradient-to-r from-slate-950 via-slate-950/60 to-transparent z-10" />
+
+        {/* Scrollable tabs container */}
+        <div className="flex overflow-x-auto scrollbar-none px-1.5 py-1 scroll-smooth">
+          {tabs.map((t) => {
+            const Icon = t.icon;
+            const isActive = activeTab === t.id;
+            return (
+              <button
+                key={t.id}
+                id={`${t.id}-tab`}
+                onClick={() => onSelectTab(t.id)}
+                className={`min-w-[66px] shrink-0 py-2 px-2 flex flex-col items-center gap-1 rounded-lg border text-xs font-medium transition-all cursor-pointer ${
+                  isActive
+                    ? "border-cyan-400/60 text-white bg-cyan-950/40 shadow-sm"
+                    : "border-transparent text-white/50 hover:text-white hover:bg-white/5"
+                }`}
+              >
+                <Icon className={`h-4 w-4 ${isActive ? "text-cyan-400" : "text-white/40"}`} />
+                <span className="text-[11px] whitespace-nowrap tracking-tight">{t.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Right fade edge */}
+        <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-slate-950 via-slate-950/80 to-transparent z-10" />
       </div>
 
       {/* Tab Content Panes */}

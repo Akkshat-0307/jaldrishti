@@ -60,6 +60,12 @@ function CommandCenterContent() {
   const [currentLang, setCurrentLang] = useState<string>("en");
   const [isTourOpen, setIsTourOpen] = useState<boolean>(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState<boolean>(false);
+  const [isLayerPanelCollapsed, setIsLayerPanelCollapsed] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 1280;
+    }
+    return true;
+  });
 
   // Layer State
   const [layers, setLayers] = useState<LayerState>({
@@ -143,7 +149,12 @@ function CommandCenterContent() {
       ) : (
         <div className="flex-1 relative flex overflow-hidden">
           {/* Left Layer Panel */}
-          <LayerPanel layers={layers} onChangeLayers={handleChangeLayers} />
+          <LayerPanel
+            layers={layers}
+            onChangeLayers={handleChangeLayers}
+            isCollapsed={isLayerPanelCollapsed}
+            onToggleCollapse={setIsLayerPanelCollapsed}
+          />
 
           {/* Center Map Canvas */}
           <main className="flex-1 relative h-full w-full" aria-label="Interactive Flood Disaster Map">
@@ -160,6 +171,7 @@ function CommandCenterContent() {
               robustCutoffsOnly={robustCutoffsOnly}
               timelineGeojsonUrl={timelineGeojsonUrl}
               showBeacons={layers.showBeacons}
+              isLayerPanelCollapsed={isLayerPanelCollapsed}
             />
 
             {/* Floating Time Scrubber */}
