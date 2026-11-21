@@ -6,6 +6,7 @@ import * as pmtiles from "pmtiles";
 import "maplibre-gl/dist/maplibre-gl.css";
 import { Badge } from "@/components/ui/Badge";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { MapLegend } from "@/components/map/MapLegend";
 import { getApiUrl } from "@/lib/api";
 import type { BeaconItem } from "../command-center/types";
 import {
@@ -178,7 +179,7 @@ export default function FloodMap({
   const [showZones, setShowZones] = useState(true);
   const [showRoads, setShowRoads] = useState(true);
   const [showShelters, setShowShelters] = useState(true);
-  const [opacity, setOpacity] = useState(0.7);
+  const [opacity, setOpacity] = useState(0.55);
 
   const [selectedFeature, setSelectedFeature] = useState<{
     type: "zone" | "shelter" | "road" | "beacon";
@@ -248,10 +249,41 @@ export default function FloodMap({
         "case",
         ["==", ["get", "zone_id"], selectedZoneId],
         2.5,
-        1.2,
+        1.0,
       ]);
     }
   }, [selectedZoneId, mapLoaded]);
+
+  // Pulse animation for cut-off zones (reduced-motion safe)
+  useEffect(() => {
+    if (!mapRef.current || !mapLoaded) return;
+    const map = mapRef.current;
+    if (typeof window === "undefined") return;
+
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (mediaQuery.matches) {
+      if (map.getLayer("zones-cutoff-ring")) {
+        map.setPaintProperty("zones-cutoff-ring", "line-opacity", 1.0);
+      }
+      return;
+    }
+
+    let animId: number;
+    let step = 0;
+    const animate = () => {
+      step += 0.04;
+      const pulseOpacity = 0.35 + 0.65 * ((Math.sin(step) + 1) / 2);
+      if (map.getLayer("zones-cutoff-ring")) {
+        map.setPaintProperty("zones-cutoff-ring", "line-opacity", pulseOpacity);
+      }
+      animId = requestAnimationFrame(animate);
+    };
+    animId = requestAnimationFrame(animate);
+
+    return () => {
+      cancelAnimationFrame(animId);
+    };
+  }, [mapLoaded]);
 
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
@@ -319,38 +351,30 @@ export default function FloodMap({
         data: "/data/events/assam-2022/shelters.geojson",
       });
 
-      // Layer: Settlement Zones Fill (Priority choropleth)
+      // Layer: Settlement Zones Fill (Hit-testing target, transparent fill per decluttering)
       map.addLayer({
         id: "zones-fill",
         type: "fill",
         source: "settlement-zones",
         paint: {
-          "fill-color": [
-            "interpolate",
-            ["linear"],
-            ["get", "priority_score"],
-            10, "#10B981",
-            30, "#FBBF24",
-            50, "#F97316",
-            70, "#EF4444",
-          ],
-          "fill-opacity": 0.25,
+          "fill-color": "#F59E0B",
+          "fill-opacity": 0.0,
         },
       });
 
-      // Layer: Settlement Zones Boundaries
+      // Layer: Settlement Zones Boundaries (Thin outlines only)
       map.addLayer({
         id: "zones-outline",
         type: "line",
         source: "settlement-zones",
         paint: {
-          "line-color": "#38BDF8",
-          "line-width": 1.2,
+          "line-color": "#F59E0B",
+          "line-width": 1.0,
           "line-opacity": 0.6,
         },
       });
 
-      // Layer: Cut-off zones highlighted boundary
+      // Layer: Cut-off zones highlighted boundary (pulsing outline)
       map.addLayer({
         id: "zones-cutoff-ring",
         type: "line",
@@ -359,19 +383,19 @@ export default function FloodMap({
         paint: {
           "line-color": "#EF4444",
           "line-width": 2.5,
-          "line-dasharray": [2, 2],
-          "line-opacity": 0.9,
+          "line-dasharray": [3, 2],
+          "line-opacity": 0.95,
         },
       });
 
-      // Layer: Tier A Fill
+      // Layer: Tier A Fill (Sky blue, off by default)
       map.addLayer({
         id: "tier-a-fill",
         type: "fill",
         source: "tier-a-polygons",
         paint: {
-          "fill-color": "#3B82F6",
-          "fill-opacity": 0.65,
+          "fill-color": "#38BDF8",
+          "fill-opacity": 0.55,
         },
       });
 
@@ -381,20 +405,20 @@ export default function FloodMap({
         type: "line",
         source: "tier-a-polygons",
         paint: {
-          "line-color": "#60A5FA",
+          "line-color": "#7DD3FC",
           "line-width": 1.0,
           "line-opacity": 0.8,
         },
       });
 
-      // Layer: U-Net Fill
+      // Layer: U-Net Fill (flood-500 blue token at 55% opacity)
       map.addLayer({
         id: "unet-fill",
         type: "fill",
         source: "unet-polygons",
         paint: {
-          "fill-color": "#10B981",
-          "fill-opacity": 0.65,
+          "fill-color": "#3B82F6",
+          "fill-opacity": 0.55,
         },
       });
 
@@ -404,20 +428,20 @@ export default function FloodMap({
         type: "line",
         source: "unet-polygons",
         paint: {
-          "line-color": "#34D399",
+          "line-color": "#60A5FA",
           "line-width": 1.2,
           "line-opacity": 0.85,
         },
       });
 
-      // Layer: What-If Scenario Fill (Purple)
+      // Layer: What-If Scenario Fill (Purple, off by default)
       map.addLayer({
         id: "whatif-fill",
         type: "fill",
         source: "whatif-polygons",
         paint: {
-          "fill-color": "#8B5CF6",
-          "fill-opacity": 0.65,
+          "fill-color": "#A855F7",
+          "fill-opacity": 0.55,
         },
       });
 
@@ -427,13 +451,13 @@ export default function FloodMap({
         type: "line",
         source: "whatif-polygons",
         paint: {
-          "line-color": "#A78BFA",
+          "line-color": "#C084FC",
           "line-width": 1.2,
           "line-opacity": 0.85,
         },
       });
 
-      // Layer: Roads Network (Drivable Roads)
+      // Layer: Roads Network (Muted slate with cut segments in red)
       map.addLayer({
         id: "roads-lines",
         type: "line",
@@ -442,8 +466,8 @@ export default function FloodMap({
           "line-color": [
             "case",
             ["==", ["get", "is_cut"], true],
-            "#EF4444", // Cut road segments in bright red
-            "#64748B", // Intact dry roads in slate
+            "#EF4444", // Potentially cut road segments in red
+            "#64748B", // Intact dry roads in muted slate
           ],
           "line-width": [
             "case",
@@ -451,11 +475,11 @@ export default function FloodMap({
             2.0,
             1.0,
           ],
-          "line-opacity": 0.8,
+          "line-opacity": 0.85,
         },
       });
 
-      // Layer: Shelters & Facilities (Point circles)
+      // Layer: Shelters & Facilities (Small point icons)
       map.addLayer({
         id: "shelters-points",
         type: "circle",
@@ -467,9 +491,9 @@ export default function FloodMap({
             "#10B981", // Safe shelter in green
             "#EF4444", // Flooded facility in red
           ],
-          "circle-radius": 5.5,
+          "circle-radius": 4.0,
           "circle-stroke-color": "#FFFFFF",
-          "circle-stroke-width": 1.5,
+          "circle-stroke-width": 1.2,
           "circle-opacity": 0.95,
         },
       });
@@ -622,10 +646,31 @@ export default function FloodMap({
             "#10B981",
             "#F59E0B",
           ],
-          "circle-radius": 6.5,
+          "circle-radius": 4.5,
           "circle-stroke-color": "#FFFFFF",
-          "circle-stroke-width": 2,
+          "circle-stroke-width": 1.2,
           "circle-opacity": 1.0,
+        },
+      });
+
+      // Beacon unclustered label: SIMULATED demo data
+      map.addLayer({
+        id: "beacon-unclustered-label",
+        type: "symbol",
+        source: "rescue-beacons",
+        filter: ["!has", "point_count"],
+        layout: {
+          "text-field": "SIMULATED demo data",
+          "text-font": ["Noto Sans Bold"],
+          "text-size": 8.5,
+          "text-offset": [0, 1.2],
+          "text-anchor": "top",
+          "text-allow-overlap": false,
+        },
+        paint: {
+          "text-color": "#FDA4AF",
+          "text-halo-color": "#0F172A",
+          "text-halo-width": 1.5,
         },
       });
 
@@ -802,7 +847,7 @@ export default function FloodMap({
     if (map.getLayer("unet-fill")) {
       map.setLayoutProperty("unet-fill", "visibility", unetVis);
       map.setLayoutProperty("unet-outline", "visibility", unetVis);
-      const fillColor = showConfidence ? "#06B6D4" : "#10B981";
+      const fillColor = showConfidence ? "#06B6D4" : "#3B82F6";
       map.setPaintProperty("unet-fill", "fill-color", fillColor);
       map.setPaintProperty("unet-fill", "fill-opacity", showConfidence ? opacity * 0.9 : opacity);
     }
@@ -836,6 +881,9 @@ export default function FloodMap({
       map.setLayoutProperty("beacon-cluster-count", "visibility", beaconsVis);
       map.setLayoutProperty("beacon-unclustered-pulse", "visibility", beaconsVis);
       map.setLayoutProperty("beacon-unclustered-point", "visibility", beaconsVis);
+    }
+    if (map.getLayer("beacon-unclustered-label")) {
+      map.setLayoutProperty("beacon-unclustered-label", "visibility", beaconsVis);
     }
   }, [selectedModel, showConfidence, layerVisible, showZones, showRoads, showShelters, showBeacons, opacity, mapLoaded]);
 
@@ -1105,22 +1153,8 @@ export default function FloodMap({
         </GlassCard>
       </div>
 
-      {/* Provenance & Attribution Footer (Bottom Left next to scale bar) */}
-      <div className="absolute bottom-2.5 left-24 sm:left-28 z-10 pointer-events-none max-w-[calc(100vw-120px)] sm:max-w-md">
-        <div className="px-2.5 py-0.5 rounded-full bg-slate-950/85 backdrop-blur-md border border-white/10 text-[10px] font-mono text-slate-400 flex items-center gap-1.5 pointer-events-auto shadow-md">
-          <Badge variant="derived" className="text-[9px] py-0 px-1">DERIVED</Badge>
-          <span className="truncate">Voronoi zones clipped to Cachar</span>
-          <span className="text-white/20">|</span>
-          <span className="text-slate-400 whitespace-nowrap">
-            Map © <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener" className="underline hover:text-white">OSM</a>, <a href="https://protomaps.com" target="_blank" rel="noopener" className="underline hover:text-white">Protomaps</a>
-          </span>
-          {basemapError && (
-            <span className="ml-1 text-amber-300 text-[9px] font-bold">
-              (Basemap offline fallback)
-            </span>
-          )}
-        </div>
-      </div>
+      {/* Collapsible Map Legend & Provenance (Bottom Left) */}
+      <MapLegend basemapError={basemapError} />
     </div>
   );
 }
