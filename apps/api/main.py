@@ -12,8 +12,9 @@ from typing import AsyncIterator
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
-from config import API_VERSION, DEMO_MODE
+from config import API_VERSION, DATA_DIR, DEMO_MODE
 from routers import alerts, beacons, events, forecast, health, impact, route, whatif
 
 
@@ -56,6 +57,10 @@ app.include_router(whatif.router)
 app.include_router(forecast.router)
 app.include_router(alerts.router)
 app.include_router(beacons.router)
+
+# Mount static artifacts directory (raster masks, GeoJSON, manifests)
+if DATA_DIR.is_dir():
+    app.mount("/static", StaticFiles(directory=str(DATA_DIR)), name="static")
 
 
 # ---------------------------------------------------------------------------

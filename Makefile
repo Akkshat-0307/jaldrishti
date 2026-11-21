@@ -22,7 +22,7 @@ build:
 # ── Quality ──────────────────────────────────────────────────
 
 test:
-	cd apps/api && . .venv/bin/activate && pytest ../../tests -v
+	apps/api/.venv/bin/pytest tests/ -v
 	cd apps/web && npm run build
 
 lint:

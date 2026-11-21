@@ -1,0 +1,137 @@
+{
+  "event_id": "assam-2022",
+  "name": "Assam Flood \u2014 June 2022 (Silchar & Barak Basin Peak)",
+  "state": "Assam",
+  "country": "India",
+  "districts": [
+    "Cachar",
+    "Kamrup",
+    "Nalbari"
+  ],
+  "primary_area": "Cachar / Silchar",
+  "bbox": [
+    92.7,
+    24.75,
+    92.9,
+    24.9
+  ],
+  "utm_crs": "EPSG:32646",
+  "utm_zone": "46N",
+  "baseline_date": "2022-05-01",
+  "flood_peak_date": "2022-06-18",
+  "flood_recession_date": "2022-06-30",
+  "datasets": {
+    "sentinel1": {
+      "collection": "COPERNICUS/S1_GRD",
+      "instrument_mode": "IW",
+      "bands": [
+        "VV",
+        "VH"
+      ],
+      "orbit_pass": "DESCENDING",
+      "relative_orbit": 77,
+      "resolution_m": 10.0,
+      "scenes": [
+        {
+          "role": "baseline",
+          "scene_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220501T234740_20220501T234805_043024_05231C_1E38",
+          "date": "2022-05-01T23:47:40Z",
+          "time_start_ms": 1651448860000,
+          "orbit_pass": "DESCENDING",
+          "relative_orbit": 77,
+          "polarisation": [
+            "VV",
+            "VH"
+          ],
+          "area": "Cachar/Silchar"
+        },
+        {
+          "role": "flood_peak",
+          "scene_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220618T234743_20220618T234808_043724_05385D_E87E",
+          "date": "2022-06-18T23:47:43Z",
+          "time_start_ms": 1655596063000,
+          "orbit_pass": "DESCENDING",
+          "relative_orbit": 77,
+          "polarisation": [
+            "VV",
+            "VH"
+          ],
+          "area": "Cachar/Silchar"
+        },
+        {
+          "role": "flood_recession",
+          "scene_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220630T234744_20220630T234809_043899_053D9A_3654",
+          "date": "2022-06-30T23:47:44Z",
+          "time_start_ms": 1656632864000,
+          "orbit_pass": "DESCENDING",
+          "relative_orbit": 77,
+          "polarisation": [
+            "VV",
+            "VH"
+          ],
+          "area": "Cachar/Silchar"
+        },
+        {
+          "role": "baseline",
+          "scene_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220501T234715_20220501T234740_043024_05231C_CF03",
+          "date": "2022-05-01T23:47:15Z",
+          "time_start_ms": 1651448835000,
+          "orbit_pass": "DESCENDING",
+          "relative_orbit": 77,
+          "polarisation": [
+            "VV",
+            "VH"
+          ],
+          "area": "Kamrup/Nalbari"
+        },
+        {
+          "role": "flood_peak",
+          "scene_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220618T234718_20220618T234743_043724_05385D_5902",
+          "date": "2022-06-18T23:47:18Z",
+          "time_start_ms": 1655596038000,
+          "orbit_pass": "DESCENDING",
+          "relative_orbit": 77,
+          "polarisation": [
+            "VV",
+            "VH"
+          ],
+          "area": "Kamrup/Nalbari"
+        },
+        {
+          "role": "flood_recession",
+          "scene_id": "COPERNICUS/S1_GRD/S1A_IW_GRDH_1SDV_20220630T234719_20220630T234744_043899_053D9A_D88F",
+          "date": "2022-06-30T23:47:19Z",
+          "time_start_ms": 1656632839000,
+          "orbit_pass": "DESCENDING",
+          "relative_orbit": 77,
+          "polarisation": [
+            "VV",
+            "VH"
+          ],
+          "area": "Kamrup/Nalbari"
+        }
+      ]
+    },
+    "permanent_water": {
+      "asset": "JRC/GSW1_4/GlobalSurfaceWater",
+      "band": "occurrence",
+      "threshold_percent": 80.0
+    },
+    "dem_slope": {
+      "collection": "COPERNICUS/DEM/GLO30_2024_1",
+      "band": "DEM",
+      "derived": "Terrain slope in degrees"
+    },
+    "hand": {
+      "asset": "MERIT/Hydro/v1_0_1",
+      "band": "hnd",
+      "units": "meters"
+    }
+  },
+  "provenance": {
+    "satellite_pixels": "REAL",
+    "terrain_ancillary": "REAL",
+    "baseline_model": "DERIVED"
+  },
+  "created_at": "2026-11-21T15:43:44.333775+00:00"
+}

@@ -6,8 +6,10 @@ from typing import Generator
 
 import pytest
 
-# Ensure the API module is importable
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "apps", "api"))
+# Ensure the API module and root modules (pipeline, etc.) are importable
+repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, repo_root)
+sys.path.insert(0, os.path.join(repo_root, "apps", "api"))
 
 # Force demo mode in tests
 os.environ["DEMO_MODE"] = "1"
