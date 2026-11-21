@@ -44,7 +44,7 @@ const DATES: DateStep[] = [
     sarImage: "/assets/landing/s1_recession.png",
     overlayImage: "/assets/landing/flood_overlay_recession.png",
     extentHa: 4995,
-    status: "Lingering in oxbow settlements",
+    status: "Lingering in low-elevation settlement areas (HAND < 3m)",
   },
 ];
 

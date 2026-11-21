@@ -1,0 +1,18 @@
+{
+  "desktop": {
+    "performance": 100,
+    "accessibility": 96.0,
+    "best-practices": 96.0,
+    "seo": 100,
+    "agentic-browsing": 100
+  },
+  "mobile": {
+    "performance": 100,
+    "accessibility": 96.0,
+    "best-practices": 96.0,
+    "seo": 100,
+    "agentic-browsing": 100
+  },
+  "audited_url": "http://localhost:3000/command-center",
+  "timestamp": "2026-11-22T01:58:00+05:30"
+}

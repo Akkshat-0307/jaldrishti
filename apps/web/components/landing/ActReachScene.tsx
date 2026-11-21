@@ -151,31 +151,32 @@ export function ActReachScene() {
                 }}
               />
 
-              {/* Origin Node (Silchar HQ) */}
+              {/* Origin Node (Rāmnagar West zone_06) */}
               <circle cx="60" cy="180" r="7" fill="#3B82F6" />
               <circle cx="60" cy="180" r="14" stroke="#3B82F6" strokeWidth="1.5" opacity="0.5" />
-              <text x="25" y="210" fill="#FFFFFF" fontSize="11" fontWeight="bold" fontFamily="sans-serif">
-                Silchar Town (HQ)
+              <text x="20" y="210" fill="#FFFFFF" fontSize="10" fontWeight="bold" fontFamily="sans-serif">
+                Rāmnagar (West) [zone_06]
               </text>
 
-              {/* Destination Node (Safe Hub / Shelter) */}
+              {/* Destination Node (Lions Eye Hospital) */}
               <circle cx="320" cy="80" r="7" fill="#34D399" />
               <circle cx="320" cy="80" r="14" stroke="#34D399" strokeWidth="1.5" opacity="0.5" />
-              <text x="260" y="65" fill="#34D399" fontSize="11" fontWeight="bold" fontFamily="sans-serif">
-                High Relief Shelter
+              <text x="240" y="65" fill="#34D399" fontSize="10" fontWeight="bold" fontFamily="sans-serif">
+                Lions Eye Hospital Shelter
               </text>
             </svg>
 
             {/* Route Stats Legend */}
             <div className="absolute bottom-3 right-3 p-2.5 rounded bg-space-900/90 border border-white/10 text-[11px] font-mono space-y-0.5">
-              <div className="text-saffron-400 font-bold">5.86 km • 8.4 min ETA</div>
-              <div className="text-slate-400">Class: Primary / Trunk Highway</div>
+              <div className="text-saffron-400 font-bold">5.30 km • 6.7 min ETA</div>
+              <div className="text-slate-400">Class: Secondary / Trunk Highway</div>
             </div>
           </div>
 
           <p className="text-xs font-mono text-slate-400 leading-relaxed">
-            Corridors strictly avoid detected flood polygons with a 50 m safety buffer. Alternate routes
-            are only offered when path overlap is $\le 80\%$, preventing near-duplicate bottlenecks.
+            Corridors strictly avoid detected flood polygons with a 50 m safety buffer. For connected zone
+            Rāmnagar (West) (`zone_06`), the engine computes a 5.30 km dry route (6.7 min ETA) to Lions Eye Hospital.
+            Alternate routes are only offered when overlap is &le; 80%.
           </p>
         </GlassCard>
 

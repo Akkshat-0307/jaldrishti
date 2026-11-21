@@ -42,9 +42,9 @@ def test_landing_page_renders_all_scenes():
 
     # Scene 2: Problem
     assert "THE INVISIBLE CRISIS" in html or "When the monsoon strikes" in html
-    assert "5.4M" in html or "54" in html
+    assert "5.6M" in html or "56" in html
     assert "427,338" in html
-    assert "ASDMA" in html
+    assert "IFRC" in html or "MDRIN028" in html
 
     # Scene 3: Radar Penetration
     assert "Seeing Through Clouds" in html
@@ -65,13 +65,13 @@ def test_landing_page_renders_all_scenes():
 
     # Scene 6: Assess
     assert "TOPOLOGICAL ISOLATION" in html or "Topological Isolation" in html
-    assert "Masimpur" in html
+    assert "Debpāra" in html or "Dudhpatli" in html
     assert "100,310" in html
     assert "53,945" in html
 
     # Scene 7: Act and Reach
     assert "LIFELINE ROUTING" in html or "Dry Corridors" in html
-    assert "5.86 km" in html
+    assert "5.30 km" in html or "5.3 km" in html
     assert "সাৱধান" in html  # Assamese alert text
     assert "0x01A39F4C" in html  # 16-byte packed hex
 

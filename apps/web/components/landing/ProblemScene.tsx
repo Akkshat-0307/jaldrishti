@@ -75,14 +75,14 @@ export function ProblemScene() {
         <GlassCard className="p-6 space-y-3 border-alert-500/30 hover:border-alert-500/50 transition-colors">
           <div className="flex items-center justify-between text-slate-400">
             <Users className="w-5 h-5 text-alert-500" />
-            <Badge variant="real">ASDMA Report</Badge>
+            <Badge variant="real">IFRC DREF MDRIN028</Badge>
           </div>
           <div className="text-4xl lg:text-5xl font-mono font-black text-white">
-            <Counter to={54} formatter={(v) => (v / 10).toFixed(1) + "M"} />
+            <Counter to={56} formatter={(v) => (v / 10).toFixed(1) + "M"} />
           </div>
           <p className="text-sm font-semibold text-slate-200">People Affected State-Wide</p>
           <p className="text-xs text-slate-400 leading-normal">
-            Over 5.4 million citizens affected across 32 districts of Assam in June 2022.
+            5.6 million people affected across 32 of 35 districts in Assam (IFRC DREF Operation Final Report MDRIN028, 2022-11-30).
           </p>
         </GlassCard>
 
@@ -90,14 +90,14 @@ export function ProblemScene() {
         <GlassCard className="p-6 space-y-3 border-amber-400/30 hover:border-amber-400/50 transition-colors">
           <div className="flex items-center justify-between text-slate-400">
             <Waves className="w-5 h-5 text-amber-400" />
-            <Badge variant="real">CWC / Admin</Badge>
+            <Badge variant="derived">Heinrich Böll Stiftung</Badge>
           </div>
-          <div className="text-4xl lg:text-5xl font-mono font-black text-amber-400">
-            <Counter to={80} formatter={(v) => v + "%+"} />
+          <div className="text-3xl lg:text-4xl font-mono font-bold text-amber-400">
+            [TODO: % Area]
           </div>
-          <p className="text-sm font-semibold text-slate-200">Silchar Town Submerged</p>
+          <p className="text-sm font-semibold text-slate-200">Silchar Prolonged Inundation</p>
           <p className="text-xs text-slate-400 leading-normal">
-            Betukandi dyke breach inundated 80%+ of urban Silchar up to 10–12 ft for 11 straight days.
+            Near-total city submersion following Betukandi dyke breach; standing water persisted up to 3 months (HBF Report, Nov 2022).
           </p>
         </GlassCard>
 
@@ -105,14 +105,16 @@ export function ProblemScene() {
         <GlassCard className="p-6 space-y-3 border-white/20 hover:border-white/40 transition-colors">
           <div className="flex items-center justify-between text-slate-400">
             <CloudOff className="w-5 h-5 text-slate-300" />
-            <Badge variant="real">Sentinel-2 Cloud Mask</Badge>
+            <span className="px-2 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+              [TODO: CLOUD %]
+            </span>
           </div>
-          <div className="text-4xl lg:text-5xl font-mono font-black text-slate-200">
-            <Counter to={0} formatter={(v) => v + "%"} />
+          <div className="text-3xl lg:text-4xl font-mono font-bold text-slate-300">
+            [TODO: Cloud Cover]
           </div>
-          <p className="text-sm font-semibold text-slate-200">Optical Satellite Visibility</p>
+          <p className="text-sm font-semibold text-slate-200">Optical Cloud Obscuration</p>
           <p className="text-xs text-slate-400 leading-normal">
-            Continuous stratiform & convective overcast rendered optical Earth observation 100% blind.
+            Heavy monsoon overcast obstructed optical sensors. [TODO: Compute exact Sentinel-2 cloud fraction over window].
           </p>
         </GlassCard>
 
@@ -135,11 +137,11 @@ export function ProblemScene() {
       {/* Footnote Citation */}
       <div className="p-4 rounded-lg bg-space-900/60 border border-white/10 text-xs font-mono text-slate-400 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
         <p>
-          <strong className="text-slate-300">Data Sources:</strong> Assam State Disaster Management
-          Authority (ASDMA) Situation Reports (June 2022); Central Water Commission (CWC) Barak Basin
-          Hydrological Bulletins; WorldPop 100m UN-adjusted (2020); Copernicus Sentinel-1 &amp; Sentinel-2.
+          <strong className="text-slate-300">Data Sources:</strong> IFRC DREF Operation Final Report MDRIN028
+          (ReliefWeb, 2022-11-30); Heinrich Böll Stiftung analysis (2022-11-17); WorldPop 100m UN-adjusted (2020);
+          Copernicus Sentinel-1 IW GRD.
         </p>
-        <span className="text-aurora-400 shrink-0 font-semibold">100% Real Measured Statistics</span>
+        <span className="text-aurora-400 shrink-0 font-semibold">100% Traced &amp; Badged Statistics</span>
       </div>
     </section>
   );

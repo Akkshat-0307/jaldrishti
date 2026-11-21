@@ -84,7 +84,15 @@ During Phase 5 development, this architecture was updated to a **physically-grou
    - While $h^*_{\text{iou}} = 3.25\text{ m}$ optimizes IoU, it produces $19,327\text{ ha}$ of inundation—almost double the observed U-Net extent ($9,976\text{ ha}$).
    - In Phase 6, an Area-Matched stage $h^*_{\text{area}} = 1.50\text{ m}$ was calibrated, producing $10,408.34\text{ ha}$ (+4.3% of U-Net footprint) as the operational $\Delta h = 0.0\text{ m}$ baseline. Both baselines are preserved in `metrics.json`.
    - A mandatory planning aid disclaimer is attached: *"Water-level scenarios are a planning aid, not a forecast."*
-6. **Role of Rainfall and River Forecasts:**
+6. **Discrepancy Between Area-Matched HAND and U-Net Impact Metrics:**
+   - Even though the Area-Matched stage $h^*_{\text{area}} = 1.50\text{ m}$ produces nearly identical flooded area ($10,408\text{ ha}$ vs U-Net's $9,976\text{ ha}$), the resulting infrastructure impact differs significantly:
+     - **U-Net Observed:** 8 cut-off settlement zones, 196.4 km roads potentially severed.
+     - **HAND Area-Matched ($h=1.50\text{ m}$):** 18 cut-off settlement zones, 569.1 km roads potentially severed.
+   - **Root Physical Cause:** MERIT-Hydro HAND is derived from a 30 m digital elevation model (DEM) representing bare-earth elevation relative to drainage lines. The DEM lacks fine 3D vertical cross-sections for built transport infrastructure, such as raised road embankments, highway bunds, and culverts/bridges. When water levels rise, the 30 m DEM contours sheet across low-lying terrain, intersecting road centerlines that in reality run atop raised embankments. Sentinel-1 SAR backscatter directly observes the physical specular reflection of the actual surface, detecting that elevated embankments remained dry even when surrounding fields were submerged.
+7. **Monotonic Cut-Off Enforcement:**
+   - As water stage rises monotonically ($\Delta h \in [-1.0, -0.5, 0.0, +0.5, +1.0, +1.5, +2.0]\text{ m}$), the set of severed roads expands monotonically. However, if settlement isolation is evaluated independently per stage using road-network nearest-neighbor snapping, an edge case can occur where a village zone deemed severed at $\Delta h_1$ spuriously re-snaps to a distant unflooded road segment at $\Delta h_2 > \Delta h_1$ if its nearest road segment changes.
+   - To enforce physical realism, `pipeline/whatif.py` tracks the **cumulative severed zone set**: once a village is cut off at a lower stage, it remains cut off at all higher stages ($\text{CutOff}(\Delta h_2) \supseteq \text{CutOff}(\Delta h_1)$).
+8. **Role of Rainfall and River Forecasts:**
    - NASA IMERG V07 rainfall is preserved and displayed as **REAL satellite meteorological context** (1d: 67.18 mm, 3d: 205.28 mm, 7d: 276.76 mm).
    - ECMWF GloFAS v4.0 is integrated via the Open-Meteo Flood API as **REAL modelled river outlook** for the nearest river cell (`lat=24.825, lon=92.800`). Arbitrary severity tags were removed in Phase 6, showing pure discharge metrics (499.0 m³/s current, 503.7 m³/s peak) tagged with temporal scope (`current outlook (not the 2022 event)`).
 

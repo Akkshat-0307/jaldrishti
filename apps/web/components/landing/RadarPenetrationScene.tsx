@@ -111,8 +111,8 @@ export function RadarPenetrationScene() {
             />
             {/* Top Left Label */}
             <div className="absolute top-4 left-4 z-10 px-3 py-1.5 rounded-md bg-space-950/80 backdrop-blur-md border border-white/20 text-xs font-mono text-slate-300 flex items-center gap-2">
-              <span className="w-2 h-2 rounded-full bg-slate-400" />
-              <span>Optical Sensor (100% Cloud Deck)</span>
+              <Badge variant="simulated">ILLUSTRATION</Badge>
+              <span>Optical Cloud Cover (Illustration)</span>
             </div>
           </div>
 
