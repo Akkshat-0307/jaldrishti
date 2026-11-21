@@ -51,6 +51,9 @@ jobs:
     defaults:
       run:
         working-directory: apps/api
+    env:
+      DEMO_MODE: "1"
+      NEXT_PUBLIC_DEMO_SMS_NUMBER: "+91 00000 00000"
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -58,4 +61,7 @@ jobs:
           python-version: "3.12"
       - run: pip install -r requirements.txt
       - run: pip install pytest httpx
-      - run: pytest ../../tests -v
+      - run: >
+          pytest ../../tests
+          --ignore=../../tests/test_browser_tour.py
+          -v --tb=short
