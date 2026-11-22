@@ -9,10 +9,12 @@ from __future__ import annotations
 import sys
 from pathlib import Path
 
-# Ensure repository root is on sys.path so pipeline modules can be imported
-repo_root = Path(__file__).resolve().parent.parent.parent
-if str(repo_root) not in sys.path:
-    sys.path.insert(0, str(repo_root))
+# Ensure application directory and repository root are on sys.path
+app_dir = Path(__file__).resolve().parent
+repo_root = app_dir.parent.parent
+for p in (app_dir, repo_root):
+    if str(p) not in sys.path:
+        sys.path.insert(0, str(p))
 
 from contextlib import asynccontextmanager
 from typing import AsyncIterator

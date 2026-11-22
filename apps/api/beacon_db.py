@@ -17,9 +17,10 @@ from beacon_payload import (
     pack_beacon_payload,
     unpack_beacon_payload,
 )
+from config import DATA_DIR as BASE_DATA_DIR
 
 DB_PATH = os.environ.get("BEACONS_DB_PATH", str(Path(__file__).parent / "beacons.db"))
-DATA_DIR = Path(__file__).parent.parent.parent / "data" / "events" / "assam-2022"
+DATA_DIR = BASE_DATA_DIR / "events" / "assam-2022"
 
 VALID_TRANSITIONS = {
     "new": ["assigned"],

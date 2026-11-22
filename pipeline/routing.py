@@ -18,17 +18,23 @@ import math
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-import networkx as nx
-import pyproj
-from shapely.geometry import LineString, Point, box, mapping, shape
-from shapely.ops import transform, unary_union
-
 BBOX_CACHAR = [92.70, 24.75, 92.90, 24.90]
 UTM_CRS = "EPSG:32646"
 WGS84_CRS = "EPSG:4326"
 
-proj_to_utm = pyproj.Transformer.from_crs(WGS84_CRS, UTM_CRS, always_xy=True).transform
-proj_to_wgs84 = pyproj.Transformer.from_crs(UTM_CRS, WGS84_CRS, always_xy=True).transform
+try:
+    import networkx as nx
+    import pyproj
+    from shapely.geometry import LineString, Point, box, mapping, shape
+    from shapely.ops import transform, unary_union
+
+    proj_to_utm = pyproj.Transformer.from_crs(WGS84_CRS, UTM_CRS, always_xy=True).transform
+    proj_to_wgs84 = pyproj.Transformer.from_crs(UTM_CRS, WGS84_CRS, always_xy=True).transform
+except ImportError:
+    nx = None  # type: ignore
+    pyproj = None  # type: ignore
+    LineString = Point = box = mapping = shape = transform = unary_union = None  # type: ignore
+    proj_to_utm = proj_to_wgs84 = None  # type: ignore
 
 # Speeds by OSM highway class in km/h
 HIGHWAY_SPEEDS_KMH: Dict[str, float] = {
@@ -56,6 +62,8 @@ class RoutingEngine:
         self,
         event_dir: Path | str = "data/events/assam-2022",
     ) -> None:
+        if nx is None:
+            raise ImportError("RoutingEngine requires networkx, pyproj, and shapely to be installed")
         self.event_dir = Path(event_dir)
         self.G_dry = nx.Graph()
         self.G_flooded = nx.Graph()

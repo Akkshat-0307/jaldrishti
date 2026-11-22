@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import math
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -108,7 +109,7 @@ async def get_route(
             detail={"code": 400, "message": f"Could not resolve origin '{from_param}' to coordinates or known zone"},
         )
 
-    # 3. Dynamic Calculation via RoutingEngine
+    # 3. Dynamic Calculation via RoutingEngine (with fallback to precomputed routes)
     try:
         engine = get_routing_engine(event_id)
         route_data = engine.find_route(
@@ -119,6 +120,33 @@ async def get_route(
         )
         return RouteResponse(**route_data)
     except Exception as err:
+        # Fallback to nearest precomputed zone from routes.json
+        if routes_json_path.is_file():
+            try:
+                with open(routes_json_path, "r", encoding="utf-8") as f:
+                    precomputed = json.load(f)
+                best_zid = None
+                best_dist = float("inf")
+                for zid, r in precomputed.items():
+                    orig = r.get("origin", {})
+                    o_lat = orig.get("lat")
+                    o_lon = orig.get("lon")
+                    if o_lat is not None and o_lon is not None:
+                        d = math.hypot((lat - o_lat) * 111.0, (lon - o_lon) * 100.0)
+                        if d < best_dist:
+                            best_dist = d
+                            best_zid = zid
+                if best_zid and best_zid in precomputed:
+                    fallback_res = dict(precomputed[best_zid])
+                    fallback_res["origin"] = {
+                        "label": f"{from_param} (snapped to {precomputed[best_zid].get('origin', {}).get('label', best_zid)})",
+                        "lat": lat,
+                        "lon": lon,
+                        "zone_id": best_zid,
+                    }
+                    return RouteResponse(**fallback_res)
+            except Exception:
+                pass
         raise HTTPException(
             status_code=500,
             detail={"code": 500, "message": f"Routing calculation error: {str(err)}"},

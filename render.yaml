@@ -3,7 +3,7 @@ services:
     name: jaldrishti-api
     runtime: docker
     dockerContext: .
-    dockerfilePath: apps/api/Dockerfile
+    dockerfilePath: ./apps/api/Dockerfile
     plan: free
     region: oregon
     healthCheckPath: /health

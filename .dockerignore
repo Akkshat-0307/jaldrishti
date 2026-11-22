@@ -1,0 +1,38 @@
+# Git and CI/CD
+.git
+.github
+.gitignore
+
+# Frontend
+apps/web
+node_modules
+.next
+
+# Virtual environments and caches
+.venv
+**/.venv
+__pycache__
+**/__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+
+# Heavy ML weights and satellite rasters
+*.tif
+*.tiff
+*.pth
+*.pt
+pipeline/weights
+
+# Notebooks, documentation, tests, and scripts
+notebooks
+docs
+tests
+scripts
+
+# OS and temporary files
+.DS_Store
+**/.DS_Store
+*.tmp
+*.log
